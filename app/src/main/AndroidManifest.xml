@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReflexRevolution">
         <activity
-            android:name=".MainActivity"
+            android:name=".ShakeTestActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,12 +18,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".TimerTestActivity">
-        </activity>
-        <activity
-            android:name=".GameOverActivity">
-        </activity>
+        <activity android:name=".TimerTestActivity" />
+        <activity android:name=".GameOverActivity" />
     </application>
 
 </manifest>
