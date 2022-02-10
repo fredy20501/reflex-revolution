@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TimerTestActivity">
+            android:name=".GameActivity">
         </activity>
         <activity
             android:name=".GameOverActivity">
