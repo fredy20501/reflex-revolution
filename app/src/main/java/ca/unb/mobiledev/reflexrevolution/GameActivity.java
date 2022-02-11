@@ -108,6 +108,8 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() {
                 Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
                 intent.putExtra("Score", score);
+                intent.putExtra("GameMode", gameMode);
+                intent.putExtra("Difficulty", difficulty);
                 startActivity(intent);
                 finish();
             }
