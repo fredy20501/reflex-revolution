@@ -23,8 +23,11 @@ public class GameActivity extends AppCompatActivity {
     private LinearLayout layout; //Layout we should add new UI elements to
 
     private CountDownTimer timer;
-    private String currentInstruction = null;
-    private ArrayList<String> instructions;
+    private Instruction currentInstruction = null;
+    private ArrayList<Instruction> instructions;
+    private Random rand;
+    private GameMode gameMode;
+    private Difficulty difficulty;
 
     private int timeCount;
     private int score;
@@ -33,24 +36,23 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
+        //Retrieve gamemode and difficulty
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            gameMode = (GameMode)extras.get("GameMode");
+            difficulty = (Difficulty)extras.get("Difficulty");
+        }
 
+        rand = new Random();
         timeText = findViewById(R.id.timerText);
         scoreText = findViewById(R.id.currentScoreText);
         layout = findViewById(R.id.layout);
         score = 0;
 
-        createInstructions();
+        instructions = InstructionUtil.createInstructions(gameMode);
         updateTimerText();
         updateScoreText();
         resetTimer();
-    }
-
-    //Fill the instructions list with instructions
-    private void createInstructions(){
-        instructions = new ArrayList<>();
-
-        //Add instructions here
-        instructions.add("Button"); //Temp instruction for testing
     }
 
     private void updateTimerText(){
@@ -79,9 +81,20 @@ public class GameActivity extends AppCompatActivity {
         }.start();
     }
 
-    //Create a new timer that counts down from 5, and closes the activity once it hits 0
+    //Get new timer count, then start it by "resuming"
     private void newTimer(){
         timeCount = scaleTimerFromScore();
+        resumeTimer();
+    }
+
+    //"Resumes" timer by creating a new timer starting at timeCount
+    //Might be off by 100ms because I can only get
+    private void resumeTimer(){
+        //Check that there is not already a timer running
+        if(timer != null) {
+            timer.cancel();
+        }
+
         timer = new CountDownTimer(timeCount, 100) {
             @Override
             //onTick() is also called as soon as the counter starts, so call timeCount-- after updateText()
@@ -109,26 +122,26 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //Returns a random instruction from instructions
-    private String getRandomInstruction() {
-        Random rand = new Random();
-        //Get a random instruction from the instructions arraylist
-        String randomInstruction = instructions.get(rand.nextInt(instructions.size()));
-        return randomInstruction;
-    }
+    private Instruction getRandomInstruction() { return instructions.get(rand.nextInt(instructions.size())); }
 
     //Display UI elements for the current instruction, and set up any necessary input receivers
     private void displayInstruction() {
-        if(currentInstruction.equals("Button")){
-            Button button = new Button(this);
-            button.setText("Press");
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    detectInput("Button");
+        switch (currentInstruction){
+            case BUTTON:
+                Button button = new Button(this);
+                button.setText("Press");
+                button.setOnClickListener(new View.OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                    detectInput(Instruction.BUTTON);
                 }
-            });
+                });
 
-            layout.addView(button);
+                layout.addView(button);
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -138,8 +151,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //Handle any inputs received
-    private void detectInput(String instruction) {
-        if (instruction.equals(currentInstruction)) {
+    private void detectInput(Instruction instruction) {
+        if (instruction == currentInstruction) {
             // Correct input detected
 
             //Update score
@@ -155,8 +168,25 @@ public class GameActivity extends AppCompatActivity {
     //Scuffed function that will give a scaled timer based on score.
     //Starts at ~3000ms and min value is ~1000ms
     //I literally came up with this from playing around in desmos so we might want to rework this later
+    //Probably adjust this based on difficulty later
     private int scaleTimerFromScore(){
         int scaledTimer = (int)Math.pow(2, -0.04*score + 11) + 1000;
         return scaledTimer;
+    }
+
+    //Resume timer if app was closed
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(timer != null) {
+            resumeTimer();
+        }
+    }
+
+    //Make sure timer doesn't keep going with app closed
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timer.cancel();
     }
 }
