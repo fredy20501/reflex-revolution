@@ -4,8 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/carte/School/2022 Winter/CS2063/Reflex Revolution/reflex-revolution/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
+        <entry key="..\:/Users/carte/School/2022 Winter/CS2063/Reflex Revolution/reflex-revolution/app/src/main/res/layout/game.xml" value="0.2" />
         <entry key="..\:/Users/carte/School/2022 Winter/CS2063/Reflex Revolution/reflex-revolution/app/src/main/res/layout/game_over.xml" value="0.176" />
         <entry key="..\:/Users/carte/School/2022 Winter/CS2063/Reflex Revolution/reflex-revolution/app/src/main/res/layout/timer_test.xml" value="0.25" />
+        <entry key="..\:/Users/frede/Documents/UNB/CS2063/Project/reflex-revolution/app/src/main/res/layout/activity_main.xml" value="0.4008152173913043" />
+        <entry key="..\:/Users/frede/Documents/UNB/CS2063/Project/reflex-revolution/app/src/main/res/layout/activity_shake_detection.xml" value="0.264" />
+        <entry key="..\:/Users/frede/Documents/UNB/CS2063/Project/reflex-revolution/app/src/main/res/layout/activity_shake_test.xml" value="0.25677083333333334" />
       </map>
     </option>
   </component>
