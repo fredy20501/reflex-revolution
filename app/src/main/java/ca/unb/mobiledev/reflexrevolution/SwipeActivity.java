@@ -91,7 +91,7 @@ public class SwipeActivity extends AppCompatActivity {
 
         public void onSwipeRight(){
             if(directions[index].equals("right")) {
-                swipeText.setText("Correct! Right");
+                //swipeText.setText("Correct! Right");
                 score++;
                 updateScore();
                 newDirection();
@@ -102,7 +102,7 @@ public class SwipeActivity extends AppCompatActivity {
 
          public void onSwipeLeft(){
              if(directions[index].equals("left")) {
-                 swipeText.setText("Correct! Left");
+                 //swipeText.setText("Correct! Left");
                  score++;
                  updateScore();
                  newDirection();
@@ -113,7 +113,7 @@ public class SwipeActivity extends AppCompatActivity {
 
          public void onSwipeUp(){
              if(directions[index].equals("up")) {
-                 swipeText.setText("Correct! Up");
+                 //swipeText.setText("Correct! Up");
                  score++;
                  updateScore();
                  newDirection();
@@ -124,7 +124,7 @@ public class SwipeActivity extends AppCompatActivity {
 
          public void onSwipeDown(){
              if(directions[index].equals("down")) {
-                 swipeText.setText("Correct! Down");
+                 //swipeText.setText("Correct! Down");
                  score++;
                  updateScore();
                  newDirection();
