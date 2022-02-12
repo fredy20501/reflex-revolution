@@ -1,4 +1,4 @@
-package ca.unb.mobiledev.reflexrevolution;
+package ca.unb.mobiledev.reflexrevolution.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
+import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
+import ca.unb.mobiledev.reflexrevolution.R;
 
 public class GameOverActivity extends AppCompatActivity {
 
@@ -34,23 +38,15 @@ public class GameOverActivity extends AppCompatActivity {
         }
 
         //Start activity for new game if "Play Again" is hit
-        replayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(GameOverActivity.this, GameActivity.class);
-                intent.putExtra("GameMode", gameMode);
-                intent.putExtra("Difficulty", difficulty);
-                startActivity(intent);
-                finish();
-            }
+        replayButton.setOnClickListener(v -> {
+            Intent intent = new Intent(GameOverActivity.this, GameActivity.class);
+            intent.putExtra("GameMode", gameMode);
+            intent.putExtra("Difficulty", difficulty);
+            startActivity(intent);
+            finish();
         });
 
         //Close this activity if "Menu" button is hit, returning to menu
-        menuButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        menuButton.setOnClickListener(v -> finish());
     }
 }

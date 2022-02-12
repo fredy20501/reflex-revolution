@@ -1,4 +1,4 @@
-package ca.unb.mobiledev.reflexrevolution;
+package ca.unb.mobiledev.reflexrevolution.sensors;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;

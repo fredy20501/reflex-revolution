@@ -1,4 +1,4 @@
-package ca.unb.mobiledev.reflexrevolution;
+package ca.unb.mobiledev.reflexrevolution.activities.tests;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,6 +7,9 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.widget.TextView;
+
+import ca.unb.mobiledev.reflexrevolution.R;
+import ca.unb.mobiledev.reflexrevolution.sensors.ShakeDetector;
 
 public class ShakeTestActivity extends AppCompatActivity {
 

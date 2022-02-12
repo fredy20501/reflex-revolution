@@ -1,4 +1,4 @@
-package ca.unb.mobiledev.reflexrevolution;
+package ca.unb.mobiledev.reflexrevolution.utils;
 
 public enum Instruction {
     BUTTON, //Temp instruction for testing

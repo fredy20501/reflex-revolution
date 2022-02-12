@@ -1,10 +1,14 @@
-package ca.unb.mobiledev.reflexrevolution;
+package ca.unb.mobiledev.reflexrevolution.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -12,6 +16,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
+import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
+import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
+import ca.unb.mobiledev.reflexrevolution.utils.InstructionUtil;
+import ca.unb.mobiledev.reflexrevolution.R;
+import ca.unb.mobiledev.reflexrevolution.sensors.ShakeDetector;
 
 public class GameActivity extends AppCompatActivity {
     //Time in ms
@@ -28,6 +39,10 @@ public class GameActivity extends AppCompatActivity {
     private Random rand;
     private GameMode gameMode;
     private Difficulty difficulty;
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private ShakeDetector shakeDetector;
 
     private int timeCount;
     private int score;
@@ -49,10 +64,25 @@ public class GameActivity extends AppCompatActivity {
         layout = findViewById(R.id.layout);
         score = 0;
 
-        instructions = InstructionUtil.createInstructions(gameMode);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        instructions = InstructionUtil.createInstructions(gameMode, this);
+        initializeSensors();
         updateTimerText();
         updateScoreText();
         resetTimer();
+    }
+
+    private void initializeSensors() {
+        if (instructions.contains(Instruction.SHAKE)) {
+            // Get accelerometer sensor
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
+            // Initialize shake detector
+            shakeDetector = new ShakeDetector();
+            shakeDetector.setOnShakeListener(count -> {
+                if (count > 1) detectInput(Instruction.SHAKE);
+            });
+        }
     }
 
     private void updateTimerText(){
@@ -120,6 +150,7 @@ public class GameActivity extends AppCompatActivity {
     private void gameLoop() {
         currentInstruction = getRandomInstruction();
         displayInstruction();
+        registerListeners();
         newTimer();
     }
 
@@ -131,15 +162,17 @@ public class GameActivity extends AppCompatActivity {
         switch (currentInstruction){
             case BUTTON:
                 Button button = new Button(this);
-                button.setText("Press");
-                button.setOnClickListener(new View.OnClickListener() {
-                   @Override
-                   public void onClick(View v) {
-                    detectInput(Instruction.BUTTON);
-                }
-                });
-
+                button.setText("PRESS");
+                button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                button.setOnClickListener(v -> detectInput(Instruction.BUTTON));
                 layout.addView(button);
+                break;
+            case SHAKE:
+                TextView label = new TextView(this);
+                label.setText("SHAKE");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
                 break;
 
             default:
@@ -164,6 +197,7 @@ public class GameActivity extends AppCompatActivity {
             //Stop timer and clear UI, wait one second, then start the gameloop (in resetTimer)
             resetTimer();
             resetUI();
+            unregisterListeners();
         }
     }
 
@@ -171,24 +205,41 @@ public class GameActivity extends AppCompatActivity {
     //Starts at ~3000ms and min value is ~1000ms
     //I literally came up with this from playing around in desmos so we might want to rework this later
     //Probably adjust this based on difficulty later
-    private int scaleTimerFromScore(){
-        int scaledTimer = (int)Math.pow(2, -0.04*score + 11) + 1000;
-        return scaledTimer;
+    private int scaleTimerFromScore() {
+        return (int)Math.pow(2, -0.04*score + 11) + 1000;
+    }
+
+    private void registerListeners() {
+        if (currentInstruction == null) return;
+        switch (currentInstruction) {
+            case SHAKE:
+                sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                break;
+        }
+    }
+
+    private void unregisterListeners() {
+        if (currentInstruction == null) return;
+        switch (currentInstruction) {
+            case SHAKE:
+                sensorManager.unregisterListener(shakeDetector);
+                break;
+        }
     }
 
     //Resume timer if app was closed
     @Override
     protected void onResume() {
         super.onResume();
-        if(timer != null) {
-            resumeTimer();
-        }
+        registerListeners();
+        if(timer != null) resumeTimer();
     }
 
     //Make sure timer doesn't keep going with app closed
     @Override
     protected void onPause() {
         super.onPause();
+        unregisterListeners();
         timer.cancel();
     }
 }
