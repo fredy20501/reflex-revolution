@@ -21,9 +21,9 @@ public class ShakeTestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shake_test);
+        setContentView(R.layout.activity_test);
 
-        shakeText = findViewById(R.id.shakeText);
+        shakeText = findViewById(R.id.mainLabel);
 
         // Get accelerometer sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);

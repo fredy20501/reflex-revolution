@@ -17,6 +17,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.sensors.JumpDetector;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
@@ -41,8 +42,10 @@ public class GameActivity extends AppCompatActivity {
     private Difficulty difficulty;
 
     private SensorManager sensorManager;
-    private Sensor accelerometer;
+    private Sensor accelerationSensor;
+    private Sensor gravitySensor;
     private ShakeDetector shakeDetector;
+    private JumpDetector jumpDetector;
 
     private int timeCount;
     private int score;
@@ -73,16 +76,17 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void initializeSensors() {
-        if (instructions.contains(Instruction.SHAKE)) {
-            // Get accelerometer sensor
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        // Get sensors
+        accelerationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
 
-            // Initialize shake detector
-            shakeDetector = new ShakeDetector();
-            shakeDetector.setOnShakeListener(count -> {
-                if (count > 1) detectInput(Instruction.SHAKE);
-            });
-        }
+        // Initialize detectors
+        shakeDetector = new ShakeDetector();
+        shakeDetector.setOnShakeListener(count -> {
+            if (count > 1) detectInput(Instruction.SHAKE);
+        });
+        jumpDetector = new JumpDetector();
+        jumpDetector.setOnJumpListener(() -> detectInput(Instruction.JUMP));
     }
 
     private void updateTimerText(){
@@ -159,6 +163,7 @@ public class GameActivity extends AppCompatActivity {
 
     //Display UI elements for the current instruction, and set up any necessary input receivers
     private void displayInstruction() {
+        TextView label;
         switch (currentInstruction){
             case BUTTON:
                 Button button = new Button(this);
@@ -167,15 +172,21 @@ public class GameActivity extends AppCompatActivity {
                 button.setOnClickListener(v -> detectInput(Instruction.BUTTON));
                 layout.addView(button);
                 break;
+
             case SHAKE:
-                TextView label = new TextView(this);
+                label = new TextView(this);
                 label.setText("SHAKE");
                 label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
                 layout.addView(label);
                 break;
 
-            default:
+            case JUMP:
+                label = new TextView(this);
+                label.setText("JUMP");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
                 break;
         }
     }
@@ -213,7 +224,11 @@ public class GameActivity extends AppCompatActivity {
         if (currentInstruction == null) return;
         switch (currentInstruction) {
             case SHAKE:
-                sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManager.registerListener(shakeDetector, accelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                break;
+            case JUMP:
+                sensorManager.registerListener(jumpDetector, accelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManager.registerListener(jumpDetector, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
                 break;
         }
     }
@@ -224,6 +239,8 @@ public class GameActivity extends AppCompatActivity {
             case SHAKE:
                 sensorManager.unregisterListener(shakeDetector);
                 break;
+            case JUMP:
+                sensorManager.unregisterListener(jumpDetector);
         }
     }
 
