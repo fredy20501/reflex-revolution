@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class JumpDetector implements SensorEventListener {
 
-    private static final float JUMP_THRESHOLD_FORCE = 5.0f;
+    private static final float JUMP_THRESHOLD_FORCE = 4.0f;
 
     private OnJumpListener mListener;
     private float[] upVector;
@@ -41,7 +41,7 @@ public class JumpDetector implements SensorEventListener {
 
                 // Scalar projection of the acceleration onto gravity vector
                 float[] acceleration = event.values;
-                float upComponent = vectorDotProduct(acceleration, upVector);
+                float upComponent = Math.abs(vectorDotProduct(acceleration, upVector));
 
                 if (upComponent > JUMP_THRESHOLD_FORCE) {
                     mListener.onJump();
