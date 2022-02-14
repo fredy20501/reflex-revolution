@@ -241,6 +241,7 @@ public class GameActivity extends AppCompatActivity {
                 break;
             case JUMP:
                 sensorManager.unregisterListener(jumpDetector);
+                break;
         }
     }
 
