@@ -160,75 +160,13 @@ public class GameActivity extends AppCompatActivity {
     //Prepare and start new instruction loop
     private void gameLoop() {
         currentInstruction = getRandomInstruction();
-        displayInstruction();
+        InstructionUtil.displayInstruction(currentInstruction, layout, this);
         registerListeners();
         newTimer();
     }
 
     //Returns a random instruction from instructions
     private Instruction getRandomInstruction() { return instructions.get(rand.nextInt(instructions.size())); }
-
-    //Display UI elements for the current instruction, and set up any necessary input receivers
-    private void displayInstruction() {
-        TextView label;
-        switch (currentInstruction){
-            case BUTTON:
-                Button button = new Button(this);
-                button.setText("PRESS");
-                button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                button.setOnClickListener(v -> detectInput(Instruction.BUTTON));
-                layout.addView(button);
-                break;
-
-            case TAP:
-                label = new TextView(this);
-                label.setText("TAP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-
-            case DOUBLETAP:
-                label = new TextView(this);
-                label.setText("DOUBLE\nTAP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-
-            case HOLD:
-                label = new TextView(this);
-                label.setText("HOLD");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-
-            case DONTTAP:
-                label = new TextView(this);
-                label.setText("DON'T\nTAP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-
-            case SHAKE:
-                label = new TextView(this);
-                label.setText("SHAKE");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-
-            case JUMP:
-                label = new TextView(this);
-                label.setText("JUMP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-        }
-    }
 
     //Clear all added UI elements
     private void resetUI() {
