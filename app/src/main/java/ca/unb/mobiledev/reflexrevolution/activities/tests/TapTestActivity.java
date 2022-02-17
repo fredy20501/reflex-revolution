@@ -16,54 +16,46 @@ import ca.unb.mobiledev.reflexrevolution.sensors.TapDetector;
 import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
 
 public class TapTestActivity extends AppCompatActivity {
-    Random r;
     TextView tapText;
-    Instruction[] instructions;
-    Instruction currentInstruction;
+    TextView holdText;
+    TextView doubleTapText;
     TapDetector tapDetector;
     ConstraintLayout mainLayout;
-    int numInputs;
+    int numTaps;
+    int numHolds;
+    int numDoubleTaps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        tapText = findViewById(R.id.mainLabel);
         mainLayout = findViewById(R.id.mainLayout);
+        tapText = findViewById(R.id.mainLabel);
+        holdText = findViewById(R.id.mainLabel2);
+        doubleTapText = findViewById(R.id.mainLabel3);
+        updateValues();
 
-        numInputs = 0;
-        r = new Random();
-        instructions = new Instruction[]{Instruction.TAP, Instruction.DOUBLETAP, Instruction.HOLD};
+        numTaps = 0;
+        numHolds = 0;
+        numDoubleTaps = 0;
 
         tapDetector = new TapDetector(this, mainLayout);
         tapDetector.setOnTapListener(instruction -> handleInput(instruction));
-
-        newInstruction();
     }
 
-    private void newInstruction(){
-        currentInstruction = instructions[r.nextInt(instructions.length)];
-        switch(currentInstruction){
-            case TAP:
-                tapText.setText("Tap: " + numInputs);
-                break;
-            case DOUBLETAP:
-                tapText.setText("Double Tap: " + numInputs);
-                break;
-            case HOLD:
-                tapText.setText("Hold: " + numInputs);
-                break;
-            default:
-                tapText.setText("");
-                break;
-        }
+    private void updateValues(){
+        tapText.setText("Tap: " + numTaps);
+        doubleTapText.setText("Double Tap: " + numDoubleTaps);
+        holdText.setText("Hold: " + numHolds);
     }
 
     private void handleInput(Instruction instruction){
-        if (instruction == currentInstruction){
-            numInputs++;
-            newInstruction();
+        switch(instruction){
+            case TAP: numTaps++; break;
+            case DOUBLETAP: numDoubleTaps++; break;
+            case HOLD: numHolds++; break;
         }
+        updateValues();
     }
 }
