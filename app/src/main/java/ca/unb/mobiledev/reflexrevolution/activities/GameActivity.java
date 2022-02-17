@@ -35,6 +35,8 @@ public class GameActivity extends AppCompatActivity {
     private ConstraintLayout containerLayout; //Top level layout containing all other views
 
     private CountDownTimer timer;
+    private CountDownTimer resetTimer;
+    private boolean gettingNewInstruction; //Keep track of when we are getting a new instruction
     private Instruction currentInstruction = null;
     private ArrayList<Instruction> instructions;
     private Random rand;
@@ -63,6 +65,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         rand = new Random();
+        gettingNewInstruction = false;
         timeText = findViewById(R.id.timerText);
         scoreText = findViewById(R.id.currentScoreText);
         layout = findViewById(R.id.layout);
@@ -106,9 +109,12 @@ public class GameActivity extends AppCompatActivity {
         if(timer != null) {
             timer.cancel();
         }
+        if(resetTimer != null){
+            resetTimer.cancel();
+        }
         //Wait one second before calling gameloop
         //We could also change this so that the time between is random or scales off of score
-        new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
+        resetTimer = new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
             @Override
             public void onTick(long l) { }
 
@@ -160,6 +166,7 @@ public class GameActivity extends AppCompatActivity {
         InstructionUtil.displayInstruction(currentInstruction, layout, this);
         registerListeners();
         newTimer();
+        gettingNewInstruction = false;
     }
 
     //Returns a random instruction from instructions
@@ -177,8 +184,9 @@ public class GameActivity extends AppCompatActivity {
             endGame();
             return;
         }
-        if (instruction == currentInstruction) {
+        if (instruction == currentInstruction && !gettingNewInstruction) {
             // Correct input detected
+            gettingNewInstruction = true;
 
             //Update score
             score++;
