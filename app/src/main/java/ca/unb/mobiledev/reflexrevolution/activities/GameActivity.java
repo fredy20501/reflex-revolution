@@ -1,6 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.sensors.JumpDetector;
+import ca.unb.mobiledev.reflexrevolution.sensors.TapDetector;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
@@ -33,6 +35,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView timeText;
     private TextView scoreText;
     private LinearLayout layout; //Layout we should add new UI elements to
+    private ConstraintLayout containerLayout; //Top level layout containing all other views
 
     private CountDownTimer timer;
     private Instruction currentInstruction = null;
@@ -46,6 +49,7 @@ public class GameActivity extends AppCompatActivity {
     private Sensor gravitySensor;
     private ShakeDetector shakeDetector;
     private JumpDetector jumpDetector;
+    private TapDetector tapDetector;
 
     private int timeCount;
     private int score;
@@ -65,8 +69,11 @@ public class GameActivity extends AppCompatActivity {
         timeText = findViewById(R.id.timerText);
         scoreText = findViewById(R.id.currentScoreText);
         layout = findViewById(R.id.layout);
+        containerLayout = findViewById(R.id.containerLayout);
         score = 0;
 
+        tapDetector = new TapDetector(this, containerLayout);
+        tapDetector.setOnTapListener(instruction -> detectInput(instruction));
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         instructions = InstructionUtil.createInstructions(gameMode, this);
         initializeSensors();
@@ -171,6 +178,30 @@ public class GameActivity extends AppCompatActivity {
                 button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
                 button.setOnClickListener(v -> detectInput(Instruction.BUTTON));
                 layout.addView(button);
+                break;
+
+            case TAP:
+                label = new TextView(this);
+                label.setText("TAP");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case DOUBLETAP:
+                label = new TextView(this);
+                label.setText("DOUBLE\nTAP");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case HOLD:
+                label = new TextView(this);
+                label.setText("HOLD");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
                 break;
 
             case SHAKE:
