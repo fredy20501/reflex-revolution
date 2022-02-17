@@ -181,6 +181,7 @@ public class GameActivity extends AppCompatActivity {
                  instruction == Instruction.DOUBLETAP ||
                  instruction == Instruction.HOLD)) {
             endGame();
+            return;
         }
         if (instruction == currentInstruction) {
             // Correct input detected
