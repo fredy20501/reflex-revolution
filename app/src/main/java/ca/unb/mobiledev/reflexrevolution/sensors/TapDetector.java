@@ -1,11 +1,9 @@
 package ca.unb.mobiledev.reflexrevolution.sensors;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
 
@@ -25,7 +23,7 @@ public class TapDetector implements View.OnTouchListener{
 
             @Override
             public boolean onDoubleTap(MotionEvent e){
-                mListener.sendTapDetected(Instruction.DOUBLETAP);
+                mListener.sendTapDetected(Instruction.DOUBLE_TAP);
                 return true;
             }
 

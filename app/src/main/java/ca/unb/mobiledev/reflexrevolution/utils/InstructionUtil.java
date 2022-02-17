@@ -7,11 +7,7 @@ import android.hardware.SensorManager;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -30,9 +26,9 @@ public class InstructionUtil {
         switch(mode){
             case BASIC:
                 instructions.add(Instruction.TAP);
-                instructions.add(Instruction.DOUBLETAP);
+                instructions.add(Instruction.DOUBLE_TAP);
                 instructions.add(Instruction.HOLD);
-                instructions.add(Instruction.DONTTAP);
+                instructions.add(Instruction.DONT_TAP);
                 if (accelerometer != null) instructions.add(Instruction.SHAKE);
                 if (accelerometer != null && gravitySensor != null) instructions.add(Instruction.JUMP);
 
@@ -48,40 +44,31 @@ public class InstructionUtil {
 
     //Display UI elements for the instruction passed in
     public static void displayInstruction(Instruction instruction, ViewGroup layout, Context context){
-        TextView label;
+        //Label will be used in most cases, so initialize up here and set properties
+        //to make the rest cleaner
+        TextView label = new TextView(context);
+        label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
         switch (instruction){
             case TAP:
-                label = new TextView(context);
                 label.setText("TAP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
                 layout.addView(label);
                 break;
 
-            case DOUBLETAP:
-                label = new TextView(context);
+            case DOUBLE_TAP:
                 label.setText("DOUBLE\nTAP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
                 layout.addView(label);
                 break;
 
             case HOLD:
-                label = new TextView(context);
                 label.setText("HOLD");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
                 layout.addView(label);
                 break;
 
-            case DONTTAP:
+            case DONT_TAP:
                 TextView label2 = new TextView(context);
-                label = new TextView(context);
                 label2.setText("DON'T");
                 label.setText("TAP");
-
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
 
                 label2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 label2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
@@ -94,18 +81,12 @@ public class InstructionUtil {
                 break;
 
             case SHAKE:
-                label = new TextView(context);
                 label.setText("SHAKE");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
                 layout.addView(label);
                 break;
 
             case JUMP:
-                label = new TextView(context);
                 label.setText("JUMP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
                 layout.addView(label);
                 break;
 

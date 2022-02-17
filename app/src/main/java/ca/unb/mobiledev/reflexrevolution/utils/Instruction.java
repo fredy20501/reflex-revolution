@@ -3,9 +3,9 @@ package ca.unb.mobiledev.reflexrevolution.utils;
 public enum Instruction {
     BUTTON, //Temp instruction for testing
     TAP,
-    DOUBLETAP,
+    DOUBLE_TAP,
     HOLD,
-    DONTTAP,
+    DONT_TAP,
     SWIPE,
     SHAKE,
     JUMP

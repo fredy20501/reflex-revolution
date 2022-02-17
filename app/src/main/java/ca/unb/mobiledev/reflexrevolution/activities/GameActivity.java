@@ -9,9 +9,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -147,8 +144,8 @@ public class GameActivity extends AppCompatActivity {
             @Override
             //When timer hits zero, end game unless instruction requires no input
             public void onFinish() {
-                if(currentInstruction == Instruction.DONTTAP){
-                    detectInput(Instruction.DONTTAP);
+                if(currentInstruction == Instruction.DONT_TAP){
+                    detectInput(Instruction.DONT_TAP);
                 }
                 else {
                     endGame();
@@ -176,10 +173,7 @@ public class GameActivity extends AppCompatActivity {
     //Handle any inputs received
     private void detectInput(Instruction instruction) {
         //If instruction is don't tap and a tap input is received, end game
-        if(currentInstruction == Instruction.DONTTAP  &&
-                (instruction == Instruction.TAP ||
-                 instruction == Instruction.DOUBLETAP ||
-                 instruction == Instruction.HOLD)) {
+        if(currentInstruction == Instruction.DONT_TAP && instruction == Instruction.TAP) {
             endGame();
             return;
         }
@@ -191,8 +185,8 @@ public class GameActivity extends AppCompatActivity {
             updateScoreText();
 
             //Stop timer and clear UI, wait one second, then start the gameloop (in resetTimer)
-            resetTimer();
             resetUI();
+            resetTimer();
             unregisterListeners();
         }
     }
