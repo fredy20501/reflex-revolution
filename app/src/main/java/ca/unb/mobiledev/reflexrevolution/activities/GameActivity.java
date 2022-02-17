@@ -145,14 +145,14 @@ public class GameActivity extends AppCompatActivity {
             }
 
             @Override
-            //When timer hits zero, start GameOverActivity and pass it the score
+            //When timer hits zero, end game unless instruction requires no input
             public void onFinish() {
-                Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
-                intent.putExtra("Score", score);
-                intent.putExtra("GameMode", gameMode);
-                intent.putExtra("Difficulty", difficulty);
-                startActivity(intent);
-                finish();
+                if(currentInstruction == Instruction.DONTTAP){
+                    detectInput(Instruction.DONTTAP);
+                }
+                else {
+                    endGame();
+                }
             }
         }.start();
     }
@@ -204,6 +204,14 @@ public class GameActivity extends AppCompatActivity {
                 layout.addView(label);
                 break;
 
+            case DONTTAP:
+                label = new TextView(this);
+                label.setText("DON'T\nTAP");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
             case SHAKE:
                 label = new TextView(this);
                 label.setText("SHAKE");
@@ -229,6 +237,13 @@ public class GameActivity extends AppCompatActivity {
 
     //Handle any inputs received
     private void detectInput(Instruction instruction) {
+        //If instruction is don't tap and a tap input is received, end game
+        if(currentInstruction == Instruction.DONTTAP  &&
+                (instruction == Instruction.TAP ||
+                 instruction == Instruction.DOUBLETAP ||
+                 instruction == Instruction.HOLD)) {
+            endGame();
+        }
         if (instruction == currentInstruction) {
             // Correct input detected
 
@@ -241,6 +256,20 @@ public class GameActivity extends AppCompatActivity {
             resetUI();
             unregisterListeners();
         }
+    }
+
+    //Ends the game, sending score and game options to the Game Over screen
+    private void endGame(){
+        //In case user taps on don't tap instruction
+        if(timer != null){
+            timer.cancel();
+        }
+        Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
+        intent.putExtra("Score", score);
+        intent.putExtra("GameMode", gameMode);
+        intent.putExtra("Difficulty", difficulty);
+        startActivity(intent);
+        finish();
     }
 
     //Scuffed function that will give a scaled timer based on score.

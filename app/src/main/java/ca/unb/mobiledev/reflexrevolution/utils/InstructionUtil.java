@@ -23,6 +23,7 @@ public class InstructionUtil {
                 instructions.add(Instruction.TAP);
                 instructions.add(Instruction.DOUBLETAP);
                 instructions.add(Instruction.HOLD);
+                instructions.add(Instruction.DONTTAP);
                 if (accelerometer != null) instructions.add(Instruction.SHAKE);
                 if (accelerometer != null && gravitySensor != null) instructions.add(Instruction.JUMP);
                 break;
