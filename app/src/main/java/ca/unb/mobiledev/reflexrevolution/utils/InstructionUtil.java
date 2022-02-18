@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class InstructionUtil {
 
     private static final float DEFAULT_TEXT_SIZE = 80;
+    private static final float SMALL_TEXT_SIZE = 16;
 
     public static ArrayList<Instruction> createInstructions(GameMode mode, Context context){
         SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -44,11 +45,15 @@ public class InstructionUtil {
 
     //Display UI elements for the instruction passed in
     public static void displayInstruction(Instruction instruction, ViewGroup layout, Context context){
-        //Label will be used in most cases, so initialize up here and set properties
-        //to make the rest cleaner
+        //label and label2 will be used in many cases, so initialize them here and set properties
+        //to make the switch cleaner
         TextView label = new TextView(context);
         label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         label.setTextSize(TypedValue.COMPLEX_UNIT_SP, DEFAULT_TEXT_SIZE);
+        TextView label2 = new TextView(context);
+        label2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        label2.setTextSize(TypedValue.COMPLEX_UNIT_SP, SMALL_TEXT_SIZE);
+
         switch (instruction){
             case TAP:
                 label.setText("TAP");
@@ -56,22 +61,24 @@ public class InstructionUtil {
                 break;
 
             case DOUBLE_TAP:
-                label.setText("DOUBLE\nTAP");
+                label2.setText("DOUBLE");
+                label.setText("TAP");
+
+                layout.addView(label2);
                 layout.addView(label);
                 break;
 
             case HOLD:
-                label.setText("HOLD");
+                label2.setText("HOLD");
+                label.setText("TAP");
+
+                layout.addView(label2);
                 layout.addView(label);
                 break;
 
             case DONT_TAP:
-                TextView label2 = new TextView(context);
                 label2.setText("DON'T");
                 label.setText("TAP");
-
-                label2.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
                 layout.addView(label2);
                 layout.addView(label);
