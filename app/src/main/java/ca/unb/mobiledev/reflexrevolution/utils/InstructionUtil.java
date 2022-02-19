@@ -9,10 +9,10 @@ import java.util.ArrayList;
 
 public class InstructionUtil {
 
-    public static ArrayList<Instruction> createInstructions(GameMode mode, Context context){
-        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+    public static ArrayList<Instruction> createInstructions(GameMode mode, SensorManager sensorManager){
         Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         Sensor gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        Sensor gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         ArrayList<Instruction> instructions = new ArrayList<>();
 
@@ -20,8 +20,20 @@ public class InstructionUtil {
         switch(mode){
             case BASIC:
                 instructions.add(Instruction.BUTTON);
-                if (accelerometer != null) instructions.add(Instruction.SHAKE);
-                if (accelerometer != null && gravitySensor != null) instructions.add(Instruction.JUMP);
+                if (accelerometer != null) {
+                    instructions.add(Instruction.SHAKE);
+                    if (gravitySensor != null) {
+                        instructions.add(Instruction.JUMP);
+                    }
+                }
+                if (gyroscope != null) {
+                    instructions.add(Instruction.TURN_LEFT);
+                    instructions.add(Instruction.TURN_RIGHT);
+                    instructions.add(Instruction.DONT_TURN);
+                }
+                if (accelerometer != null || gyroscope != null) {
+                    instructions.add(Instruction.FREEZE);
+                }
                 break;
 
             default:

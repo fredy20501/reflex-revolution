@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.sensors.JumpDetector;
+import ca.unb.mobiledev.reflexrevolution.sensors.RotationDetector;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
@@ -37,6 +38,7 @@ public class GameActivity extends AppCompatActivity {
     private CountDownTimer timer;
     private Instruction currentInstruction = null;
     private ArrayList<Instruction> instructions;
+    private ArrayList<Instruction> dontInstructions;
     private Random rand;
     private GameMode gameMode;
     private Difficulty difficulty;
@@ -44,8 +46,10 @@ public class GameActivity extends AppCompatActivity {
     private SensorManager sensorManager;
     private Sensor accelerationSensor;
     private Sensor gravitySensor;
+    private Sensor gyroscopeSensor;
     private ShakeDetector shakeDetector;
     private JumpDetector jumpDetector;
+    private RotationDetector rotationDetector;
 
     private int timeCount;
     private int score;
@@ -67,8 +71,12 @@ public class GameActivity extends AppCompatActivity {
         layout = findViewById(R.id.layout);
         score = 0;
 
+        dontInstructions = new ArrayList<>();
+        dontInstructions.add(Instruction.DONT_TURN);
+        dontInstructions.add(Instruction.FREEZE);
+
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        instructions = InstructionUtil.createInstructions(gameMode, this);
+        instructions = InstructionUtil.createInstructions(gameMode, sensorManager);
         initializeSensors();
         updateTimerText();
         updateScoreText();
@@ -79,14 +87,25 @@ public class GameActivity extends AppCompatActivity {
         // Get sensors
         accelerationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        gyroscopeSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         // Initialize detectors
         shakeDetector = new ShakeDetector();
-        shakeDetector.setOnShakeListener(count -> {
-            if (count > 1) detectInput(Instruction.SHAKE);
+        shakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+            @Override
+            public void onShake(int count) { if (count > 1) detectInput(Instruction.SHAKE); }
+            @Override
+            public void onMove() { detectInput(Instruction.MOVE); }
         });
         jumpDetector = new JumpDetector();
         jumpDetector.setOnJumpListener(() -> detectInput(Instruction.JUMP));
+        rotationDetector = new RotationDetector();
+        rotationDetector.setOnJumpListener(new RotationDetector.OnRotateListener() {
+            @Override
+            public void onRotate(Instruction instr) { detectInput(instr); }
+            @Override
+            public void onMove() { detectInput(Instruction.MOVE); }
+        });
     }
 
     private void updateTimerText(){
@@ -99,9 +118,7 @@ public class GameActivity extends AppCompatActivity {
 
     //Stop current timer then call gameloop after one second
     private void resetTimer(){
-        if(timer != null) {
-            timer.cancel();
-        }
+        if(timer != null) timer.cancel();
         //Wait one second before calling gameloop
         //We could also change this so that the time between is random or scales off of score
         new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
@@ -125,9 +142,7 @@ public class GameActivity extends AppCompatActivity {
     //Might be off by 100ms because I can only get
     private void resumeTimer(){
         //Check that there is not already a timer running
-        if(timer != null) {
-            timer.cancel();
-        }
+        if(timer != null) timer.cancel();
 
         timer = new CountDownTimer(timeCount, 100) {
             @Override
@@ -140,12 +155,12 @@ public class GameActivity extends AppCompatActivity {
             @Override
             //When timer hits zero, start GameOverActivity and pass it the score
             public void onFinish() {
-                Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
-                intent.putExtra("Score", score);
-                intent.putExtra("GameMode", gameMode);
-                intent.putExtra("Difficulty", difficulty);
-                startActivity(intent);
-                finish();
+                if (dontInstructions.contains(currentInstruction)) {
+                    detectInput(currentInstruction);
+                }
+                else {
+                    endGame();
+                }
             }
         }.start();
     }
@@ -188,6 +203,38 @@ public class GameActivity extends AppCompatActivity {
                 label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
                 layout.addView(label);
                 break;
+
+            case TURN_LEFT:
+                label = new TextView(this);
+                label.setText("TURN LEFT");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case TURN_RIGHT:
+                label = new TextView(this);
+                label.setText("TURN RIGHT");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case DONT_TURN:
+                label = new TextView(this);
+                label.setText("DON'T TURN");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case FREEZE:
+                label = new TextView(this);
+                label.setText("FREEZE");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
         }
     }
 
@@ -198,7 +245,23 @@ public class GameActivity extends AppCompatActivity {
 
     //Handle any inputs received
     private void detectInput(Instruction instruction) {
-        if (instruction == currentInstruction) {
+        if (
+            (currentInstruction == Instruction.TURN_LEFT && instruction == Instruction.TURN_RIGHT) ||
+            (currentInstruction == Instruction.TURN_RIGHT && instruction == Instruction.TURN_LEFT)
+        ) {
+            // Wrong turn
+            endGame();
+        }
+        else if (currentInstruction == Instruction.DONT_TURN &&
+                (instruction == Instruction.TURN_LEFT || instruction == Instruction.TURN_RIGHT)) {
+            // Turned when not supposed to
+            endGame();
+        }
+        else if (currentInstruction == Instruction.FREEZE && instruction == Instruction.MOVE) {
+            // Moved when not supposed to
+            endGame();
+        }
+        else if (instruction == currentInstruction) {
             // Correct input detected
 
             //Update score
@@ -210,6 +273,17 @@ public class GameActivity extends AppCompatActivity {
             resetUI();
             unregisterListeners();
         }
+    }
+
+    //Ends the game, sending score and game options to the Game Over screen
+    private void endGame(){
+        if(timer != null) timer.cancel();
+        Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
+        intent.putExtra("Score", score);
+        intent.putExtra("GameMode", gameMode);
+        intent.putExtra("Difficulty", difficulty);
+        startActivity(intent);
+        finish();
     }
 
     //Scuffed function that will give a scaled timer based on score.
@@ -230,6 +304,15 @@ public class GameActivity extends AppCompatActivity {
                 sensorManager.registerListener(jumpDetector, accelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
                 sensorManager.registerListener(jumpDetector, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
                 break;
+            case TURN_LEFT:
+            case TURN_RIGHT:
+            case DONT_TURN:
+                sensorManager.registerListener(rotationDetector, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                break;
+            case FREEZE:
+                sensorManager.registerListener(shakeDetector, accelerationSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManager.registerListener(rotationDetector, gyroscopeSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                break;
         }
     }
 
@@ -241,6 +324,15 @@ public class GameActivity extends AppCompatActivity {
                 break;
             case JUMP:
                 sensorManager.unregisterListener(jumpDetector);
+                break;
+            case TURN_LEFT:
+            case TURN_RIGHT:
+            case DONT_TURN:
+                sensorManager.unregisterListener(rotationDetector);
+                break;
+            case FREEZE:
+                sensorManager.unregisterListener(shakeDetector);
+                sensorManager.unregisterListener(rotationDetector);
                 break;
         }
     }
@@ -258,6 +350,6 @@ public class GameActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         unregisterListeners();
-        timer.cancel();
+        if(timer != null) timer.cancel();
     }
 }
