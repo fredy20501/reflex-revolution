@@ -2,7 +2,6 @@ package ca.unb.mobiledev.reflexrevolution.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -14,9 +13,6 @@ import ca.unb.mobiledev.reflexrevolution.R;
 
 public class GameOverActivity extends AppCompatActivity {
 
-    private TextView scoreText;
-    private Button replayButton;
-    private Button menuButton;
     private GameMode gameMode;
     private Difficulty difficulty;
 
@@ -25,14 +21,15 @@ public class GameOverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_over);
 
-        scoreText = findViewById(R.id.scoreText);
-        replayButton = findViewById(R.id.replayButton);
-        menuButton = findViewById(R.id.menuButton);
+        TextView scoreText = findViewById(R.id.scoreText);
+        Button replayButton = findViewById(R.id.replayButton);
+        Button menuButton = findViewById(R.id.menuButton);
 
         //Retrieve score
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            scoreText.setText("Score: " + extras.getInt("Score"));
+            int score = extras.getInt("Score");
+            scoreText.setText(getString(R.string.scoreLabel, score));
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }

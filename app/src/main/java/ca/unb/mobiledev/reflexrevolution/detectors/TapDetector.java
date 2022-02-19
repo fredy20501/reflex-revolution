@@ -1,11 +1,9 @@
-package ca.unb.mobiledev.reflexrevolution.sensors;
+package ca.unb.mobiledev.reflexrevolution.detectors;
 
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-
-import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
 
 public class TapDetector implements View.OnTouchListener{
     GestureDetector gestureDetector;
@@ -17,19 +15,19 @@ public class TapDetector implements View.OnTouchListener{
         GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onDown(MotionEvent e){
-                mListener.sendTapDetected(Instruction.TAP);
+                mListener.sendTapDetected(Action.TAP);
                 return true;
             }
 
             @Override
             public boolean onDoubleTap(MotionEvent e){
-                mListener.sendTapDetected(Instruction.DOUBLE_TAP);
+                mListener.sendTapDetected(Action.DOUBLE_TAP);
                 return true;
             }
 
             @Override
             public void onLongPress(MotionEvent e){
-                mListener.sendTapDetected(Instruction.HOLD);
+                mListener.sendTapDetected(Action.HOLD_TAP);
             }
         };
         gestureDetector = new GestureDetector(context, listener);
@@ -38,14 +36,22 @@ public class TapDetector implements View.OnTouchListener{
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        view.performClick();
         return gestureDetector.onTouchEvent(motionEvent);
     }
 
     public interface OnTapListener {
-        void sendTapDetected(Instruction instruction);
+        void sendTapDetected(Action action);
     }
 
     public void setOnTapListener(TapDetector.OnTapListener listener) {
         this.mListener = listener;
+    }
+
+    public enum Action {
+        TAP,
+        DOUBLE_TAP,
+        HOLD_TAP,
+        DONT_TAP
     }
 }

@@ -1,16 +1,14 @@
 package ca.unb.mobiledev.reflexrevolution.activities.tests;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import java.util.Random;
-
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.sensors.TapDetector;
-import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
+import ca.unb.mobiledev.reflexrevolution.detectors.TapDetector;
 
 public class TapTestActivity extends AppCompatActivity {
     TextView tapText;
@@ -38,20 +36,21 @@ public class TapTestActivity extends AppCompatActivity {
         numDoubleTaps = 0;
 
         tapDetector = new TapDetector(this, mainLayout);
-        tapDetector.setOnTapListener(instruction -> handleInput(instruction));
+        tapDetector.setOnTapListener(this::handleInput);
     }
 
+    @SuppressLint("SetTextI18n")
     private void updateValues(){
         tapText.setText("Tap: " + numTaps);
         doubleTapText.setText("Double Tap: " + numDoubleTaps);
         holdText.setText("Hold: " + numHolds);
     }
 
-    private void handleInput(Instruction instruction){
-        switch(instruction){
+    private void handleInput(TapDetector.Action action){
+        switch(action){
             case TAP: numTaps++; break;
             case DOUBLE_TAP: numDoubleTaps++; break;
-            case HOLD: numHolds++; break;
+            case HOLD_TAP: numHolds++; break;
         }
         updateValues();
     }
