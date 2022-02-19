@@ -24,10 +24,7 @@ public class ShakeInstruction extends Instruction {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         shakeDetector = new ShakeDetector();
         shakeDetector.setOnShakeListener(count -> {
-            if (!done) {
-                done = true;
-                callback.onSuccess();
-            }
+            if (count > 1) success();
         });
     }
 
@@ -48,10 +45,7 @@ public class ShakeInstruction extends Instruction {
 
     @Override
     public void timerFinished() {
-        if (!done) {
-            done = true;
-            callback.onFailure();
-        }
+        fail();
     }
 
     private void setListeners() {

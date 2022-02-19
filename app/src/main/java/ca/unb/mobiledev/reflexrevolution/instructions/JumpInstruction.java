@@ -25,12 +25,7 @@ public class JumpInstruction extends Instruction {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         jumpDetector = new JumpDetector();
-        jumpDetector.setOnJumpListener(() -> {
-            if (!done) {
-                done = true;
-                callback.onSuccess();
-            }
-        });
+        jumpDetector.setOnJumpListener(this::success);
     }
 
     @Override
@@ -50,10 +45,7 @@ public class JumpInstruction extends Instruction {
 
     @Override
     public void timerFinished() {
-        if (!done) {
-            done = true;
-            callback.onFailure();
-        }
+        fail();
     }
 
     private void setListeners() {

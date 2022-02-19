@@ -21,16 +21,8 @@ public class TapInstruction extends Instruction {
         rand = new Random();
         TapDetector tapDetector = new TapDetector(context, layout);
         tapDetector.setOnTapListener(action -> {
-            if (!done) {
-                if (currentAction == TapDetector.Action.DONT_TAP) {
-                    done = true;
-                    callback.onFailure();
-                }
-                else if (currentAction == action) {
-                    done = true;
-                    callback.onSuccess();
-                }
-            }
+            if (currentAction == TapDetector.Action.DONT_TAP) fail();
+            else if (currentAction == action) success();
         });
     }
 
@@ -60,10 +52,7 @@ public class TapInstruction extends Instruction {
 
     @Override
     public void timerFinished() {
-        if (!done) {
-            done = true;
-            if (currentAction == TapDetector.Action.DONT_TAP) callback.onSuccess();
-            else callback.onFailure();
-        }
+        if (currentAction == TapDetector.Action.DONT_TAP) success();
+        else fail();
     }
 }
