@@ -1,9 +1,6 @@
 package ca.unb.mobiledev.reflexrevolution;
 
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +28,7 @@ public class SwipeActivity extends AppCompatActivity {
         relativeLayout = findViewById(R.id.relative_layout);
         swipeText = findViewById(R.id.text_view);
         scoreText = findViewById(R.id.text_view2);
-        swipeListener = new SwipeListener(relativeLayout);
+        swipeListener = new SwipeListener(this, relativeLayout);
 
         score = 0;
         r = new Random();
@@ -40,102 +37,24 @@ public class SwipeActivity extends AppCompatActivity {
         newDirection();
     }
 
-    private void newDirection(){
+    protected void newDirection(){
         index = r.nextInt(4 - 0) + 0;
         swipeText.setText("Swipe " + directions[index]);
     }
 
-    private void updateScore(){
+    protected void updateScore(){
         scoreText.setText("Score: " + score);
     }
 
-    private class SwipeListener implements View.OnTouchListener{
-        GestureDetector gestureDetector;
+    protected void incrementScore(){
+        score++;
+    }
 
-        SwipeListener(View view){
-            int SWIPE_THRESHOLD = 100;
-            int SWIPE_VELOCITY_THRESHOLD = 100;
+    protected void updateText(){
+        swipeText.setText("Fail");
+    }
 
-            GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener(){
-                @Override
-                public boolean onDown(MotionEvent e){
-                    return true;
-                }
-
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
-                    float diffY = e2.getY() - e1.getY();
-                    float diffX = e2.getX() - e1.getX();
-
-                    if(Math.abs(diffX) > Math.abs(diffY)){
-                        if(Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD){
-                            if(diffX > 0)
-                                onSwipeRight();
-                            else
-                                onSwipeLeft();
-                        }
-                    }
-                    else if(Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD){
-                        if(diffY > 0)
-                            onSwipeDown();
-                        else
-                            onSwipeUp();
-                    }
-                    return true;
-                }
-            };
-
-            gestureDetector = new GestureDetector(listener);
-            view.setOnTouchListener(this);
-        }
-
-        public void onSwipeRight(){
-            if(directions[index].equals("right")) {
-                //swipeText.setText("Correct! Right");
-                score++;
-                updateScore();
-                newDirection();
-            }
-            else
-                swipeText.setText("Fail! Right");
-        }
-
-         public void onSwipeLeft(){
-             if(directions[index].equals("left")) {
-                 //swipeText.setText("Correct! Left");
-                 score++;
-                 updateScore();
-                 newDirection();
-             }
-             else
-                 swipeText.setText("Fail! Left");
-         }
-
-         public void onSwipeUp(){
-             if(directions[index].equals("up")) {
-                 //swipeText.setText("Correct! Up");
-                 score++;
-                 updateScore();
-                 newDirection();
-             }
-             else
-                 swipeText.setText("Fail! Up");
-         }
-
-         public void onSwipeDown(){
-             if(directions[index].equals("down")) {
-                 //swipeText.setText("Correct! Down");
-                 score++;
-                 updateScore();
-                 newDirection();
-             }
-             else
-                 swipeText.setText("Fail! Down");
-         }
-
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            return gestureDetector.onTouchEvent(motionEvent);
-        }
+    protected String getDirection(){
+        return directions[index];
     }
 }
