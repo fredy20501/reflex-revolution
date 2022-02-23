@@ -2,6 +2,7 @@ package ca.unb.mobiledev.reflexrevolution.activities.tests;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -9,7 +10,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.sensors.ShakeDetector;
+import ca.unb.mobiledev.reflexrevolution.detectors.ShakeDetector;
 
 public class ShakeTestActivity extends AppCompatActivity {
 
@@ -18,6 +19,7 @@ public class ShakeTestActivity extends AppCompatActivity {
     private Sensor accelerometer;
     private ShakeDetector shakeDetector;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,10 +30,6 @@ public class ShakeTestActivity extends AppCompatActivity {
         // Get accelerometer sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        if (accelerometer == null){
-            shakeText.setText("No accelerometer found. :(");
-            return;
-        }
 
         // Initialize shake detector
         shakeText.setText("Shake Detected: 0");

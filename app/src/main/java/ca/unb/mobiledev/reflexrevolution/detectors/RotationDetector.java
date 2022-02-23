@@ -1,4 +1,4 @@
-package ca.unb.mobiledev.reflexrevolution.sensors;
+package ca.unb.mobiledev.reflexrevolution.detectors;
 
 import android.content.Context;
 import android.hardware.Sensor;
