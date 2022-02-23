@@ -1,11 +1,8 @@
-package ca.unb.mobiledev.reflexrevolution.sensors;
+package ca.unb.mobiledev.reflexrevolution.detectors;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-
-// This class was taken from http://jasonmcreynolds.com/?p=388
-// Modified by: Frederic Verret
 
 public class ShakeDetector implements SensorEventListener {
 
