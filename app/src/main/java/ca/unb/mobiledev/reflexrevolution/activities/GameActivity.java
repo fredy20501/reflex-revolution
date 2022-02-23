@@ -22,6 +22,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView timeText;
     private TextView scoreText;
     private LinearLayout layout; //Layout we should add new UI elements to
+    private ConstraintLayout containerLayout; //Top level layout containing all other views
 
     private CountDownTimer instructionTimer;
     private CountDownTimer resetTimer;
@@ -47,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
         timeText = findViewById(R.id.timerText);
         scoreText = findViewById(R.id.currentScoreText);
         layout = findViewById(R.id.layout);
+        containerLayout = findViewById(R.id.containerLayout);
         score = 0;
         instructionManager = new InstructionManager(layout, new Instruction.Callback() {
             @Override
@@ -121,6 +123,7 @@ public class GameActivity extends AppCompatActivity {
         currentInstruction.display();
         currentInstruction.enable();
         newTimer();
+        gettingNewInstruction = false;
     }
 
     //Clear all added UI elements
@@ -143,6 +146,20 @@ public class GameActivity extends AppCompatActivity {
     private void endGame(){
         if (instructionTimer != null) instructionTimer.cancel();
         Intent intent = new Intent(this, GameOverActivity.class);
+        intent.putExtra("Score", score);
+        intent.putExtra("GameMode", gameMode);
+        intent.putExtra("Difficulty", difficulty);
+        startActivity(intent);
+        finish();
+    }
+
+    //Ends the game, sending score and game options to the Game Over screen
+    private void endGame(){
+        //In case user taps on don't tap instruction
+        if(timer != null){
+            timer.cancel();
+        }
+        Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
         intent.putExtra("Score", score);
         intent.putExtra("GameMode", gameMode);
         intent.putExtra("Difficulty", difficulty);
