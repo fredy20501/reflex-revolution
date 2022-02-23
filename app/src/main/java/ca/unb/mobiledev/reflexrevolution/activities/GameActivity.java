@@ -1,6 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,9 +9,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.TypedValue;
-import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.sensors.JumpDetector;
+import ca.unb.mobiledev.reflexrevolution.sensors.TapDetector;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
@@ -33,8 +32,11 @@ public class GameActivity extends AppCompatActivity {
     private TextView timeText;
     private TextView scoreText;
     private LinearLayout layout; //Layout we should add new UI elements to
+    private ConstraintLayout containerLayout; //Top level layout containing all other views
 
     private CountDownTimer timer;
+    private CountDownTimer resetTimer;
+    private boolean gettingNewInstruction; //Keep track of when we are getting a new instruction
     private Instruction currentInstruction = null;
     private ArrayList<Instruction> instructions;
     private Random rand;
@@ -46,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
     private Sensor gravitySensor;
     private ShakeDetector shakeDetector;
     private JumpDetector jumpDetector;
+    private TapDetector tapDetector;
 
     private int timeCount;
     private int score;
@@ -62,11 +65,15 @@ public class GameActivity extends AppCompatActivity {
         }
 
         rand = new Random();
+        gettingNewInstruction = false;
         timeText = findViewById(R.id.timerText);
         scoreText = findViewById(R.id.currentScoreText);
         layout = findViewById(R.id.layout);
+        containerLayout = findViewById(R.id.containerLayout);
         score = 0;
 
+        tapDetector = new TapDetector(this, containerLayout);
+        tapDetector.setOnTapListener(instruction -> detectInput(instruction));
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         instructions = InstructionUtil.createInstructions(gameMode, this);
         initializeSensors();
@@ -102,9 +109,12 @@ public class GameActivity extends AppCompatActivity {
         if(timer != null) {
             timer.cancel();
         }
+        if(resetTimer != null){
+            resetTimer.cancel();
+        }
         //Wait one second before calling gameloop
         //We could also change this so that the time between is random or scales off of score
-        new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
+        resetTimer = new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
             @Override
             public void onTick(long l) { }
 
@@ -138,14 +148,14 @@ public class GameActivity extends AppCompatActivity {
             }
 
             @Override
-            //When timer hits zero, start GameOverActivity and pass it the score
+            //When timer hits zero, end game unless instruction requires no input
             public void onFinish() {
-                Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
-                intent.putExtra("Score", score);
-                intent.putExtra("GameMode", gameMode);
-                intent.putExtra("Difficulty", difficulty);
-                startActivity(intent);
-                finish();
+                if(currentInstruction == Instruction.DONT_TAP){
+                    detectInput(Instruction.DONT_TAP);
+                }
+                else {
+                    endGame();
+                }
             }
         }.start();
     }
@@ -153,43 +163,14 @@ public class GameActivity extends AppCompatActivity {
     //Prepare and start new instruction loop
     private void gameLoop() {
         currentInstruction = getRandomInstruction();
-        displayInstruction();
+        InstructionUtil.displayInstruction(currentInstruction, layout, this);
         registerListeners();
         newTimer();
+        gettingNewInstruction = false;
     }
 
     //Returns a random instruction from instructions
     private Instruction getRandomInstruction() { return instructions.get(rand.nextInt(instructions.size())); }
-
-    //Display UI elements for the current instruction, and set up any necessary input receivers
-    private void displayInstruction() {
-        TextView label;
-        switch (currentInstruction){
-            case BUTTON:
-                Button button = new Button(this);
-                button.setText("PRESS");
-                button.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                button.setOnClickListener(v -> detectInput(Instruction.BUTTON));
-                layout.addView(button);
-                break;
-
-            case SHAKE:
-                label = new TextView(this);
-                label.setText("SHAKE");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-
-            case JUMP:
-                label = new TextView(this);
-                label.setText("JUMP");
-                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
-                layout.addView(label);
-                break;
-        }
-    }
 
     //Clear all added UI elements
     private void resetUI() {
@@ -198,18 +179,38 @@ public class GameActivity extends AppCompatActivity {
 
     //Handle any inputs received
     private void detectInput(Instruction instruction) {
-        if (instruction == currentInstruction) {
+        //If instruction is don't tap and a tap input is received, end game
+        if(currentInstruction == Instruction.DONT_TAP && instruction == Instruction.TAP) {
+            endGame();
+            return;
+        }
+        if (instruction == currentInstruction && !gettingNewInstruction) {
             // Correct input detected
+            gettingNewInstruction = true;
 
             //Update score
             score++;
             updateScoreText();
 
             //Stop timer and clear UI, wait one second, then start the gameloop (in resetTimer)
-            resetTimer();
             resetUI();
+            resetTimer();
             unregisterListeners();
         }
+    }
+
+    //Ends the game, sending score and game options to the Game Over screen
+    private void endGame(){
+        //In case user taps on don't tap instruction
+        if(timer != null){
+            timer.cancel();
+        }
+        Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
+        intent.putExtra("Score", score);
+        intent.putExtra("GameMode", gameMode);
+        intent.putExtra("Difficulty", difficulty);
+        startActivity(intent);
+        finish();
     }
 
     //Scuffed function that will give a scaled timer based on score.
