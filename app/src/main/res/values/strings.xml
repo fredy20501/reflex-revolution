@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Reflex Revolution</string>
+    <string name="scoreLabel">Score: %1$d</string>
+    <string name="timerLabel">Timer: %1$d</string>
 </resources>

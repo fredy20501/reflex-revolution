@@ -1,5 +1,6 @@
 package ca.unb.mobiledev.reflexrevolution.activities.tests;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -9,7 +10,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.sensors.JumpDetector;
+import ca.unb.mobiledev.reflexrevolution.detectors.JumpDetector;
 
 public class JumpTestActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class JumpTestActivity extends AppCompatActivity {
     private JumpDetector jumpDetector;
     private int count;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

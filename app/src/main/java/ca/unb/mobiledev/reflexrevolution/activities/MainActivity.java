@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
@@ -13,14 +12,12 @@ import ca.unb.mobiledev.reflexrevolution.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button startButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startButton = findViewById(R.id.startButton);
+        Button startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
             intent.putExtra("GameMode", GameMode.BASIC);
