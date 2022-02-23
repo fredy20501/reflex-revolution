@@ -20,6 +20,10 @@ public class InstructionUtil {
         switch(mode){
             case BASIC:
                 instructions.add(Instruction.BUTTON);
+                instructions.add(Instruction.SWIPE_RIGHT);
+                instructions.add(Instruction.SWIPE_LEFT);
+                instructions.add(Instruction.SWIPE_UP);
+                instructions.add(Instruction.SWIPE_DOWN);
                 if (accelerometer != null) instructions.add(Instruction.SHAKE);
                 if (accelerometer != null && gravitySensor != null) instructions.add(Instruction.JUMP);
                 break;

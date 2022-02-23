@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/relative_layout"
-    tools:context=".SwipeActivity">
+    tools:context=".activities.SwipeActivity">
 
     <TextView
         android:id="@+id/text_view2"

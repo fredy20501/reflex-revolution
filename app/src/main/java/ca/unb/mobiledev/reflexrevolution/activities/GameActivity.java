@@ -1,7 +1,5 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Sensor;
@@ -14,16 +12,18 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.sensors.JumpDetector;
+import ca.unb.mobiledev.reflexrevolution.sensors.ShakeDetector;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
 import ca.unb.mobiledev.reflexrevolution.utils.InstructionUtil;
-import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.sensors.ShakeDetector;
 
 public class GameActivity extends AppCompatActivity {
     //Time in ms
@@ -184,6 +184,38 @@ public class GameActivity extends AppCompatActivity {
             case JUMP:
                 label = new TextView(this);
                 label.setText("JUMP");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case SWIPE_RIGHT:
+                label = new TextView(this);
+                label.setText("SWIPE RIGHT");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case SWIPE_LEFT:
+                label = new TextView(this);
+                label.setText("SWIPE LEFT");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case SWIPE_UP:
+                label = new TextView(this);
+                label.setText("SWIPE UP");
+                label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
+                layout.addView(label);
+                break;
+
+            case SWIPE_DOWN:
+                label = new TextView(this);
+                label.setText("SWIPE DOWN");
                 label.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 34);
                 layout.addView(label);

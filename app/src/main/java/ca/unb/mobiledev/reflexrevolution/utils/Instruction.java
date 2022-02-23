@@ -5,6 +5,10 @@ public enum Instruction {
     TAP,
     SWIPE,
     SHAKE,
-    JUMP
+    JUMP,
+    SWIPE_RIGHT,
+    SWIPE_LEFT,
+    SWIPE_UP,
+    SWIPE_DOWN
     // Will add more later
 }
