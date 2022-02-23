@@ -1,8 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.utils;
 
 public enum GameMode {
-    BASIC,
-    // Ideas:
+    CLASSIC,    // Tap, Swipe, Shake, Turn
     TACTILE,    // Touch
     KINETIC,    // Movement
     SWIPE,      // Swipe

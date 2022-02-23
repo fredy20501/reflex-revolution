@@ -9,8 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.sensors.RotationDetector;
-import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
+import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 
 public class RotateTestActivity extends AppCompatActivity {
 
@@ -32,9 +31,9 @@ public class RotateTestActivity extends AppCompatActivity {
 
         // Initialize rotation detector
         rotationDetector = new RotationDetector();
-        rotationDetector.setOnJumpListener(new RotationDetector.OnRotateListener() {
+        rotationDetector.setOnRotateListener(new RotationDetector.OnRotateListener() {
             @Override
-            public void onRotate(Instruction instr) {
+            public void onRotate(RotationDetector.Action instr) {
                 mainLabel.setText(instr.toString());
             }
             @Override

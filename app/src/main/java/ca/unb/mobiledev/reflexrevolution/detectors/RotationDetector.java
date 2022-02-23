@@ -1,13 +1,8 @@
 package ca.unb.mobiledev.reflexrevolution.detectors;
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.util.Log;
-
-import ca.unb.mobiledev.reflexrevolution.utils.Instruction;
 
 public class RotationDetector implements SensorEventListener {
 
@@ -15,12 +10,12 @@ public class RotationDetector implements SensorEventListener {
     private static final float MOVE_THRESHOLD = 1.5f;
     private OnRotateListener mListener;
 
-    public void setOnJumpListener(OnRotateListener listener) {
+    public void setOnRotateListener(OnRotateListener listener) {
         this.mListener = listener;
     }
 
     public interface OnRotateListener {
-        void onRotate(Instruction instr);
+        void onRotate(Action instr);
         void onMove();
     }
 
@@ -45,16 +40,34 @@ public class RotationDetector implements SensorEventListener {
             }
 
             // Rotation along the x axis
-            if (axisX > ROTATION_THRESHOLD) mListener.onRotate(Instruction.TILT_FORWARD);
-            if (axisX < -ROTATION_THRESHOLD) mListener.onRotate(Instruction.TILT_BACKWARD);
+            if (axisX > ROTATION_THRESHOLD) mListener.onRotate(Action.TILT_FORWARD);
+            if (axisX < -ROTATION_THRESHOLD) mListener.onRotate(Action.TILT_BACKWARD);
 
             // Rotation along the y axis
-            if (axisY > ROTATION_THRESHOLD) mListener.onRotate(Instruction.TILT_RIGHT);
-            if (axisY < -ROTATION_THRESHOLD) mListener.onRotate(Instruction.TILT_LEFT);
+            if (axisY > ROTATION_THRESHOLD) mListener.onRotate(Action.TWIST_RIGHT);
+            if (axisY < -ROTATION_THRESHOLD) mListener.onRotate(Action.TWIST_LEFT);
 
             // Rotation along the z axis
-            if (axisZ > ROTATION_THRESHOLD) mListener.onRotate(Instruction.TURN_LEFT);
-            if (axisZ < -ROTATION_THRESHOLD) mListener.onRotate(Instruction.TURN_RIGHT);
+            if (axisZ > ROTATION_THRESHOLD) mListener.onRotate(Action.TURN_LEFT);
+            if (axisZ < -ROTATION_THRESHOLD) mListener.onRotate(Action.TURN_RIGHT);
+        }
+    }
+
+    public enum Type {TILT, TURN, TWIST}
+    public enum Action {
+        TILT_FORWARD(Type.TILT),
+        TILT_BACKWARD(Type.TILT),
+        TURN_RIGHT(Type.TURN),
+        TURN_LEFT(Type.TURN),
+        TWIST_RIGHT(Type.TWIST),
+        TWIST_LEFT(Type.TWIST);
+
+        private Type type;
+        Action(Type type) {
+            this.type = type;
+        }
+        public Type getType() {
+            return this.type;
         }
     }
 }
