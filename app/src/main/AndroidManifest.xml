@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReflexRevolution">
         <activity
-            android:name=".activities.tests.RotateTestActivity"
+            android:name=".activities.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
