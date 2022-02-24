@@ -13,6 +13,7 @@ import java.util.Random;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.JumpInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.ShakeInstruction;
+import ca.unb.mobiledev.reflexrevolution.instructions.SwipeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.TapInstruction;
 
 public class InstructionManager {
@@ -45,6 +46,7 @@ public class InstructionManager {
         switch(gameMode){
             case BASIC:
                 addEntry(new TapInstruction(layout, callback), 4);
+                addEntry(new SwipeInstruction(layout, callback), 4);
                 if (accelerometer != null) {
                     addEntry(new ShakeInstruction(layout, callback), 1);
                     if (gravitySensor != null) {
