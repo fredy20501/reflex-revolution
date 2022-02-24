@@ -3,10 +3,12 @@ package ca.unb.mobiledev.reflexrevolution.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
@@ -32,6 +34,7 @@ public class GameActivity extends AppCompatActivity {
 
     private int timeCount;
     private int score;
+    private boolean demo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +59,17 @@ public class GameActivity extends AppCompatActivity {
         });
         instructionManager.generateInstructions(gameMode);
 
+        if (gameMode == GameMode.DEMO) {
+            demo = true;
+            // In demo mode add a skip button
+            Button b = new Button(this);
+            b.setText("Skip");
+            b.setOnClickListener(v -> instructionSuccess());
+            ConstraintLayout containerLayout = findViewById(R.id.containerLayout);
+            containerLayout.addView(b);
+        }
+        else demo = false;
+
         resetTimer = new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
             @Override
             public void onTick(long l) {}
@@ -69,7 +83,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void updateTimerText(){
-        timeText.setText(getString(R.string.timerLabel, timeCount));
+        if (demo) timeText.setText("");
+        else timeText.setText(getString(R.string.timerLabel, timeCount));
     }
 
     private void updateScoreText(){
@@ -96,6 +111,9 @@ public class GameActivity extends AppCompatActivity {
     //"Resumes" timer by creating a new timer starting at timeCount
     //Might be off by 100ms because I can only get
     private void startTimer() {
+        // No timer in demo mode
+        if (demo) return;
+
         //Check that there is not already a timer running
         if (instructionTimer != null) instructionTimer.cancel();
         instructionTimer = new CountDownTimer(timeCount, 100) {
@@ -116,7 +134,9 @@ public class GameActivity extends AppCompatActivity {
 
     //Prepare and start new instruction loop
     private void gameLoop() {
-        currentInstruction = instructionManager.getInstruction();
+        currentInstruction = demo ?
+                instructionManager.getNextInstruction() :
+                instructionManager.getInstruction();
         currentInstruction.init();
         currentInstruction.display();
         currentInstruction.enable();
@@ -140,7 +160,11 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //Ends the game, sending score and game options to the Game Over screen
-    private void endGame(){
+    private void endGame() {
+        // Never end the game in demo mode
+        if (demo) return;
+
+        // Go to game over screen
         if (instructionTimer != null) instructionTimer.cancel();
         Intent intent = new Intent(this, GameOverActivity.class);
         intent.putExtra("Score", score);

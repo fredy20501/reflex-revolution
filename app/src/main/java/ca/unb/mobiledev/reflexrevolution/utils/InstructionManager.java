@@ -23,6 +23,8 @@ public class InstructionManager {
     private final ArrayList<AbstractMap.Entry<Instruction, Float>> instructions;
     private final Random rand;
     private float totalProbability;
+    private int index;
+    private int instructionCount;
 
     public InstructionManager(ViewGroup layout, Instruction.Callback callback){
         this.layout = layout;
@@ -30,6 +32,8 @@ public class InstructionManager {
         rand = new Random();
         instructions = new ArrayList<>();
         totalProbability = 0;
+        index = 0;
+        instructionCount = 0;
     }
 
     public void generateInstructions(GameMode gameMode) {
@@ -52,6 +56,11 @@ public class InstructionManager {
                     }
                 }
                 break;
+            case DEMO:
+                addEntry(new TapInstruction(layout, callback, true), 4);
+                addEntry(new ShakeInstruction(layout, callback), 1);
+                addEntry(new JumpInstruction(layout, callback), 1);
+                break;
         }
     }
 
@@ -72,6 +81,17 @@ public class InstructionManager {
         // This should only happen if p is exactly 1.0
         int randomIndex = rand.nextInt(instructions.size());
         return instructions.get(randomIndex).getKey();
+    }
+
+    // Return the next instruction from the list (in order)
+    public Instruction getNextInstruction() {
+        AbstractMap.Entry<Instruction, Float> entry = instructions.get(index);
+        instructionCount++;
+        if (instructionCount >= entry.getValue()) {
+            index = (index + 1) % instructions.size();
+            instructionCount = 0;
+        }
+        return entry.getKey();
     }
 
     // Add a new entry to the list of instructions

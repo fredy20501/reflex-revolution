@@ -24,5 +24,13 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("Difficulty", Difficulty.NORMAL);
             startActivity(intent);
         });
+
+        Button demoButton = findViewById(R.id.demoButton);
+        demoButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, GameActivity.class);
+            intent.putExtra("GameMode", GameMode.DEMO);
+            intent.putExtra("Difficulty", Difficulty.NORMAL);
+            startActivity(intent);
+        });
     }
 }
