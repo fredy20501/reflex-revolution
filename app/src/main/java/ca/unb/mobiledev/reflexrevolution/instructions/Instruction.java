@@ -26,7 +26,6 @@ public abstract class Instruction {
         this.layout = layout;
         this.callback = callback;
         this.done = false;
-        setup();
     }
 
     // Callback functions used to tell the game if success/fail
@@ -57,10 +56,6 @@ public abstract class Instruction {
         text.setText(label);
         layout.addView(text);
     }
-
-    // Setup the instruction
-    // (Called only once when the instruction is created)
-    protected abstract void setup();
 
     // Initialize the state of the instruction
     // (Called before each time the instruction is used)

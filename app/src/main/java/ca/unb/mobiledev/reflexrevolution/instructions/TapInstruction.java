@@ -5,24 +5,30 @@ import android.view.ViewGroup;
 
 import java.util.Random;
 
-import ca.unb.mobiledev.reflexrevolution.detectors.TapDetector;
+import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class TapInstruction extends Instruction {
 
-    private TapDetector.Action currentAction;
+    private final TouchDetector touchDetector;
+    private TouchDetector.TapAction currentAction;
     private Random rand;
 
-    public TapInstruction(ViewGroup layout, Callback callback) {
+    public TapInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
+        this.touchDetector = touchDetector;
+        setup();
     }
 
-    @Override
-    protected void setup() {
+    private void setup() {
         rand = new Random();
-        TapDetector tapDetector = new TapDetector(context, layout);
-        tapDetector.setOnTapListener(action -> {
-            if (currentAction == TapDetector.Action.DONT_TAP) fail();
-            else if (currentAction == action) success();
+        touchDetector.addListener(new TouchDetector.ActionListener() {
+            @Override
+            public void onSwipe(TouchDetector.SwipeAction action) {}
+            @Override
+            public void onTap(TouchDetector.TapAction action) {
+                if (currentAction == TouchDetector.TapAction.DONT_TAP) fail();
+                else if (currentAction == action) success();
+            }
         });
     }
 
@@ -30,7 +36,7 @@ public class TapInstruction extends Instruction {
     public void init() {
         super.init();
         // Initialize as a random action
-        TapDetector.Action[] actions = TapDetector.Action.values();
+        TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
     }
 
@@ -52,7 +58,7 @@ public class TapInstruction extends Instruction {
 
     @Override
     public void timerFinished() {
-        if (currentAction == TapDetector.Action.DONT_TAP) success();
+        if (currentAction == TouchDetector.TapAction.DONT_TAP) success();
         else fail();
     }
 }

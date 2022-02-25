@@ -10,6 +10,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.JumpInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.ShakeInstruction;
@@ -20,6 +21,7 @@ public class InstructionManager {
 
     private final ViewGroup layout;
     private final Instruction.Callback callback;
+    private final TouchDetector touchDetector;
 
     private final ArrayList<AbstractMap.Entry<Instruction, Float>> instructions;
     private final Random rand;
@@ -28,6 +30,7 @@ public class InstructionManager {
     public InstructionManager(ViewGroup layout, Instruction.Callback callback){
         this.layout = layout;
         this.callback = callback;
+        this.touchDetector = new TouchDetector(layout);
         rand = new Random();
         instructions = new ArrayList<>();
         totalProbability = 0;
@@ -45,8 +48,8 @@ public class InstructionManager {
         // Construct list of instructions based on game mode
         switch(gameMode){
             case BASIC:
-                addEntry(new TapInstruction(layout, callback), 4);
-                addEntry(new SwipeInstruction(layout, callback), 4);
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
                 if (accelerometer != null) {
                     addEntry(new ShakeInstruction(layout, callback), 1);
                     if (gravitySensor != null) {

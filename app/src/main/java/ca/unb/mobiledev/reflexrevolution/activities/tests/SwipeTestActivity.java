@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.detectors.SwipeDetector;
+import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 @SuppressLint("SetTextI18n")
-public class SwipeActivity extends AppCompatActivity {
+public class SwipeTestActivity extends AppCompatActivity {
 
     private TextView swipeText;
 
@@ -24,11 +24,18 @@ public class SwipeActivity extends AppCompatActivity {
         swipeText = findViewById(R.id.mainLabel);
         swipeText.setText("Swipe in any direction");
 
-        SwipeDetector swipeDetector = new SwipeDetector(this, mainLayout);
-        swipeDetector.setOnSwipeListener(this::updateLabel);
+        TouchDetector touchDetector = new TouchDetector(mainLayout);
+        touchDetector.addListener(new TouchDetector.ActionListener() {
+            @Override
+            public void onSwipe(TouchDetector.SwipeAction action) {
+                updateLabel(action);
+            }
+            @Override
+            public void onTap(TouchDetector.TapAction action) {}
+        });
     }
 
-    protected void updateLabel(SwipeDetector.Action action){
+    protected void updateLabel(TouchDetector.SwipeAction action){
         swipeText.setText(""+action);
     }
 }

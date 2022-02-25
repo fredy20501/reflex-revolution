@@ -5,24 +5,30 @@ import android.view.ViewGroup;
 
 import java.util.Random;
 
-import ca.unb.mobiledev.reflexrevolution.detectors.SwipeDetector;
+import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class SwipeInstruction extends Instruction {
 
-    private SwipeDetector.Action currentAction;
+    private final TouchDetector touchDetector;
+    private TouchDetector.SwipeAction currentAction;
     private Random rand;
 
-    public SwipeInstruction(ViewGroup layout, Callback callback) {
+    public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
+        this.touchDetector = touchDetector;
+        setup();
     }
 
-    @Override
-    protected void setup() {
+    private void setup() {
         rand = new Random();
-        SwipeDetector swipeDetector = new SwipeDetector(context, layout);
-        swipeDetector.setOnSwipeListener(action -> {
-            if (currentAction == action) success();
-            else fail(); // Wrong direction
+        touchDetector.addListener(new TouchDetector.ActionListener() {
+            @Override
+            public void onSwipe(TouchDetector.SwipeAction action) {
+                if (currentAction == action) success();
+                else fail(); // Wrong direction
+            }
+            @Override
+            public void onTap(TouchDetector.TapAction action) {}
         });
     }
 
@@ -30,7 +36,7 @@ public class SwipeInstruction extends Instruction {
     public void init() {
         super.init();
         // Initialize as a random action
-        SwipeDetector.Action[] actions = SwipeDetector.Action.values();
+        TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
     }
 
