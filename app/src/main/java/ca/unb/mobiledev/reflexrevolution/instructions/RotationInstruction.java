@@ -1,8 +1,5 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
-
-import static android.icu.lang.UCharacter.IndicPositionalCategory.RIGHT;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;

@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         demoButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
             intent.putExtra("GameMode", GameMode.DEMO);
-            intent.putExtra("Difficulty", Difficulty.NORMAL);
+            intent.putExtra("Difficulty", Difficulty.NOVICE);
             startActivity(intent);
         });
     }

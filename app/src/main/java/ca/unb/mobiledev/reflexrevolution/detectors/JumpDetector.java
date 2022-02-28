@@ -3,12 +3,10 @@ package ca.unb.mobiledev.reflexrevolution.detectors;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.util.Log;
 
 public class JumpDetector implements SensorEventListener {
 
     private static final float JUMP_THRESHOLD_FORCE = 4.0f;
-    private static final String TAG = "JumpDetector";
 
     private OnJumpListener mListener;
     private float[] upVector;

@@ -62,7 +62,7 @@ public class RotationDetector implements SensorEventListener {
         TWIST_RIGHT(Type.TWIST),
         TWIST_LEFT(Type.TWIST);
 
-        private Type type;
+        private final Type type;
         Action(Type type) {
             this.type = type;
         }

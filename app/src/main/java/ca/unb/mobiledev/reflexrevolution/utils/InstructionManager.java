@@ -1,9 +1,6 @@
 package ca.unb.mobiledev.reflexrevolution.utils;
 
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.view.ViewGroup;
 
 import java.util.AbstractMap;
