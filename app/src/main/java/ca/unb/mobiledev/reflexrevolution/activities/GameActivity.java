@@ -70,7 +70,7 @@ public class GameActivity extends AppCompatActivity {
         }
         else demo = false;
 
-        resetTimer = new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
+        resetTimer = new CountDownTimer(demo ? TIME_BETWEEN_LOOPS/2 : TIME_BETWEEN_LOOPS, 1000) {
             @Override
             public void onTick(long l) {}
             @Override

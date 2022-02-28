@@ -59,7 +59,7 @@ public class InstructionManager {
                 addEntry(new ShakeInstruction(layout, callback), 1);
                 addEntry(new JumpInstruction(layout, callback), 1);
                 addEntry(new FreezeInstruction(layout, callback), 1);
-                addEntry(new RotationInstruction(layout, callback), 6);
+                addEntry(new RotationInstruction(layout, callback, true), 6);
                 break;
         }
     }

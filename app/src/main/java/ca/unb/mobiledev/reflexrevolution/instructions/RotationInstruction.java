@@ -16,9 +16,20 @@ public class RotationInstruction extends Instruction {
     private RotationDetector rotationDetector;
     private RotationDetector.Action currentAction;
     private Random rand;
+    private final boolean isDemo;
+    private int index;
 
     public RotationInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
+        this.isDemo = false;
+        index = 0;
+        setup();
+    }
+
+    public RotationInstruction(ViewGroup layout, Callback callback, boolean isDemo) {
+        super(layout, callback);
+        this.isDemo = isDemo;
+        index = 0;
         setup();
     }
 
@@ -46,9 +57,16 @@ public class RotationInstruction extends Instruction {
     @Override
     public void init() {
         super.init();
-        // Initialize as a random action
         RotationDetector.Action[] actions = RotationDetector.Action.values();
-        currentAction = actions[rand.nextInt(actions.length)];
+        if (isDemo) {
+            // Initialize as the next action in order
+            currentAction = actions[index];
+            index = (index + 1) % actions.length;
+        }
+        else {
+            // Initialize as a random action
+            currentAction = actions[rand.nextInt(actions.length)];
+        }
     }
 
     @Override
