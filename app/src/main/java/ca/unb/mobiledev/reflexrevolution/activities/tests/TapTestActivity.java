@@ -8,13 +8,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.detectors.TapDetector;
+import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class TapTestActivity extends AppCompatActivity {
     TextView tapText;
     TextView holdText;
     TextView doubleTapText;
-    TapDetector tapDetector;
     ConstraintLayout mainLayout;
     int numTaps;
     int numHolds;
@@ -35,8 +34,15 @@ public class TapTestActivity extends AppCompatActivity {
         numHolds = 0;
         numDoubleTaps = 0;
 
-        tapDetector = new TapDetector(this, mainLayout);
-        tapDetector.setOnTapListener(this::handleInput);
+        TouchDetector touchDetector = new TouchDetector(mainLayout);
+        touchDetector.addListener(new TouchDetector.ActionListener() {
+            @Override
+            public void onSwipe(TouchDetector.SwipeAction action) {}
+            @Override
+            public void onTap(TouchDetector.TapAction action) {
+                handleInput(action);
+            }
+        });
     }
 
     @SuppressLint("SetTextI18n")
@@ -46,7 +52,7 @@ public class TapTestActivity extends AppCompatActivity {
         holdText.setText("Hold: " + numHolds);
     }
 
-    private void handleInput(TapDetector.Action action){
+    private void handleInput(TouchDetector.TapAction action){
         switch(action){
             case TAP: numTaps++; break;
             case DOUBLE_TAP: numDoubleTaps++; break;

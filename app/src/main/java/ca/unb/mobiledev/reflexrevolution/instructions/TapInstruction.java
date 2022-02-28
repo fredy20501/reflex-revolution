@@ -5,42 +5,50 @@ import android.view.ViewGroup;
 
 import java.util.Random;
 
-import ca.unb.mobiledev.reflexrevolution.detectors.TapDetector;
+import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class TapInstruction extends Instruction {
 
-    private TapDetector.Action currentAction;
+    private final TouchDetector touchDetector;
+    private TouchDetector.TapAction currentAction;
     private Random rand;
     private final boolean isDemo;
     private int index;
 
-    public TapInstruction(ViewGroup layout, Callback callback) {
+    public TapInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
+        this.touchDetector = touchDetector;
         this.isDemo = false;
         index = 0;
+        setup();
     }
 
     // Extra constructor to enable demo mode
-    public TapInstruction(ViewGroup layout, Callback callback, boolean isDemo) {
+    public TapInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector, boolean isDemo) {
         super(layout, callback);
+        this.touchDetector = touchDetector;
         this.isDemo = isDemo;
         index = 0;
+        setup();
     }
 
-    @Override
-    protected void setup() {
+    private void setup() {
         rand = new Random();
-        TapDetector tapDetector = new TapDetector(context, layout);
-        tapDetector.setOnTapListener(action -> {
-            if (currentAction == TapDetector.Action.DONT_TAP) fail();
-            else if (currentAction == action) success();
+        touchDetector.addListener(new TouchDetector.ActionListener() {
+            @Override
+            public void onSwipe(TouchDetector.SwipeAction action) {}
+            @Override
+            public void onTap(TouchDetector.TapAction action) {
+                if (currentAction == TouchDetector.TapAction.DONT_TAP) fail();
+                else if (currentAction == action) success();
+            }
         });
     }
 
     @Override
     public void init() {
         super.init();
-        TapDetector.Action[] actions = TapDetector.Action.values();
+        TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
         if (isDemo) {
             // Initialize as the next action in order
             currentAction = actions[index];
@@ -70,7 +78,7 @@ public class TapInstruction extends Instruction {
 
     @Override
     public void timerFinished() {
-        if (currentAction == TapDetector.Action.DONT_TAP) success();
+        if (currentAction == TouchDetector.TapAction.DONT_TAP) success();
         else fail();
     }
 }

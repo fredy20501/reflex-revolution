@@ -28,8 +28,7 @@ public class GameOverActivity extends AppCompatActivity {
         //Retrieve score
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            int score = extras.getInt("Score");
-            scoreText.setText(getString(R.string.scoreLabel, score));
+            scoreText.setText(getString(R.string.scoreLabel, extras.getInt("Score")));
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }
