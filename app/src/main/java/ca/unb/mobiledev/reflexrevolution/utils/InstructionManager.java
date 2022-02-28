@@ -1,9 +1,6 @@
 package ca.unb.mobiledev.reflexrevolution.utils;
 
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.view.ViewGroup;
 
 import java.util.AbstractMap;
@@ -45,7 +42,8 @@ public class InstructionManager {
         // Construct list of instructions based on game mode
         switch(gameMode){
             case REVOLUTION:
-                addEntry(new TapInstruction(layout, callback), 4);
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
                 addEntry(new ShakeInstruction(layout, callback), 1);
                 addEntry(new JumpInstruction(layout, callback), 1);
                 addEntry(new FreezeInstruction(layout, callback), 1);

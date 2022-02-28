@@ -1,8 +1,6 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 
-import static android.icu.lang.UCharacter.IndicPositionalCategory.RIGHT;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -22,10 +20,10 @@ public class RotationInstruction extends Instruction {
 
     public RotationInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
+        setup();
     }
 
-    @Override
-    protected void setup() {
+    private void setup() {
         rand = new Random();
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
