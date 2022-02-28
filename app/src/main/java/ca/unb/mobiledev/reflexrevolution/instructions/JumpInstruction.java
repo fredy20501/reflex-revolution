@@ -17,10 +17,10 @@ public class JumpInstruction extends Instruction {
 
     public JumpInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
+        setup();
     }
 
-    @Override
-    protected void setup() {
+    private void setup() {
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);

@@ -1,26 +1,26 @@
 package ca.unb.mobiledev.reflexrevolution.utils;
 
 
-import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorManager;
 import android.view.ViewGroup;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 import ca.unb.mobiledev.reflexrevolution.instructions.FreezeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.JumpInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.RotationInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.ShakeInstruction;
+import ca.unb.mobiledev.reflexrevolution.instructions.SwipeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.TapInstruction;
 
 public class InstructionManager {
 
     private final ViewGroup layout;
     private final Instruction.Callback callback;
+    private final TouchDetector touchDetector;
 
     private final ArrayList<AbstractMap.Entry<Instruction, Float>> instructions;
     private final Random rand;
@@ -29,6 +29,7 @@ public class InstructionManager {
     public InstructionManager(ViewGroup layout, Instruction.Callback callback){
         this.layout = layout;
         this.callback = callback;
+        this.touchDetector = new TouchDetector(layout);
         rand = new Random();
         instructions = new ArrayList<>();
         totalProbability = 0;
@@ -41,7 +42,8 @@ public class InstructionManager {
         // Construct list of instructions based on game mode
         switch(gameMode){
             case REVOLUTION:
-                addEntry(new TapInstruction(layout, callback), 4);
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
                 addEntry(new ShakeInstruction(layout, callback), 1);
                 addEntry(new JumpInstruction(layout, callback), 1);
                 addEntry(new FreezeInstruction(layout, callback), 1);

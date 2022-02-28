@@ -7,13 +7,13 @@ import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
-public class TapInstruction extends Instruction {
+public class SwipeInstruction extends Instruction {
 
     private final TouchDetector touchDetector;
-    private TouchDetector.TapAction currentAction;
+    private TouchDetector.SwipeAction currentAction;
     private Random rand;
 
-    public TapInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
+    public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
         setup();
@@ -23,12 +23,12 @@ public class TapInstruction extends Instruction {
         rand = new Random();
         touchDetector.addListener(new TouchDetector.ActionListener() {
             @Override
-            public void onSwipe(TouchDetector.SwipeAction action) {}
-            @Override
-            public void onTap(TouchDetector.TapAction action) {
-                if (currentAction == TouchDetector.TapAction.DONT_TAP) fail();
-                else if (currentAction == action) success();
+            public void onSwipe(TouchDetector.SwipeAction action) {
+                if (currentAction == action) success();
+                else fail(); // Wrong direction
             }
+            @Override
+            public void onTap(TouchDetector.TapAction action) {}
         });
     }
 
@@ -36,18 +36,19 @@ public class TapInstruction extends Instruction {
     public void init() {
         super.init();
         // Initialize as a random action
-        TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
+        TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
     }
 
     @Override
     public void display() {
         switch(currentAction) {
-            case DOUBLE_TAP: addTextView("DOUBLE", SMALL_TEXT_SIZE); break;
-            case HOLD_TAP: addTextView("HOLD", SMALL_TEXT_SIZE); break;
-            case DONT_TAP: addTextView("DONT", SMALL_TEXT_SIZE); break;
+            case SWIPE_RIGHT: addTextView("RIGHT", SMALL_TEXT_SIZE); break;
+            case SWIPE_LEFT: addTextView("LEFT", SMALL_TEXT_SIZE); break;
+            case SWIPE_UP: addTextView("UP", SMALL_TEXT_SIZE); break;
+            case SWIPE_DOWN: addTextView("DOWN", SMALL_TEXT_SIZE); break;
         }
-        addTextView("TAP", DEFAULT_TEXT_SIZE);
+        addTextView("SWIPE", DEFAULT_TEXT_SIZE);
     }
 
     @Override
@@ -58,7 +59,6 @@ public class TapInstruction extends Instruction {
 
     @Override
     public void timerFinished() {
-        if (currentAction == TouchDetector.TapAction.DONT_TAP) success();
-        else fail();
+        fail();
     }
 }
