@@ -7,7 +7,6 @@ import android.hardware.SensorEventListener;
 public class ShakeDetector implements SensorEventListener {
 
     private static final float SHAKE_THRESHOLD = 3.0f;
-    private static final float MOVE_THRESHOLD = 1.5f;
     private static final int SHAKE_SLOP_TIME_MS = 250;
     private static final int SHAKE_COUNT_RESET_TIME_MS = 3000;
 
@@ -40,8 +39,9 @@ public class ShakeDetector implements SensorEventListener {
             // gForce will be close to 1 when there is no movement.
             double gForce = Math.sqrt(x * x + y * y + z * z);
 
-            if (gForce > MOVE_THRESHOLD) mListener.onMove();
             if (gForce > SHAKE_THRESHOLD) {
+                mListener.onMove();
+
                 final long now = System.currentTimeMillis();
                 // ignore shake events too close to each other
                 if (mShakeTimestamp + SHAKE_SLOP_TIME_MS > now) {

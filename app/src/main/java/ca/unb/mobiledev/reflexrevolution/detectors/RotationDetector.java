@@ -7,7 +7,6 @@ import android.hardware.SensorEventListener;
 public class RotationDetector implements SensorEventListener {
 
     private static final float ROTATION_THRESHOLD = 3.0f;
-    private static final float MOVE_THRESHOLD = 1.5f;
     private OnRotateListener mListener;
 
     public void setOnRotateListener(OnRotateListener listener) {
@@ -33,9 +32,9 @@ public class RotationDetector implements SensorEventListener {
             float axisZ = event.values[2];
 
             // Any movement
-            if (Math.abs(axisX) > MOVE_THRESHOLD ||
-                    Math.abs(axisY) > MOVE_THRESHOLD ||
-                    Math.abs(axisZ) > MOVE_THRESHOLD) {
+            if (Math.abs(axisX) > ROTATION_THRESHOLD ||
+                    Math.abs(axisY) > ROTATION_THRESHOLD ||
+                    Math.abs(axisZ) > ROTATION_THRESHOLD) {
                 mListener.onMove();
             }
 
