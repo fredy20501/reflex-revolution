@@ -54,9 +54,13 @@ public class InstructionManager {
                 addEntry(new RotationInstruction(layout, callback), 6);
                 break;
             case DEMO:
-                addEntry(new TapInstruction(layout, callback, true), 4);
+                addEntry(new TapInstruction(layout, callback, touchDetector, true), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector, true), 4);
                 addEntry(new ShakeInstruction(layout, callback), 1);
                 addEntry(new JumpInstruction(layout, callback), 1);
+                addEntry(new FreezeInstruction(layout, callback), 1);
+                addEntry(new RotationInstruction(layout, callback), 6);
+                break;
         }
     }
 

@@ -19,10 +19,10 @@ public class RotationInstruction extends Instruction {
 
     public RotationInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
+        setup();
     }
 
-    @Override
-    protected void setup() {
+    private void setup() {
         rand = new Random();
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);

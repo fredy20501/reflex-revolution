@@ -12,10 +12,23 @@ public class SwipeInstruction extends Instruction {
     private final TouchDetector touchDetector;
     private TouchDetector.SwipeAction currentAction;
     private Random rand;
+    private final boolean isDemo;
+    private int index;
 
     public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
+        this.isDemo = false;
+        index = 0;
+        setup();
+    }
+
+    // Extra constructor to enable demo mode
+    public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector, boolean isDemo) {
+        super(layout, callback);
+        this.touchDetector = touchDetector;
+        this.isDemo = isDemo;
+        index = 0;
         setup();
     }
 
@@ -37,7 +50,15 @@ public class SwipeInstruction extends Instruction {
         super.init();
         // Initialize as a random action
         TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
-        currentAction = actions[rand.nextInt(actions.length)];
+        if (isDemo) {
+            // Initialize as the next action in order
+            currentAction = actions[index];
+            index = (index + 1) % actions.length;
+        }
+        else {
+            // Initialize as a random action
+            currentAction = actions[rand.nextInt(actions.length)];
+        }
     }
 
     @Override
