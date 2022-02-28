@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
         Button startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
-            intent.putExtra("GameMode", GameMode.BASIC);
-            intent.putExtra("Difficulty", Difficulty.NORMAL);
+            intent.putExtra("GameMode", GameMode.REVOLUTION);
+            intent.putExtra("Difficulty", Difficulty.NOVICE);
             startActivity(intent);
         });
 
