@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
+import ca.unb.mobiledev.reflexrevolution.instructions.FreezeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.JumpInstruction;
+import ca.unb.mobiledev.reflexrevolution.instructions.RotationInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.ShakeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.SwipeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.TapInstruction;
@@ -37,25 +39,17 @@ public class InstructionManager {
     }
 
     public void generateInstructions(GameMode gameMode) {
-        SensorManager sensorManager = 
-                (SensorManager) layout.getContext().getSystemService(Context.SENSOR_SERVICE);
-        Sensor accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        Sensor gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        
         instructions.clear();
         totalProbability = 0;
 
         // Construct list of instructions based on game mode
         switch(gameMode){
-            case BASIC:
-                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
-                if (accelerometer != null) {
-                    addEntry(new ShakeInstruction(layout, callback), 1);
-                    if (gravitySensor != null) {
-                        addEntry(new JumpInstruction(layout, callback), 1);
-                    }
-                }
+            case REVOLUTION:
+                addEntry(new TapInstruction(layout, callback), 4);
+                addEntry(new ShakeInstruction(layout, callback), 1);
+                addEntry(new JumpInstruction(layout, callback), 1);
+                addEntry(new FreezeInstruction(layout, callback), 1);
+                addEntry(new RotationInstruction(layout, callback), 6);
                 break;
         }
     }

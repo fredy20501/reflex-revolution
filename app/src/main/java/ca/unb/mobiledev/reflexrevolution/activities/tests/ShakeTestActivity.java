@@ -34,7 +34,14 @@ public class ShakeTestActivity extends AppCompatActivity {
         // Initialize shake detector
         shakeText.setText("Shake Detected: 0");
         shakeDetector = new ShakeDetector();
-        shakeDetector.setOnShakeListener(count -> shakeText.setText("Shake Detected: "+count));
+        shakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+            @Override
+            public void onShake(int count) {
+                shakeText.setText("Shake Detected: " + count);
+            }
+            @Override
+            public void onMove() {}
+        });
     }
 
     @Override
