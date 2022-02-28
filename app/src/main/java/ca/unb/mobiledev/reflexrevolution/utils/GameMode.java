@@ -1,6 +1,11 @@
 package ca.unb.mobiledev.reflexrevolution.utils;
 
 public enum GameMode {
-    BASIC //Temp gamemode for testing
-    // Will add more later
+    CLASSIC,    // Tap, Swipe, Shake, Turn
+    TACTILE,    // Touch
+    KINETIC,    // Movement
+    SWIPE,      // Swipe
+    CREATIVE,   // Sing, Write, Draw
+    CUSTOM,     // Customized by user
+    REVOLUTION  // All
 }
