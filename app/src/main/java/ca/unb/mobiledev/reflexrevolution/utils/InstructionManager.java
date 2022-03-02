@@ -43,7 +43,7 @@ public class InstructionManager {
         switch(gameMode){
             case REVOLUTION:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 9);
                 addEntry(new ShakeInstruction(layout, callback), 1);
                 addEntry(new JumpInstruction(layout, callback), 1);
                 addEntry(new FreezeInstruction(layout, callback), 1);

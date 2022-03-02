@@ -62,6 +62,7 @@ public class TouchDetector implements View.OnTouchListener{
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
                 float diffY = e2.getY() - e1.getY();
                 float diffX = e2.getX() - e1.getX();
+                swipeDetected(SwipeAction.FLICK);
 
                 if(Math.abs(diffX) > Math.abs(diffY)){
                     if(Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD){
@@ -94,10 +95,14 @@ public class TouchDetector implements View.OnTouchListener{
         DONT_TAP
     }
     public enum SwipeAction {
-        SWIPE_RIGHT,
-        SWIPE_LEFT,
-        SWIPE_UP,
-        SWIPE_DOWN
-    }
+        FLICK(Type.FLING),
+        SWIPE_RIGHT(Type.SWIPE),
+        SWIPE_LEFT(Type.SWIPE),
+        SWIPE_UP(Type.SWIPE),
+        SWIPE_DOWN(Type.SWIPE);
 
+        private final Type type;
+        SwipeAction(Type type) { this.type = type;}
+        public Type getType(){ return this.type;}
+    }
 }
