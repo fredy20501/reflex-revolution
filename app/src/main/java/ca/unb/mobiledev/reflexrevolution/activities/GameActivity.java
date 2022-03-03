@@ -9,7 +9,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ca.unb.mobiledev.reflexrevolution.R;
+import ca.unb.mobiledev.reflexrevolution.instructions.DialInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
+import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.InstructionManager;
@@ -90,6 +92,10 @@ public class GameActivity extends AppCompatActivity {
     //Get new timer count, then start it by "resuming"
     private void newTimer() {
         timeCount = scaleTimerFromScore();
+        //If you need to type or dial, add extra time
+        if(currentInstruction instanceof TypeInstruction || currentInstruction instanceof DialInstruction){
+            timeCount += 1500;
+        }
         startTimer();
     }
 

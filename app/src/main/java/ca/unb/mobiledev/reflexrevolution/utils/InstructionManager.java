@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
+import ca.unb.mobiledev.reflexrevolution.instructions.DialInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.FreezeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.JumpInstruction;
@@ -49,7 +50,8 @@ public class InstructionManager {
 //                addEntry(new JumpInstruction(layout, callback), 1);
 //                addEntry(new FreezeInstruction(layout, callback), 1);
 //                addEntry(new RotationInstruction(layout, callback), 6);
-                addEntry(new TypeInstruction(layout, callback), 1);
+                //addEntry(new TypeInstruction(layout, callback), 1);
+                addEntry(new DialInstruction(layout, callback), 1);
                 break;
         }
     }
