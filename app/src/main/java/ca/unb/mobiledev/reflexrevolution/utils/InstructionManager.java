@@ -15,6 +15,7 @@ import ca.unb.mobiledev.reflexrevolution.instructions.RotationInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.ShakeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.SwipeInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.TapInstruction;
+import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 
 public class InstructionManager {
 
@@ -42,12 +43,13 @@ public class InstructionManager {
         // Construct list of instructions based on game mode
         switch(gameMode){
             case REVOLUTION:
-                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
-                addEntry(new ShakeInstruction(layout, callback), 1);
-                addEntry(new JumpInstruction(layout, callback), 1);
-                addEntry(new FreezeInstruction(layout, callback), 1);
-                addEntry(new RotationInstruction(layout, callback), 6);
+//                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+//                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+//                addEntry(new ShakeInstruction(layout, callback), 1);
+//                addEntry(new JumpInstruction(layout, callback), 1);
+//                addEntry(new FreezeInstruction(layout, callback), 1);
+//                addEntry(new RotationInstruction(layout, callback), 6);
+                addEntry(new TypeInstruction(layout, callback), 1);
                 break;
         }
     }
