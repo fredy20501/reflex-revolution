@@ -1,8 +1,10 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -93,9 +95,8 @@ public class GameActivity extends AppCompatActivity {
     private void newTimer() {
         timeCount = scaleTimerFromScore();
         //If you need to type or dial, add extra time
-        if(currentInstruction instanceof TypeInstruction || currentInstruction instanceof DialInstruction){
-            timeCount += 1500;
-        }
+        if(currentInstruction instanceof TypeInstruction) timeCount += 1000;
+        else if(currentInstruction instanceof DialInstruction) timeCount += 2000;
         startTimer();
     }
 

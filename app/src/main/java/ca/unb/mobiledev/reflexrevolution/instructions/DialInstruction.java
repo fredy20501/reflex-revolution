@@ -31,7 +31,7 @@ public class DialInstruction extends Instruction{
     @Override
     public void init() {
         super.init();
-        // Get random number to type
+        // Get random number to dial
         number = "";
         for(int i=0; i<3; i++) number += rand.nextInt(10);
         number += "-";
@@ -52,7 +52,7 @@ public class DialInstruction extends Instruction{
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().equals(number.replace("-", ""))){
                     //Hide keyboard
-                    //keyboardDisplayManager.hideSoftInputFromWindow(layout.getWindowToken(), 0);
+                    disable();
                     success();
                 }
             }
@@ -80,7 +80,7 @@ public class DialInstruction extends Instruction{
     //Close keyboard
     @Override
     public void disable() {
-        keyboardDisplayManager.hideSoftInputFromWindow(layout.getWindowToken(), 0);
+        keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), 0);
     }
 
     @Override

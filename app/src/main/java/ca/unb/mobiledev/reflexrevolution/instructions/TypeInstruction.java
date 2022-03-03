@@ -65,7 +65,7 @@ public class TypeInstruction extends Instruction{
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().toUpperCase().equals(word)){
                     //Hide keyboard
-                    keyboardDisplayManager.hideSoftInputFromWindow(layout.getWindowToken(), 0);
+                    disable();
                     success();
                 }
             }
@@ -93,7 +93,7 @@ public class TypeInstruction extends Instruction{
     //Close keyboard
     @Override
     public void disable() {
-        keyboardDisplayManager.hideSoftInputFromWindow(layout.getWindowToken(), 0);
+        keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), 0);
     }
 
     @Override
