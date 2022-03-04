@@ -24,17 +24,16 @@ public class TypeInstruction extends Instruction{
     private Random rand;
     private String word;
     private EditText field;
-    //private ArrayList<String> wordList; //Currently unused
     private RandomAccessFile wordListFile;
-    private int linesInFile;
+    private long fileLength;
     private final int SIZE_OF_FILE_LINE = 7;
-    private final InputMethodManager keyboardDisplayManager;
+    private InputMethodManager keyboardDisplayManager;
 
     public TypeInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
         rand = new Random();
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        linesInFile = 0;
+        fileLength = 0;
         setUpRandomWordList();
     }
 
@@ -58,40 +57,21 @@ public class TypeInstruction extends Instruction{
             wordListFile = new RandomAccessFile(destFile, "r");
 
             //Get number of lines in file
-            linesInFile = (int)wordListFile.length() / SIZE_OF_FILE_LINE;
+            fileLength = wordListFile.length();
         } catch(IOException e){ e.printStackTrace(); }
     }
-
-    //Writes list of words from json file to arraylist. Currently not being used.
-    /*
-    private void setUpWordList(){
-        try {
-            wordList = new ArrayList<>();
-            InputStream stream = context.getAssets().open("TypeWords.json");
-            JsonReader reader = new JsonReader(new InputStreamReader(stream, "UTF-8"));
-            reader.beginArray();
-            while(reader.hasNext()){
-                wordList.add(reader.nextString());
-            }
-            reader.endArray();
-            reader.close();
-        } catch (IOException e){ e.printStackTrace(); }
-    }
-    */
 
     @Override
     public void init() {
         super.init();
         //Get random word to type
         try {
-            //For some reason, the word returned is sometimes empty, so loop until we get one that isn't
-            word = "";
-            while(word.isEmpty()) {
-                int line = rand.nextInt(linesInFile);
-                //Jump to the start of a random line and read it
-                wordListFile.seek((long) line * SIZE_OF_FILE_LINE);
-                word = wordListFile.readLine();
-            }
+            //Subtracting file line size outside random so there's an equal chance of getting the first string in the list as the others
+            int pos = (rand.nextInt((int)fileLength) - SIZE_OF_FILE_LINE);
+            if(pos < 0) pos = 0;
+            wordListFile.seek(pos);
+            if(pos != 0) wordListFile.readLine();
+            word = wordListFile.readLine();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
