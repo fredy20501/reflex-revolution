@@ -1,10 +1,8 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -141,9 +139,9 @@ public class GameActivity extends AppCompatActivity {
         updateScoreText();
 
         //Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
+        currentInstruction.disable();
         resetUI();
         resetTimer();
-        currentInstruction.disable();
     }
 
     //Ends the game, sending score and game options to the Game Over screen
