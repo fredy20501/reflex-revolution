@@ -57,10 +57,6 @@ public abstract class Instruction {
         layout.addView(text);
     }
 
-    protected void addView(View view){
-        layout.addView(view);
-    }
-
     // Initialize the state of the instruction
     // (Called before each time the instruction is used)
     public void init() { this.done = false; }

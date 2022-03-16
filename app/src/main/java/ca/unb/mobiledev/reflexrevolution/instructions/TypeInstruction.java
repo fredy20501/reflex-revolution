@@ -37,6 +37,7 @@ public class TypeInstruction extends Instruction{
         setUpRandomWordList();
     }
 
+    //Transfer the text file containing all the words to a RandomAccessFile
     //Adapted from https://stackoverflow.com/a/48865091
     private void setUpRandomWordList(){
         try {
@@ -72,7 +73,10 @@ public class TypeInstruction extends Instruction{
             wordListFile.seek(pos);
             if(pos != 0) wordListFile.readLine();
             word = wordListFile.readLine();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+            word = "TESTS";
+        }
     }
 
     @Override
@@ -88,7 +92,6 @@ public class TypeInstruction extends Instruction{
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().toUpperCase().equals(word)){
                     //Hide keyboard
-                    disable();
                     success();
                 }
             }
@@ -102,27 +105,24 @@ public class TypeInstruction extends Instruction{
                 //Auto-generated
             }
         });
-        addView(field);
-        enable();
+        layout.addView(field);
     }
 
     //Select field and force the keyboard to show
     @Override
     public void enable() {
         field.requestFocus();
-        keyboardDisplayManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        keyboardDisplayManager.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT);
     }
 
     //Close keyboard
     @Override
     public void disable() {
-        keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), 0);
+        keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @Override
     public void timerFinished() {
-        //Hide keyboard
-        disable();
         fail();
     }
 }

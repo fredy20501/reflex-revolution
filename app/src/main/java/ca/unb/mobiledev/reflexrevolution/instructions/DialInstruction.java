@@ -52,7 +52,6 @@ public class DialInstruction extends Instruction{
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(s.toString().equals(number.replace("-", ""))){
                     //Hide keyboard
-                    disable();
                     success();
                 }
             }
@@ -66,27 +65,25 @@ public class DialInstruction extends Instruction{
                 //Auto-generated
             }
         });
-        addView(field);
-        enable();
+        layout.addView(field);
     }
 
     //Select field and force the keyboard to show
     @Override
     public void enable() {
         field.requestFocus();
-        keyboardDisplayManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        keyboardDisplayManager.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT);
     }
 
     //Close keyboard
     @Override
     public void disable() {
-        keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), 0);
+        keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @Override
     public void timerFinished() {
         //Hide keyboard
-        disable();
         fail();
     }
 }
