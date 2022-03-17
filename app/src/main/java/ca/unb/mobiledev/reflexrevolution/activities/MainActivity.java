@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -21,12 +22,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.e("tag", "menu");
         setMusicPlayer();
 
         Button startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> {
-            stopMediaPlayer();
+            //Instead of stopping, pause the music player, since this activity is never destroyed
+            //This way, we can reuse the same music player
+            musicPlayer.pause();
 
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
             intent.putExtra("GameMode", GameMode.REVOLUTION);
@@ -42,20 +44,13 @@ public class MainActivity extends AppCompatActivity {
         musicPlayer.start();
     }
 
-    //Properly handle stopping the media player
-    private void stopMediaPlayer(){
-        musicPlayer.stop();
-        musicPlayer.release();
-        musicPlayer = null;
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
+    //On resume, restart the music player from the beginning of the track
     @Override
     protected void onResume() {
         super.onResume();
+        if(musicPlayer != null) {
+            musicPlayer.seekTo(0);
+            musicPlayer.start();
+        }
     }
 }

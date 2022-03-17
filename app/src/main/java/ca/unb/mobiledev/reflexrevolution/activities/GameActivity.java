@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Debug;
@@ -75,8 +76,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onFinish() { gameLoop(); }
         };
-
-        Log.e("tag", "game");
+        
         setMediaPlayers();
 
         updateTimerText();
@@ -102,12 +102,10 @@ public class GameActivity extends AppCompatActivity {
             losePlayer = null;
         });
 
-        //Set music player to loop, then play it
+        //Set music player to loop, and set its initial playback speed, then play it
+        setPlaybackSpeed();
         musicPlayer.setLooping(true);
         musicPlayer.start();
-//        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-//        audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
-//        scorePlayer.setVolume(10, 10);
     }
 
     //Properly handle stopping all media players
@@ -177,6 +175,9 @@ public class GameActivity extends AppCompatActivity {
         currentInstruction.init();
         currentInstruction.display();
         currentInstruction.enable();
+
+        setPlaybackSpeed();
+
         newTimer();
     }
 
@@ -222,6 +223,10 @@ public class GameActivity extends AppCompatActivity {
         return (int)Math.pow(2, -0.04*score + 11) + 1000;
     }
 
+    //Returns a value between 0.5 and 1.5 based on the time the user has to complete the instruction
+    //Scales linearly, with 0.5 as 5000ms, 1 as 3000ms, and 1.5 as 1000ms
+    private float scaleSongSpeedFromTimer() { return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, 0.5, 1.5);}
+
     //Resume timer if app was closed
     @Override
     protected void onResume() {
@@ -238,5 +243,19 @@ public class GameActivity extends AppCompatActivity {
         if (musicPlayer != null && musicPlayer.isPlaying()) musicPlayer.pause(); //Pause background music
         if (currentInstruction != null) currentInstruction.disable();
         if (instructionTimer != null) instructionTimer.cancel();
+    }
+
+    //Clamp function using double for maximum compatibility
+    private double clamp(double val, double min, double max){
+        if(val > max) return max;
+        else if (val < min) return min;
+        return val;
+    }
+
+    //Scale music playback speed based on how much time the player has to complete the instruction
+    private void setPlaybackSpeed(){
+        PlaybackParams params = musicPlayer.getPlaybackParams();
+        params.setSpeed(scaleSongSpeedFromTimer());
+        musicPlayer.setPlaybackParams(params);
     }
 }
