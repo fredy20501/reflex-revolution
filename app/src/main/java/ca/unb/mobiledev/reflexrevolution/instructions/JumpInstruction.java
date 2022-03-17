@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.view.ViewGroup;
 
+import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.JumpDetector;
 
 public class JumpInstruction extends Instruction {
@@ -55,5 +56,10 @@ public class JumpInstruction extends Instruction {
 
     private void unsetListeners() {
         sensorManager.unregisterListener(jumpDetector);
+    }
+
+    @Override
+    protected void setVoiceCommands() {
+        voiceCommands = new int[]{R.raw.jump_carter};
     }
 }

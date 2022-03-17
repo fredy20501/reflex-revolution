@@ -20,14 +20,18 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.R;
+
 public class TypeInstruction extends Instruction{
-    private Random rand;
+    private final int SIZE_OF_FILE_LINE = 7;
+    private final Random rand;
+    private final InputMethodManager keyboardDisplayManager;
+
     private String word;
     private EditText field;
     private RandomAccessFile wordListFile;
     private long fileLength;
-    private final int SIZE_OF_FILE_LINE = 7;
-    private InputMethodManager keyboardDisplayManager;
+
 
     public TypeInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
@@ -124,5 +128,10 @@ public class TypeInstruction extends Instruction{
     @Override
     public void timerFinished() {
         fail();
+    }
+
+    @Override
+    protected void setVoiceCommands() {
+        voiceCommands = new int[]{R.raw.dial_carter};
     }
 }

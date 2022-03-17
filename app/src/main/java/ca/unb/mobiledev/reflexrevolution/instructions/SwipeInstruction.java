@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class SwipeInstruction extends Instruction {
@@ -60,5 +61,10 @@ public class SwipeInstruction extends Instruction {
     @Override
     public void timerFinished() {
         fail();
+    }
+
+    @Override
+    protected void setVoiceCommands() {
+        voiceCommands = new int[]{R.raw.swipe_carter};
     }
 }

@@ -6,6 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Random;
+
+import ca.unb.mobiledev.reflexrevolution.R;
+
 public abstract class Instruction {
 
     // Static constants
@@ -20,12 +24,18 @@ public abstract class Instruction {
     private final Callback callback;
     private boolean done;
 
+    //Voice command variables
+    private final Random rand;
+    protected int[] voiceCommands;
+
     // Default constructor
     public Instruction(ViewGroup layout, Callback callback) {
         this.context = layout.getContext();
         this.layout = layout;
         this.callback = callback;
         this.done = false;
+        this.rand = new Random();
+        setVoiceCommands();
     }
 
     // Callback functions used to tell the game if success/fail
@@ -60,6 +70,12 @@ public abstract class Instruction {
     // Initialize the state of the instruction
     // (Called before each time the instruction is used)
     public void init() { this.done = false; }
+
+    // Get a random voice command for this instruction
+    public int getVoiceCommand(){ return voiceCommands[rand.nextInt(voiceCommands.length)]; }
+
+    // All Instructions must set their list of voice commands
+    protected abstract void setVoiceCommands();
 
     // Add the UI elements to the layout
     public abstract void display();

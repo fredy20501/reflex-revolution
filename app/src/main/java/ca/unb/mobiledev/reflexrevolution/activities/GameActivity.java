@@ -23,6 +23,7 @@ import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.InstructionManager;
+import ca.unb.mobiledev.reflexrevolution.utils.VoiceCommandManager;
 
 public class GameActivity extends AppCompatActivity {
     //Time in ms
@@ -37,6 +38,7 @@ public class GameActivity extends AppCompatActivity {
     private CountDownTimer resetTimer;
     private Instruction currentInstruction;
     private InstructionManager instructionManager;
+    private VoiceCommandManager voiceCommandManager;
     private GameMode gameMode;
     private Difficulty difficulty;
 
@@ -62,6 +64,8 @@ public class GameActivity extends AppCompatActivity {
         scoreText = findViewById(R.id.currentScoreText);
         layout = findViewById(R.id.layout);
         score = 0;
+
+        voiceCommandManager = new VoiceCommandManager(this);
         instructionManager = new InstructionManager(layout, new Instruction.Callback() {
             @Override
             public void onSuccess() { instructionSuccess(); }
@@ -76,7 +80,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onFinish() { gameLoop(); }
         };
-        
+
         setMediaPlayers();
 
         updateTimerText();
@@ -179,6 +183,8 @@ public class GameActivity extends AppCompatActivity {
         setPlaybackSpeed();
 
         newTimer();
+
+        voiceCommandManager.playInstruction(currentInstruction);
     }
 
     //Clear all added UI elements

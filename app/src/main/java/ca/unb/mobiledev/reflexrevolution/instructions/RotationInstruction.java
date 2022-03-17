@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 
 public class RotationInstruction extends Instruction {
@@ -17,6 +18,11 @@ public class RotationInstruction extends Instruction {
     private RotationDetector rotationDetector;
     private RotationDetector.Action currentAction;
     private Random rand;
+
+    // We need 3 voice command arrays instead of just voiceCommands since there are 3 possible actions
+    private int[] tiltVoiceCommands;
+    private int[] turnVoiceCommands;
+    private int[] twistVoiceCommands;
 
     public RotationInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
@@ -90,5 +96,29 @@ public class RotationInstruction extends Instruction {
 
     private void unsetListeners() {
         sensorManager.unregisterListener(rotationDetector);
+    }
+
+    // Overridden version to handle multiple rotation types
+    @Override
+    public int getVoiceCommand(){
+        if(currentAction == RotationDetector.Action.TILT_BACKWARD ||
+                currentAction == RotationDetector.Action.TILT_FORWARD){
+            voiceCommands = tiltVoiceCommands;
+        }
+        else if(currentAction == RotationDetector.Action.TURN_LEFT ||
+                currentAction == RotationDetector.Action.TURN_RIGHT){
+            voiceCommands = turnVoiceCommands;
+        }
+        else{
+            voiceCommands = twistVoiceCommands;
+        }
+        return super.getVoiceCommand();
+    }
+
+    @Override
+    protected void setVoiceCommands() {
+        tiltVoiceCommands = new int[]{R.raw.tilt_carter};
+        turnVoiceCommands = new int[]{R.raw.turn_carter};
+        twistVoiceCommands = new int[]{R.raw.twist_carter};
     }
 }

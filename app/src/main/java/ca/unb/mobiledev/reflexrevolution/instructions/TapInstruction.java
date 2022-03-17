@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class TapInstruction extends Instruction {
@@ -60,5 +61,10 @@ public class TapInstruction extends Instruction {
     public void timerFinished() {
         if (currentAction == TouchDetector.TapAction.DONT_TAP) success();
         else fail();
+    }
+
+    @Override
+    protected void setVoiceCommands() {
+        voiceCommands = new int[]{R.raw.tap_carter};
     }
 }
