@@ -3,6 +3,9 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.view.ViewGroup;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
@@ -12,12 +15,8 @@ public class SwipeInstruction extends Instruction {
     private final TouchDetector touchDetector;
     private TouchDetector.SwipeAction currentAction;
     private Random rand;
-    private Random rand2;
     private int index;
-    private String[] rightOptions = {"RIGHT", "OPPOSITE OF LEFT"};
-    private String[] leftOptions = {"LEFT", "OPPOSITE OF RIGHT"};
-    private String[] upOptions = {"UP", "OPPOSITE OF DOWN"};
-    private String[] downOptions = {"DOWN", "OPPOSITE OF UP"};
+    private final Map<TouchDetector.SwipeAction, String[]> textLabels = new HashMap<>();
     private String displayTxt;
 
     public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
@@ -28,6 +27,11 @@ public class SwipeInstruction extends Instruction {
 
     private void setup() {
         rand = new Random();
+        textLabels.put(TouchDetector.SwipeAction.SWIPE_RIGHT, new String[] {"RIGHT", "OPPOSITE OF LEFT"});
+        textLabels.put(TouchDetector.SwipeAction.SWIPE_LEFT, new String[] {"LEFT", "OPPOSITE OF RIGHT"});
+        textLabels.put(TouchDetector.SwipeAction.SWIPE_UP, new String[] {"UP", "OPPOSITE OF DOWN"});
+        textLabels.put(TouchDetector.SwipeAction.SWIPE_DOWN, new String[] {"DOWN", "OPPOSITE OF UP"});
+
         touchDetector.addListener(new TouchDetector.ActionListener() {
             @Override
             public void onSwipe(TouchDetector.SwipeAction action) {
@@ -50,34 +54,20 @@ public class SwipeInstruction extends Instruction {
         TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
     }
-
     @Override
     public void display() {
-        rand2 = new Random();
-        index = rand2.nextInt(rightOptions.length - 0) + 0; //used rightOptions; they are all the same length.
-
-        switch(currentAction) {
-            case SWIPE_RIGHT:
-                displayTxt = rightOptions[index]; //either "RIGHT" or "OPPOSITE OF LEFT"
-                addTextView(displayTxt, SMALL_TEXT_SIZE);
-                break;
-            case SWIPE_LEFT:
-                displayTxt = leftOptions[index];
-                addTextView(displayTxt, SMALL_TEXT_SIZE);
-                break;
-            case SWIPE_UP:
-                displayTxt = upOptions[index];
-                addTextView (displayTxt, SMALL_TEXT_SIZE);
-                break;
-            case SWIPE_DOWN:
-                displayTxt = downOptions[index];
-                addTextView(displayTxt, SMALL_TEXT_SIZE);
-                break;
-        }
-        if(currentAction == TouchDetector.SwipeAction.FLICK)
-            addTextView("FLICK", DEFAULT_TEXT_SIZE);
-        else
+        if (currentAction.getType() == TouchDetector.Type.SWIPE) {
+            // Add small label for swipe instructions
+            int index = rand.nextInt(2);
+            String displayTxt = Objects.requireNonNull(textLabels.get(currentAction))[index];
+            addTextView(displayTxt, SMALL_TEXT_SIZE);
+            // Main label
             addTextView("SWIPE", DEFAULT_TEXT_SIZE);
+        }
+        else {
+            // Main label
+            addTextView("FLICK", DEFAULT_TEXT_SIZE);
+        }
     }
 
     @Override
