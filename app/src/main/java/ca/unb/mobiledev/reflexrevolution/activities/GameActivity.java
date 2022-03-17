@@ -7,6 +7,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Debug;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -73,6 +76,7 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() { gameLoop(); }
         };
 
+        Log.e("tag", "game");
         setMediaPlayers();
 
         updateTimerText();
@@ -80,15 +84,23 @@ public class GameActivity extends AppCompatActivity {
         resetTimer();
     }
 
+    //Set up the media players
     private void setMediaPlayers(){
         //Create media players, and set their sound files
         scorePlayer = MediaPlayer.create(this, R.raw.score);
-        losePlayer = MediaPlayer.create(this, R.raw.score);
-        musicPlayer = MediaPlayer.create(this, R.raw.score);
+        losePlayer = MediaPlayer.create(this, R.raw.lose);
+        musicPlayer = MediaPlayer.create(this, R.raw.game_music);
 
         //Rewind sound when it ends so that it can be played again later
         scorePlayer.setOnCompletionListener(v -> { scorePlayer.seekTo(0);});
-        losePlayer.setOnCompletionListener(v -> { losePlayer.seekTo(0);});
+
+        //Allow losePlayer to continue playing when the activity is closed
+        //but stop it properly once it finishes playing
+        losePlayer.setOnCompletionListener(v -> {
+            losePlayer.stop();
+            losePlayer.release();
+            losePlayer = null;
+        });
 
         //Set music player to loop, then play it
         musicPlayer.setLooping(true);
@@ -96,6 +108,18 @@ public class GameActivity extends AppCompatActivity {
 //        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
 //        audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
 //        scorePlayer.setVolume(10, 10);
+    }
+
+    //Properly handle stopping all media players
+    //Lose player will be handled by its onCompletionListener
+    private void stopMediaPlayers(){
+        scorePlayer.stop();
+        scorePlayer.release();
+        scorePlayer = null;
+
+        musicPlayer.stop();
+        musicPlayer.release();
+        musicPlayer = null;
     }
 
     private void updateTimerText(){
@@ -179,7 +203,7 @@ public class GameActivity extends AppCompatActivity {
     //Ends the game, sending score and game options to the Game Over screen
     private void endGame(){
         losePlayer.start();
-        musicPlayer.stop();
+        stopMediaPlayers();
 
         if (instructionTimer != null) instructionTimer.cancel();
         Intent intent = new Intent(this, GameOverActivity.class);
@@ -211,7 +235,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        musicPlayer.pause(); //Pause background music
+        if (musicPlayer != null && musicPlayer.isPlaying()) musicPlayer.pause(); //Pause background music
         if (currentInstruction != null) currentInstruction.disable();
         if (instructionTimer != null) instructionTimer.cancel();
     }
