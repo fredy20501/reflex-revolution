@@ -1,6 +1,10 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.widget.LinearLayout;
@@ -31,6 +35,9 @@ public class GameActivity extends AppCompatActivity {
     private InstructionManager instructionManager;
     private GameMode gameMode;
     private Difficulty difficulty;
+
+    private MediaPlayer scorePlayer;
+    private MediaPlayer losePlayer;
 
     private int timeCount;
     private int score;
@@ -65,9 +72,20 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() { gameLoop(); }
         };
 
+        setMediaPlayers();
+
         updateTimerText();
         updateScoreText();
         resetTimer();
+    }
+
+    private void setMediaPlayers(){
+        scorePlayer = MediaPlayer.create(this, R.raw.score);
+        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+// For example to set the volume of played media to maximum.
+        audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+        scorePlayer.setVolume(10, 10);
+        scorePlayer.start();
     }
 
     private void updateTimerText(){
