@@ -38,6 +38,7 @@ public class GameActivity extends AppCompatActivity {
 
     private MediaPlayer scorePlayer;
     private MediaPlayer losePlayer;
+    private MediaPlayer musicPlayer;
 
     private int timeCount;
     private int score;
@@ -80,12 +81,21 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setMediaPlayers(){
+        //Create media players, and set their sound files
         scorePlayer = MediaPlayer.create(this, R.raw.score);
-        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-// For example to set the volume of played media to maximum.
-        audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
-        scorePlayer.setVolume(10, 10);
-        scorePlayer.start();
+        losePlayer = MediaPlayer.create(this, R.raw.score);
+        musicPlayer = MediaPlayer.create(this, R.raw.score);
+
+        //Rewind sound when it ends so that it can be played again later
+        scorePlayer.setOnCompletionListener(v -> { scorePlayer.seekTo(0);});
+        losePlayer.setOnCompletionListener(v -> { losePlayer.seekTo(0);});
+
+        //Set music player to loop, then play it
+        musicPlayer.setLooping(true);
+        musicPlayer.start();
+//        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+//        audioManager.setStreamVolume (AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),0);
+//        scorePlayer.setVolume(10, 10);
     }
 
     private void updateTimerText(){
@@ -156,6 +166,10 @@ public class GameActivity extends AppCompatActivity {
         score++;
         updateScoreText();
 
+        //Play sound and then rewind back to start of sound
+        scorePlayer.start();
+
+
         //Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
         currentInstruction.disable();
         resetUI();
@@ -164,6 +178,9 @@ public class GameActivity extends AppCompatActivity {
 
     //Ends the game, sending score and game options to the Game Over screen
     private void endGame(){
+        losePlayer.start();
+        musicPlayer.stop();
+
         if (instructionTimer != null) instructionTimer.cancel();
         Intent intent = new Intent(this, GameOverActivity.class);
         intent.putExtra("Score", score);
@@ -185,6 +202,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        musicPlayer.start(); //Resume background music
         if (currentInstruction != null) currentInstruction.enable();
         if (instructionTimer != null) startTimer();
     }
@@ -193,6 +211,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        musicPlayer.pause(); //Pause background music
         if (currentInstruction != null) currentInstruction.disable();
         if (instructionTimer != null) instructionTimer.cancel();
     }
