@@ -18,7 +18,7 @@
         <item name="closeIconVisible">false</item>
     </style>
 
-<!--    Headers-->
+<!--    Labels-->
     <style name="h1" parent="Widget.AppCompat.TextView">
         <item name="android:fontFamily">@font/pt_mono</item>
         <item name="android:textColor">@color/magenta_light</item>
@@ -30,13 +30,40 @@
         <item name="android:textSize">@dimen/h2</item>
         <item name="android:layout_marginTop">10dp</item>
     </style>
+    <style name="score" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/gold_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="instruction" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/rocknroll_one</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="instructionPrimary" parent="instruction">
+        <item name="android:textColor">@color/magenta_light</item>
+        <item name="android:textSize">@dimen/instructionPrimary</item>
+    </style>
+    <style name="instructionSecondary" parent="instruction">
+        <item name="android:textColor">@color/gold_light</item>
+        <item name="android:textSize">@dimen/instructionSecondary</item>
+    </style>
 
+<!--    Other Elements-->
+    <style name="keyboardInput" parent="Widget.AppCompat.EditText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:ems">5</item>
+    </style>
     <style name="spacer">
         <item name="android:minHeight">30dp</item>
     </style>
 
 <!--    Dimensions-->
     <dimen name="defaultCornerRadius">20sp</dimen>
+    <dimen name="instructionPrimary">64sp</dimen>
+    <dimen name="instructionSecondary">18sp</dimen>
     <dimen name="h1">44sp</dimen>
     <dimen name="h2">18sp</dimen>
+    <dimen name="score">44sp</dimen>
 </resources>

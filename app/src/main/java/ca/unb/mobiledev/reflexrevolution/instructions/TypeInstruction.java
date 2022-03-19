@@ -4,35 +4,38 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.JsonReader;
-import android.util.Log;
-import android.view.ViewGroup;
+import android.view.Gravity;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import androidx.appcompat.view.ContextThemeWrapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
 import java.util.Random;
 
+import ca.unb.mobiledev.reflexrevolution.R;
+
 public class TypeInstruction extends Instruction{
-    private Random rand;
+    private final Random rand;
     private String word;
     private EditText field;
     private RandomAccessFile wordListFile;
     private long fileLength;
     private final int SIZE_OF_FILE_LINE = 7;
-    private InputMethodManager keyboardDisplayManager;
+    private final InputMethodManager keyboardDisplayManager;
+    private final ContextThemeWrapper keyboardInputContext;
 
-    public TypeInstruction(ViewGroup layout, Callback callback) {
+    public TypeInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
         rand = new Random();
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboardInputContext = new ContextThemeWrapper(context, R.style.keyboardInput);
         fileLength = 0;
         setUpRandomWordList();
     }
@@ -81,9 +84,12 @@ public class TypeInstruction extends Instruction{
 
     @Override
     public void display() {
-        addTextView(word, SMALL_TEXT_SIZE);
-        addTextView("TYPE", DEFAULT_TEXT_SIZE);
-        field = new EditText(context);
+        // Align the labels to the top of the screen to make room for the keyboard
+        layout.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+
+        addTextView("TYPE", LabelType.PRIMARY);
+        addTextView(word, LabelType.SECONDARY);
+        field = new EditText(keyboardInputContext);
 
         //Listener that checks for text being updated
         field.addTextChangedListener(new TextWatcher() {

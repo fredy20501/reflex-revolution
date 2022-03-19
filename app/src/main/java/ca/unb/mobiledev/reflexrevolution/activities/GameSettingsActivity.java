@@ -1,12 +1,13 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -17,6 +18,7 @@ import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 
 public class GameSettingsActivity extends AppCompatActivity {
 
+    private long lastClickTime = 0;
     private GameMode gameMode;
     private Difficulty difficulty;
 
@@ -108,6 +110,10 @@ public class GameSettingsActivity extends AppCompatActivity {
         startButton.setOnClickListener(v -> {
             // Do nothing if gamemode & difficulty are not selected
             if (gameMode == null || difficulty == null) return;
+
+            // Prevent double-clicking
+            if (SystemClock.elapsedRealtime() - lastClickTime < 500) return;
+            lastClickTime = SystemClock.elapsedRealtime();
 
             // Start game activity
             Intent intent = new Intent(GameSettingsActivity.this, GameActivity.class);

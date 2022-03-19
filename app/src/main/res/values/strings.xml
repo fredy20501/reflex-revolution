@@ -30,4 +30,8 @@
     <string name="description_novice">Prefer to take things slow? Start the game with extra time to complete each instruction.</string>
     <string name="description_intermediate">A standard game of Reflex Revolution. Start the game with the regular amount of time to complete each instruction.</string>
     <string name="description_master">Want to get straight into the action? Start the game with less time to complete each instruction.</string>
+    <string name="_0">0</string>
+    <string name="trophy_icon">Trophy icon</string>
+    <string name="mute_audio">Mute audio</string>
+    <string name="pause_the_game">Pause the game</string>
 </resources>

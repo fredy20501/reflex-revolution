@@ -1,7 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class SwipeInstruction extends Instruction {
     private TouchDetector.SwipeAction currentAction;
     private Random rand;
 
-    public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
+    public SwipeInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
         setup();
@@ -43,12 +43,12 @@ public class SwipeInstruction extends Instruction {
     @Override
     public void display() {
         switch(currentAction) {
-            case SWIPE_RIGHT: addTextView("RIGHT", SMALL_TEXT_SIZE); break;
-            case SWIPE_LEFT: addTextView("LEFT", SMALL_TEXT_SIZE); break;
-            case SWIPE_UP: addTextView("UP", SMALL_TEXT_SIZE); break;
-            case SWIPE_DOWN: addTextView("DOWN", SMALL_TEXT_SIZE); break;
+            case SWIPE_RIGHT: addTextView("RIGHT", LabelType.SECONDARY); break;
+            case SWIPE_LEFT: addTextView("LEFT", LabelType.SECONDARY); break;
+            case SWIPE_UP: addTextView("UP", LabelType.SECONDARY); break;
+            case SWIPE_DOWN: addTextView("DOWN", LabelType.SECONDARY); break;
         }
-        addTextView("SWIPE", DEFAULT_TEXT_SIZE);
+        addTextView("SWIPE", LabelType.PRIMARY);
     }
 
     @Override

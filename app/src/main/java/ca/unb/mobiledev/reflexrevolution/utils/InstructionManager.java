@@ -1,7 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.utils;
 
 
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 
 public class InstructionManager {
 
-    private final ViewGroup layout;
+    private final LinearLayout layout;
     private final Instruction.Callback callback;
     private final TouchDetector touchDetector;
 
@@ -28,7 +28,7 @@ public class InstructionManager {
     private final Random rand;
     private float totalProbability;
 
-    public InstructionManager(ViewGroup layout, Instruction.Callback callback){
+    public InstructionManager(LinearLayout layout, Instruction.Callback callback){
         this.layout = layout;
         this.callback = callback;
         this.touchDetector = new TouchDetector(layout);
