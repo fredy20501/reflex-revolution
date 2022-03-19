@@ -3,26 +3,23 @@ package ca.unb.mobiledev.reflexrevolution.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.media.PlaybackParams;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.R;
+import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MediaPlayer musicPlayer;
+    private LoopMediaPlayer musicPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        setMusicPlayer();
+        musicPlayer = LoopMediaPlayer.create(this, R.raw.menu_music);
 
         Button startButton = findViewById(R.id.startButton);
         startButton.setOnClickListener(v -> {
@@ -37,20 +34,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Set up the music player
-    private void setMusicPlayer(){
-        musicPlayer = MediaPlayer.create(this, R.raw.menu_music);
-        musicPlayer.setLooping(true);
-        musicPlayer.start();
-    }
-
-    //On resume, restart the music player from the beginning of the track
     @Override
     protected void onResume() {
         super.onResume();
-        if(musicPlayer != null) {
-            musicPlayer.seekTo(0);
-            musicPlayer.start();
-        }
+        //Restart the music player from the beginning of the track
+        if(musicPlayer != null) musicPlayer.restart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //Pause background music
+        if (musicPlayer != null) musicPlayer.pause();
     }
 }

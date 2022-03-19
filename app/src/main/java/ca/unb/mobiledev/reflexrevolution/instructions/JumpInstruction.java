@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.view.ViewGroup;
 
-import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.JumpDetector;
 
 public class JumpInstruction extends Instruction {
@@ -27,6 +26,7 @@ public class JumpInstruction extends Instruction {
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         jumpDetector = new JumpDetector();
         jumpDetector.setOnJumpListener(this::success);
+        voiceCommands = getVoiceCommands("jump");
     }
 
     @Override
@@ -56,10 +56,5 @@ public class JumpInstruction extends Instruction {
 
     private void unsetListeners() {
         sensorManager.unregisterListener(jumpDetector);
-    }
-
-    @Override
-    protected void setVoiceCommands() {
-        voiceCommands = new int[]{R.raw.jump_carter};
     }
 }

@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.view.ViewGroup;
 
-import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.ShakeDetector;
 
 public class ShakeInstruction extends Instruction {
@@ -32,6 +31,7 @@ public class ShakeInstruction extends Instruction {
             @Override
             public void onMove() {}
         });
+        voiceCommands = getVoiceCommands("shake");
     }
 
     @Override
@@ -60,10 +60,5 @@ public class ShakeInstruction extends Instruction {
 
     private void unsetListeners() {
         sensorManager.unregisterListener(shakeDetector);
-    }
-
-    @Override
-    protected void setVoiceCommands() {
-        voiceCommands = new int[]{R.raw.shake_carter};
     }
 }

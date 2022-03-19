@@ -3,16 +3,12 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.view.ViewGroup;
 
-import java.util.Random;
-
-import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class SwipeInstruction extends Instruction {
 
     private final TouchDetector touchDetector;
     private TouchDetector.SwipeAction currentAction;
-    private Random rand;
 
     public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
@@ -21,7 +17,6 @@ public class SwipeInstruction extends Instruction {
     }
 
     private void setup() {
-        rand = new Random();
         touchDetector.addListener(new TouchDetector.ActionListener() {
             @Override
             public void onSwipe(TouchDetector.SwipeAction action) {
@@ -31,6 +26,7 @@ public class SwipeInstruction extends Instruction {
             @Override
             public void onTap(TouchDetector.TapAction action) {}
         });
+        voiceCommands = getVoiceCommands("swipe");
     }
 
     @Override
@@ -61,10 +57,5 @@ public class SwipeInstruction extends Instruction {
     @Override
     public void timerFinished() {
         fail();
-    }
-
-    @Override
-    protected void setVoiceCommands() {
-        voiceCommands = new int[]{R.raw.swipe_carter};
     }
 }

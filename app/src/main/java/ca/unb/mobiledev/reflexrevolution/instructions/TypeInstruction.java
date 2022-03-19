@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.JsonReader;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -14,17 +12,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 
 public class TypeInstruction extends Instruction{
+    @SuppressWarnings("FieldCanBeLocal")
     private final int SIZE_OF_FILE_LINE = 7;
-    private final Random rand;
     private final InputMethodManager keyboardDisplayManager;
 
     private String word;
@@ -32,11 +27,10 @@ public class TypeInstruction extends Instruction{
     private RandomAccessFile wordListFile;
     private long fileLength;
 
-
     public TypeInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
-        rand = new Random();
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        voiceCommands = getVoiceCommands("type");
         fileLength = 0;
         setUpRandomWordList();
     }
@@ -128,10 +122,5 @@ public class TypeInstruction extends Instruction{
     @Override
     public void timerFinished() {
         fail();
-    }
-
-    @Override
-    protected void setVoiceCommands() {
-        voiceCommands = new int[]{R.raw.dial_carter};
     }
 }

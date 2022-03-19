@@ -1,16 +1,9 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.PlaybackParams;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Debug;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,7 +16,7 @@ import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.InstructionManager;
-import ca.unb.mobiledev.reflexrevolution.utils.VoiceCommandManager;
+import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class GameActivity extends AppCompatActivity {
     //Time in ms
@@ -38,13 +31,12 @@ public class GameActivity extends AppCompatActivity {
     private CountDownTimer resetTimer;
     private Instruction currentInstruction;
     private InstructionManager instructionManager;
-    private VoiceCommandManager voiceCommandManager;
     private GameMode gameMode;
     private Difficulty difficulty;
 
     private MediaPlayer scorePlayer;
     private MediaPlayer losePlayer;
-    private MediaPlayer musicPlayer;
+    private LoopMediaPlayer musicPlayer;
 
     private int timeCount;
     private int score;
@@ -65,7 +57,6 @@ public class GameActivity extends AppCompatActivity {
         layout = findViewById(R.id.layout);
         score = 0;
 
-        voiceCommandManager = new VoiceCommandManager(this);
         instructionManager = new InstructionManager(layout, new Instruction.Callback() {
             @Override
             public void onSuccess() { instructionSuccess(); }
@@ -82,7 +73,6 @@ public class GameActivity extends AppCompatActivity {
         };
 
         setMediaPlayers();
-
         updateTimerText();
         updateScoreText();
         resetTimer();
@@ -93,10 +83,11 @@ public class GameActivity extends AppCompatActivity {
         //Create media players, and set their sound files
         scorePlayer = MediaPlayer.create(this, R.raw.score);
         losePlayer = MediaPlayer.create(this, R.raw.lose);
-        musicPlayer = MediaPlayer.create(this, R.raw.game_music);
+        musicPlayer = LoopMediaPlayer.create(this, R.raw.game_music);
+        updateMusicSpeed();
 
         //Rewind sound when it ends so that it can be played again later
-        scorePlayer.setOnCompletionListener(v -> { scorePlayer.seekTo(0);});
+        scorePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
 
         //Allow losePlayer to continue playing when the activity is closed
         //but stop it properly once it finishes playing
@@ -105,11 +96,6 @@ public class GameActivity extends AppCompatActivity {
             losePlayer.release();
             losePlayer = null;
         });
-
-        //Set music player to loop, and set its initial playback speed, then play it
-        setPlaybackSpeed();
-        musicPlayer.setLooping(true);
-        musicPlayer.start();
     }
 
     //Properly handle stopping all media players
@@ -119,7 +105,6 @@ public class GameActivity extends AppCompatActivity {
         scorePlayer.release();
         scorePlayer = null;
 
-        musicPlayer.stop();
         musicPlayer.release();
         musicPlayer = null;
     }
@@ -179,12 +164,10 @@ public class GameActivity extends AppCompatActivity {
         currentInstruction.init();
         currentInstruction.display();
         currentInstruction.enable();
+        currentInstruction.playVoiceCommand();
 
-        setPlaybackSpeed();
-
+        updateMusicSpeed();
         newTimer();
-
-        voiceCommandManager.playInstruction(currentInstruction);
     }
 
     //Clear all added UI elements
@@ -193,13 +176,12 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void instructionSuccess() {
+        //Play success sound effect
+        scorePlayer.start();
+
         //Update score
         score++;
         updateScoreText();
-
-        //Play sound and then rewind back to start of sound
-        scorePlayer.start();
-
 
         //Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
         currentInstruction.disable();
@@ -209,6 +191,7 @@ public class GameActivity extends AppCompatActivity {
 
     //Ends the game, sending score and game options to the Game Over screen
     private void endGame(){
+        // Stop music and play lose sound effect
         losePlayer.start();
         stopMediaPlayers();
 
@@ -221,6 +204,11 @@ public class GameActivity extends AppCompatActivity {
         finish();
     }
 
+    //Scale music playback speed based on how much time the player has to complete the instruction
+    private void updateMusicSpeed(){
+        musicPlayer.setPlaybackSpeed(scaleSongSpeedFromTimer());
+    }
+
     //Scuffed function that will give a scaled timer based on score.
     //Starts at ~3000ms and min value is ~1000ms
     //I literally came up with this from playing around in desmos so we might want to rework this later
@@ -231,24 +219,8 @@ public class GameActivity extends AppCompatActivity {
 
     //Returns a value between 0.5 and 1.5 based on the time the user has to complete the instruction
     //Scales linearly, with 0.5 as 5000ms, 1 as 3000ms, and 1.5 as 1000ms
-    private float scaleSongSpeedFromTimer() { return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, 0.5, 1.5);}
-
-    //Resume timer if app was closed
-    @Override
-    protected void onResume() {
-        super.onResume();
-        musicPlayer.start(); //Resume background music
-        if (currentInstruction != null) currentInstruction.enable();
-        if (instructionTimer != null) startTimer();
-    }
-
-    //Make sure timer doesn't keep going with app closed
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (musicPlayer != null && musicPlayer.isPlaying()) musicPlayer.pause(); //Pause background music
-        if (currentInstruction != null) currentInstruction.disable();
-        if (instructionTimer != null) instructionTimer.cancel();
+    private float scaleSongSpeedFromTimer() {
+        return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, 0.5, 1.5);
     }
 
     //Clamp function using double for maximum compatibility
@@ -258,10 +230,25 @@ public class GameActivity extends AppCompatActivity {
         return val;
     }
 
-    //Scale music playback speed based on how much time the player has to complete the instruction
-    private void setPlaybackSpeed(){
-        PlaybackParams params = musicPlayer.getPlaybackParams();
-        params.setSpeed(scaleSongSpeedFromTimer());
-        musicPlayer.setPlaybackParams(params);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Resume background music
+        if (musicPlayer != null) musicPlayer.restart();
+        // Re-enable listeners
+        if (currentInstruction != null) currentInstruction.enable();
+        // Restart the timer
+        if (instructionTimer != null) startTimer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //Pause background music
+        if (musicPlayer != null) musicPlayer.pause();
+        // Disable listeners
+        if (currentInstruction != null) currentInstruction.disable();
+        // Stop the timer
+        if (instructionTimer != null) instructionTimer.cancel();
     }
 }
