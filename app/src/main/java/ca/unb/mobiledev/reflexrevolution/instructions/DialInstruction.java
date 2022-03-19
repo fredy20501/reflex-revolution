@@ -4,32 +4,20 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.JsonReader;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Random;
-
-import ca.unb.mobiledev.reflexrevolution.R;
-
 public class DialInstruction extends Instruction{
-    private final Random rand;
     private final InputMethodManager keyboardDisplayManager;
 
     private String number;
     private EditText field;
 
-
     public DialInstruction(ViewGroup layout, Callback callback) {
         super(layout, callback);
-        rand = new Random();
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        voiceCommands = getVoiceCommands("dial");
     }
 
     @Override
@@ -75,6 +63,7 @@ public class DialInstruction extends Instruction{
     //Select field and force the keyboard to show
     @Override
     public void enable() {
+        if (field == null) return;
         field.requestFocus();
         keyboardDisplayManager.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT);
     }
@@ -82,6 +71,7 @@ public class DialInstruction extends Instruction{
     //Close keyboard
     @Override
     public void disable() {
+        if (field == null) return;
         keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
@@ -89,10 +79,5 @@ public class DialInstruction extends Instruction{
     public void timerFinished() {
         //Hide keyboard
         fail();
-    }
-
-    @Override
-    protected void setVoiceCommands() {
-        voiceCommands = new int[]{R.raw.dial_carter};
     }
 }

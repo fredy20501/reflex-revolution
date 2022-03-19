@@ -1,11 +1,15 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.R;
@@ -25,8 +29,9 @@ public abstract class Instruction {
     private boolean done;
 
     //Voice command variables
-    private final Random rand;
-    protected int[] voiceCommands;
+    protected final Random rand;
+    protected Integer[] voiceCommands;
+    private MediaPlayer player;
 
     // Default constructor
     public Instruction(ViewGroup layout, Callback callback) {
@@ -35,7 +40,6 @@ public abstract class Instruction {
         this.callback = callback;
         this.done = false;
         this.rand = new Random();
-        setVoiceCommands();
     }
 
     // Callback functions used to tell the game if success/fail
@@ -67,15 +71,42 @@ public abstract class Instruction {
         layout.addView(text);
     }
 
+    // Return the voice command resources using the given prefix
+    protected Integer[] getVoiceCommands(String prefix) {
+        List<Integer> idList = new ArrayList<>();
+        Field[] fields = R.raw.class.getFields();
+        for (Field field : fields) {
+            try {
+                if (field.getName().contains(prefix)) {
+                    idList.add(field.getInt(null));
+                }
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return idList.toArray(new Integer[0]);
+    }
+
+    // Play a random voice command associated with this instruction
+    public void playVoiceCommand() {
+        // Do nothing if don't have any voiceCommands set
+        if (voiceCommands == null || voiceCommands.length == 0) return;
+
+        // Setup a random voice command
+        int randomSoundFileID = voiceCommands[rand.nextInt(voiceCommands.length)];
+        player = MediaPlayer.create(context, randomSoundFileID);
+        //When sound is done, release media player properly
+        player.setOnCompletionListener(v -> {
+            player.stop();
+            player.release();
+            player = null;
+        });
+        player.start();
+    }
+
     // Initialize the state of the instruction
     // (Called before each time the instruction is used)
     public void init() { this.done = false; }
-
-    // Get a random voice command for this instruction
-    public int getVoiceCommand(){ return voiceCommands[rand.nextInt(voiceCommands.length)]; }
-
-    // All Instructions must set their list of voice commands
-    protected abstract void setVoiceCommands();
 
     // Add the UI elements to the layout
     public abstract void display();

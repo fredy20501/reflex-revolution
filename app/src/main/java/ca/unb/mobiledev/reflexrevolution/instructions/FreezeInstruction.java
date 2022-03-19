@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.view.ViewGroup;
 
-import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 import ca.unb.mobiledev.reflexrevolution.detectors.ShakeDetector;
 
@@ -46,6 +45,7 @@ public class FreezeInstruction extends Instruction {
                 fail();
             }
         });
+        voiceCommands = getVoiceCommands("freeze");
     }
 
     @Override
@@ -76,10 +76,5 @@ public class FreezeInstruction extends Instruction {
     private void unsetListeners() {
         sensorManager.unregisterListener(rotationDetector);
         sensorManager.unregisterListener(shakeDetector);
-    }
-
-    @Override
-    protected void setVoiceCommands() {
-        voiceCommands = new int[]{R.raw.freeze_carter};
     }
 }
