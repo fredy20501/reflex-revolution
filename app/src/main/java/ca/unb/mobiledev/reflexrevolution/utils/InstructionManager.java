@@ -43,15 +43,37 @@ public class InstructionManager {
 
         // Construct list of instructions based on game mode
         switch(gameMode){
+            case CLASSIC:
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                addEntry(new ShakeInstruction(layout, callback), 2);
+                break;
+            case TACTILE:
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                break;
+            case SWIPE:
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                break;
+            case KINETIC:
+                addEntry(new ShakeInstruction(layout, callback), 2);
+                addEntry(new JumpInstruction(layout, callback), 2);
+                addEntry(new FreezeInstruction(layout, callback), 2);
+                addEntry(new RotationInstruction(layout, callback), 6);
+                break;
+            case KEYBOARD:
+                addEntry(new TypeInstruction(layout, callback), 1);
+                addEntry(new DialInstruction(layout, callback), 1);
+                break;
             case REVOLUTION:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
                 addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
-                addEntry(new ShakeInstruction(layout, callback), 1);
-                addEntry(new JumpInstruction(layout, callback), 1);
-                addEntry(new FreezeInstruction(layout, callback), 1);
+                addEntry(new ShakeInstruction(layout, callback), 2);
+                addEntry(new JumpInstruction(layout, callback), 2);
+                addEntry(new FreezeInstruction(layout, callback), 2);
                 addEntry(new RotationInstruction(layout, callback), 6);
-                addEntry(new TypeInstruction(layout, callback), 1);
-                addEntry(new DialInstruction(layout, callback), 1);
+                addEntry(new TypeInstruction(layout, callback), 2);
+                addEntry(new DialInstruction(layout, callback), 2);
                 break;
         }
     }

@@ -30,17 +30,16 @@
             android:id="@+id/gameModeGroup"
             style="@style/customChipGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:checkedChip="@id/basic">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/basic"
+                android:id="@+id/classic"
                 style="@style/customChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:layout_marginBottom="0dp"
-                android:text="@string/basic"
+                android:text="@string/classic"
                 tools:ignore="TextContrastCheck" />
 
             <com.google.android.material.chip.Chip
@@ -74,13 +73,13 @@
                 tools:ignore="TextContrastCheck" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/creative"
+                android:id="@+id/keyboard"
                 style="@style/customChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:layout_marginBottom="0dp"
-                android:text="@string/creative"
+                android:text="@string/keyboard"
                 tools:ignore="TextContrastCheck" />
 
             <com.google.android.material.chip.Chip
@@ -125,8 +124,7 @@
             android:id="@+id/difficultyGroup"
             style="@style/customChipGroup"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:checkedChip="@id/standard">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/novice"
@@ -139,13 +137,13 @@
                 tools:ignore="TextContrastCheck" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/standard"
+                android:id="@+id/intermediate"
                 style="@style/customChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="0dp"
                 android:layout_marginBottom="0dp"
-                android:text="@string/standard"
+                android:text="@string/intermediate"
                 tools:ignore="TextContrastCheck" />
 
             <com.google.android.material.chip.Chip
