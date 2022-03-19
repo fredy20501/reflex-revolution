@@ -15,9 +15,9 @@ public class SwipeInstruction extends Instruction {
     private final TouchDetector touchDetector;
     private TouchDetector.SwipeAction currentAction;
     private Random rand;
-    private int index;
     private final Map<TouchDetector.SwipeAction, String[]> textLabels = new HashMap<>();
-    private String displayTxt;
+    private Integer[] swipeCommands;
+    private Integer[] flickCommands;
 
     public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
@@ -45,7 +45,8 @@ public class SwipeInstruction extends Instruction {
             @Override
             public void onTap(TouchDetector.TapAction action) {}
         });
-        voiceCommands = getVoiceCommands("swipe");
+        swipeCommands = getVoiceCommands("swipe");
+        flickCommands = getVoiceCommands("flick");
     }
 
     @Override
@@ -54,6 +55,10 @@ public class SwipeInstruction extends Instruction {
         // Initialize as a random action
         TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
+        switch(currentAction.getType()) {
+            case SWIPE: voiceCommands = swipeCommands; break;
+            case FLICK: voiceCommands = flickCommands; break;
+        }
     }
     @Override
     public void display() {
