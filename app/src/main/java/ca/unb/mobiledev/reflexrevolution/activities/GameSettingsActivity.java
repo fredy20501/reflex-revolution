@@ -6,20 +6,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 
+import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
-import ca.unb.mobiledev.reflexrevolution.R;
 
-public class MainActivity extends AppCompatActivity {
+public class GameSettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_game_settings);
 
-        Button playButton = findViewById(R.id.playButton);
-        playButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, GameSettingsActivity.class);
+        Button startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(v -> {
+            Intent intent = new Intent(GameSettingsActivity.this, GameActivity.class);
+            intent.putExtra("GameMode", GameMode.REVOLUTION);
+            intent.putExtra("Difficulty", Difficulty.NOVICE);
             startActivity(intent);
         });
     }

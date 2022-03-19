@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!--    Toggle Button Group-->
+    <style name="customChipGroup" parent="Widget.MaterialComponents.ChipGroup">
+        <item name="selectionRequired">true</item>
+        <item name="singleSelection">true</item>
+    </style>
+    <style name="customChip" parent="Widget.MaterialComponents.Chip.Action">
+        <item name="android:checkable">true</item>
+        <item name="android:textColor">@color/chip_text_state</item>
+        <item name="checkedIconTint">@color/magenta_light</item>
+        <item name="checkedIconVisible">false</item>
+        <item name="chipBackgroundColor">@color/chip_bg_state</item>
+        <item name="chipIconVisible">false</item>
+        <item name="chipStrokeColor">@color/magenta_light</item>
+        <item name="chipStrokeWidth">2dp</item>
+        <item name="closeIconVisible">false</item>
+    </style>
+
+<!--    Headers-->
+    <style name="h1" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/pt_mono</item>
+        <item name="android:textColor">@color/magenta_light</item>
+        <item name="android:textSize">@dimen/h1</item>
+    </style>
+    <style name="h2" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/pt_mono</item>
+        <item name="android:textColor">@color/gold_light</item>
+        <item name="android:textSize">@dimen/h2</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="spacer">
+        <item name="android:minHeight">30dp</item>
+    </style>
+
+<!--    Dimensions-->
+    <dimen name="defaultCornerRadius">20sp</dimen>
+    <dimen name="h1">44sp</dimen>
+    <dimen name="h2">18sp</dimen>
+</resources>

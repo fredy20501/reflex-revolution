@@ -7,4 +7,18 @@
     <string name="play">Play</string>
     <string name="how_to_play">How To Play</string>
     <string name="settings">Settings</string>
+    <string name="game_mode">Game Mode</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="start">Start</string>
+    <string name="master">Master</string>
+    <string name="kinetic">Kinetic</string>
+    <string name="revolution">Revolution</string>
+    <string name="creative">Creative</string>
+    <string name="tactile">Tactile</string>
+    <string name="swipe">Swipe</string>
+    <string name="novice">Novice</string>
+    <string name="basic">Basic</string>
+    <string name="standard">Standard</string>
+    <string name="header_placeholder">Header</string>
+    <string name="description_placeholder">Description</string>
 </resources>
