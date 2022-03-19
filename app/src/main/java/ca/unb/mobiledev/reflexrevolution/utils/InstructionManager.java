@@ -45,15 +45,15 @@ public class InstructionManager {
         switch(gameMode){
             case CLASSIC:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
                 addEntry(new ShakeInstruction(layout, callback), 2);
                 break;
             case TACTILE:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
                 break;
             case SWIPE:
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
                 break;
             case KINETIC:
                 addEntry(new ShakeInstruction(layout, callback), 2);
@@ -67,7 +67,7 @@ public class InstructionManager {
                 break;
             case REVOLUTION:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
                 addEntry(new ShakeInstruction(layout, callback), 2);
                 addEntry(new JumpInstruction(layout, callback), 2);
                 addEntry(new FreezeInstruction(layout, callback), 2);
