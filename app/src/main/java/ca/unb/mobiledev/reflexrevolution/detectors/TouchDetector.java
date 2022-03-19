@@ -94,9 +94,9 @@ public class TouchDetector implements View.OnTouchListener{
         HOLD_TAP,
         DONT_TAP
     }
-    public enum Type {FLING,SWIPE}
+    public enum Type {FLICK,SWIPE}
     public enum SwipeAction {
-        FLICK(Type.FLING),
+        FLICK(Type.FLICK),
         SWIPE_RIGHT(Type.SWIPE),
         SWIPE_LEFT(Type.SWIPE),
         SWIPE_UP(Type.SWIPE),
