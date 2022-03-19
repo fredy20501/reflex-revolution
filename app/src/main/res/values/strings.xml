@@ -2,4 +2,9 @@
     <string name="app_name">Reflex Revolution</string>
     <string name="scoreLabel">Score: %1$d</string>
     <string name="timerLabel">Timer: %1$d</string>
+    <string name="title">REFLEX</string>
+    <string name="subtitle">REVOLUTION</string>
+    <string name="play">Play</string>
+    <string name="how_to_play">How To Play</string>
+    <string name="settings">Settings</string>
 </resources>

@@ -22,9 +22,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/rocknroll_one"
-            android:text="REFLEX"
+            android:text="@string/title"
             android:textColor="@color/magenta_light"
-            android:textSize="64dp" />
+            android:textSize="64dp"
+            tools:ignore="SpUsage" />
 
         <TextView
             android:id="@+id/textView"
@@ -32,9 +33,10 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/pt_mono"
             android:letterSpacing="0.3"
-            android:text="REVOLUTION"
+            android:text="@string/subtitle"
             android:textColor="@color/gold_light"
-            android:textSize="28dp" />
+            android:textSize="28dp"
+            tools:ignore="SpUsage,TextContrastCheck" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,22 +50,25 @@
                 android:id="@+id/playButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Play"
-                app:cornerRadius="@dimen/defaultCornerRadius" />
+                android:text="@string/play"
+                app:cornerRadius="@dimen/defaultCornerRadius"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="How To Play"
-                app:cornerRadius="@dimen/defaultCornerRadius" />
+                android:text="@string/how_to_play"
+                app:cornerRadius="@dimen/defaultCornerRadius"
+                tools:ignore="TextContrastCheck" />
 
             <Button
                 android:id="@+id/button3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
-                app:cornerRadius="@dimen/defaultCornerRadius" />
+                android:text="@string/settings"
+                app:cornerRadius="@dimen/defaultCornerRadius"
+                tools:ignore="TextContrastCheck" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
