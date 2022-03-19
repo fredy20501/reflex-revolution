@@ -17,8 +17,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button startButton = findViewById(R.id.startButton);
-        startButton.setOnClickListener(v -> {
+        Button playButton = findViewById(R.id.playButton);
+        playButton.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
             intent.putExtra("GameMode", GameMode.REVOLUTION);
             intent.putExtra("Difficulty", Difficulty.NOVICE);
