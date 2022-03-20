@@ -1,15 +1,19 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.util.Random;
 
@@ -21,12 +25,14 @@ public class DialInstruction extends Instruction{
     private EditText field;
     private final InputMethodManager keyboardDisplayManager;
     private final ContextThemeWrapper keyboardInputContext;
+    private final ViewGroup.LayoutParams wrapContent;
 
     public DialInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
         rand = new Random();
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboardInputContext = new ContextThemeWrapper(context, R.style.keyboardInput);
+        wrapContent = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @Override
@@ -48,6 +54,10 @@ public class DialInstruction extends Instruction{
         addTextView(number, LabelType.SECONDARY);
         field = new EditText(keyboardInputContext);
         field.setInputType(InputType.TYPE_CLASS_PHONE);
+        field.setTypeface(getInstructionTypeFace());
+        field.setLayoutParams(wrapContent);
+        field.setEms(5);
+        field.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         //Listener that checks for text being updated
         field.addTextChangedListener(new TextWatcher() {

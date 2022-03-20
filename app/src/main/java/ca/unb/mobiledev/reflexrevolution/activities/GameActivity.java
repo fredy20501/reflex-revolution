@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,7 +30,10 @@ public class GameActivity extends AppCompatActivity {
     private ObjectAnimator instructionTimerAnimation;
     private ProgressBar timeProgressBar;
     private TextView scoreText;
-    private LinearLayout instructionSpace; //Layout we should add new UI elements to
+    private LinearLayout instructionSpace;
+    private ImageButton pauseButton;
+    private ViewGroup pauseOverlay;
+    private ViewGroup resumeSection;
 
     private CountDownTimer resetTimer;
     private Instruction currentInstruction;
@@ -36,6 +42,8 @@ public class GameActivity extends AppCompatActivity {
     private Difficulty difficulty;
 
     private int score;
+    private boolean isGamePaused = false;
+    private boolean isTimerDelayed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,9 @@ public class GameActivity extends AppCompatActivity {
         scoreText = findViewById(R.id.score);
         instructionSpace = findViewById(R.id.instructionSpace);
         timeProgressBar = findViewById(R.id.progressBar);
+        pauseButton = findViewById(R.id.pauseButton);
+        pauseOverlay = findViewById(R.id.pauseOverlay);
+        resumeSection = findViewById(R.id.resumeSection);
 
         // Set up the game
         initialize();
@@ -65,6 +76,26 @@ public class GameActivity extends AppCompatActivity {
         score = 0;
         updateScoreText();
 
+        // Set up UI interactions
+        pauseButton.setOnClickListener(v -> {
+            // Show overlay, hide current instruction
+            pauseOverlay.setVisibility(View.VISIBLE);
+            instructionSpace.setVisibility(View.INVISIBLE);
+            isGamePaused = true;
+            pauseGame();
+        });
+        resumeSection.setOnClickListener(v -> {
+            // Hide overlay, show current instruction
+            pauseOverlay.setVisibility(View.GONE);
+            instructionSpace.setVisibility(View.VISIBLE);
+            isGamePaused = false;
+            resumeGame();
+            if (isTimerDelayed) {
+                isTimerDelayed = false;
+                instructionTimerAnimation.start();
+            }
+        });
+
         // Set up the instructions
         instructionManager = new InstructionManager(instructionSpace, new Instruction.Callback() {
             @Override
@@ -74,7 +105,7 @@ public class GameActivity extends AppCompatActivity {
         });
         instructionManager.generateInstructions(gameMode);
 
-        // Setup the reset timer (used as delay between instructions)
+        // Set up the reset timer (used as delay between instructions)
         resetTimer = new CountDownTimer(TIME_BETWEEN_LOOPS, 1000) {
             @Override
             public void onTick(long l) {}
@@ -82,7 +113,7 @@ public class GameActivity extends AppCompatActivity {
             public void onFinish() { gameLoop(); }
         };
 
-        // Setup the instruction timer (progress bar animation)
+        // Set up the instruction timer (progress bar animation)
         instructionTimerAnimation = ObjectAnimator.ofInt(timeProgressBar, "progress", 100, 0);
         instructionTimerAnimation.setInterpolator(new LinearInterpolator());
         instructionTimerAnimation.addListener(new Animator.AnimatorListener() {
@@ -90,7 +121,7 @@ public class GameActivity extends AppCompatActivity {
             public void onAnimationStart(Animator animator) {}
             @Override
             public void onAnimationEnd(Animator animator) {
-                currentInstruction.timerFinished();
+                if (currentInstruction != null) currentInstruction.timerFinished();
             }
             @Override
             public void onAnimationCancel(Animator animator) {}
@@ -106,12 +137,9 @@ public class GameActivity extends AppCompatActivity {
     // Stop current timer then call game loop after one second
     private void startResetTimer() {
         instructionTimerAnimation.cancel();
-        if (resetTimer != null) {
-            resetTimer.cancel();
-
-            //Wait some delay before calling game loop
-            resetTimer.start();
-        }
+        //Wait some delay before calling game loop
+        resetTimer.cancel();
+        resetTimer.start();
     }
 
     // Get new timer count, then start it
@@ -125,7 +153,8 @@ public class GameActivity extends AppCompatActivity {
 
         // Start the timer animation
         instructionTimerAnimation.setDuration(timerDuration);
-        instructionTimerAnimation.start();
+        if (!isGamePaused) instructionTimerAnimation.start();
+        else isTimerDelayed = true;
     }
 
     // Prepare and start new instruction loop
@@ -133,7 +162,7 @@ public class GameActivity extends AppCompatActivity {
         currentInstruction = instructionManager.getInstruction();
         currentInstruction.init();
         currentInstruction.display();
-        currentInstruction.enable();
+        if (!isGamePaused) currentInstruction.enable();
         newTimer();
     }
 
@@ -172,19 +201,33 @@ public class GameActivity extends AppCompatActivity {
         return (int)Math.pow(2, -0.04*score + 11) + 1000;
     }
 
-    // Resume timer if app was closed
+    private void pauseGame() {
+        if (currentInstruction != null) currentInstruction.disable();
+        instructionTimerAnimation.pause();
+    }
+
+    private void resumeGame() {
+        if (currentInstruction != null) currentInstruction.enable();
+        if (!isGamePaused) instructionTimerAnimation.resume();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if (currentInstruction != null) currentInstruction.enable();
-        instructionTimerAnimation.resume();
+        resumeGame();
     }
 
-    // Make sure timer doesn't keep going with app closed
     @Override
     protected void onPause() {
         super.onPause();
-        if (currentInstruction != null) currentInstruction.disable();
-        instructionTimerAnimation.pause();
+        pauseGame();
+    }
+
+    @Override
+    public void onBackPressed(){
+        currentInstruction = null;
+        instructionTimerAnimation.cancel();
+        resetTimer.cancel();
+        finish();
     }
 }

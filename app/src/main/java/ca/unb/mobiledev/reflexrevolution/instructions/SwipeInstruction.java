@@ -15,9 +15,7 @@ public class SwipeInstruction extends Instruction {
     private final TouchDetector touchDetector;
     private TouchDetector.SwipeAction currentAction;
     private Random rand;
-    private int index;
     private final Map<TouchDetector.SwipeAction, String[]> textLabels = new HashMap<>();
-    private String displayTxt;
 
     public SwipeInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);

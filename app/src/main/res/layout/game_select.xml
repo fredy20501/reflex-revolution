@@ -20,7 +20,6 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/gameModeHeader"
             style="@style/h1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,6 +90,7 @@
                 android:layout_marginBottom="0dp"
                 android:text="@string/revolution"
                 tools:ignore="TextContrastCheck" />
+
         </com.google.android.material.chip.ChipGroup>
 
         <TextView
@@ -114,7 +114,6 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/difficultyHeader"
             style="@style/h1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

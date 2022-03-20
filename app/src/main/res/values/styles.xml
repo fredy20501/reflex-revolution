@@ -48,6 +48,16 @@
         <item name="android:textColor">@color/gold_light</item>
         <item name="android:textSize">@dimen/instructionSecondary</item>
     </style>
+    <style name="gameOverLabel1" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/rocknroll_one</item>
+        <item name="android:textColor">@color/magenta_light</item>
+        <item name="android:textSize">@dimen/gameOverLabels</item>
+    </style>
+    <style name="gameOverLabel2" parent="Widget.AppCompat.TextView">
+        <item name="android:fontFamily">@font/rocknroll_one</item>
+        <item name="android:textColor">@color/gold_light</item>
+        <item name="android:textSize">@dimen/gameOverLabels</item>
+    </style>
 
 <!--    Other Elements-->
     <style name="keyboardInput" parent="Widget.AppCompat.EditText">
@@ -66,4 +76,5 @@
     <dimen name="h1">44sp</dimen>
     <dimen name="h2">18sp</dimen>
     <dimen name="score">44sp</dimen>
+    <dimen name="gameOverLabels">24sp</dimen>
 </resources>

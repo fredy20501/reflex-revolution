@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -30,12 +32,14 @@ public class TypeInstruction extends Instruction{
     private final int SIZE_OF_FILE_LINE = 7;
     private final InputMethodManager keyboardDisplayManager;
     private final ContextThemeWrapper keyboardInputContext;
+    private final ViewGroup.LayoutParams wrapContent;
 
     public TypeInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
         rand = new Random();
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboardInputContext = new ContextThemeWrapper(context, R.style.keyboardInput);
+        wrapContent = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         fileLength = 0;
         setUpRandomWordList();
     }
@@ -90,6 +94,11 @@ public class TypeInstruction extends Instruction{
         addTextView("TYPE", LabelType.PRIMARY);
         addTextView(word, LabelType.SECONDARY);
         field = new EditText(keyboardInputContext);
+        field.setTypeface(getInstructionTypeFace());
+        field.setLayoutParams(wrapContent);
+        field.setEms(5);
+        field.setAllCaps(true);
+        field.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         //Listener that checks for text being updated
         field.addTextChangedListener(new TextWatcher() {

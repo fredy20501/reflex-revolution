@@ -3,7 +3,6 @@ package ca.unb.mobiledev.reflexrevolution.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -25,48 +24,29 @@ public class GameSettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game_settings);
+        setContentView(R.layout.game_select);
 
         // Game mode selection
         TextView gameModeDescriptionHeader = findViewById(R.id.gameModeDescriptionHeader);
         TextView gameModeDescription = findViewById(R.id.gameModeDescription);
         ChipGroup gameModeSelect = findViewById(R.id.gameModeGroup);
         gameModeSelect.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.classic) {
-                gameModeDescriptionHeader.setText(R.string.classic);
-                gameModeDescription.setText(R.string.description_classic);
-                gameMode = GameMode.CLASSIC;
-            }
-            else if (checkedId == R.id.tactile) {
-                gameModeDescriptionHeader.setText(R.string.tactile);
-                gameModeDescription.setText(R.string.description_tactile);
-                gameMode = GameMode.TACTILE;
-            }
-            else if (checkedId == R.id.swipe) {
-                gameModeDescriptionHeader.setText(R.string.swipe);
-                gameModeDescription.setText(R.string.description_swipe);
-                gameMode = GameMode.SWIPE;
-            }
-            else if (checkedId == R.id.kinetic) {
-                gameModeDescriptionHeader.setText(R.string.kinetic);
-                gameModeDescription.setText(R.string.description_kinetic);
-                gameMode = GameMode.KINETIC;
-            }
-            else if (checkedId == R.id.keyboard) {
-                gameModeDescriptionHeader.setText(R.string.keyboard);
-                gameModeDescription.setText(R.string.description_keyboard);
-                gameMode = GameMode.KEYBOARD;
-            }
-            else if (checkedId == R.id.revolution) {
-                gameModeDescriptionHeader.setText(R.string.revolution);
-                gameModeDescription.setText(R.string.description_revolution);
-                gameMode = GameMode.REVOLUTION;
-            }
-            else {
-                Log.i(this.getClass().getSimpleName(), "NO GAMEMODE SELECTED");
+            if (checkedId == R.id.classic) gameMode = GameMode.CLASSIC;
+            else if (checkedId == R.id.tactile) gameMode = GameMode.TACTILE;
+            else if (checkedId == R.id.swipe) gameMode = GameMode.SWIPE;
+            else if (checkedId == R.id.kinetic) gameMode = GameMode.KINETIC;
+            else if (checkedId == R.id.keyboard) gameMode = GameMode.KEYBOARD;
+            else if (checkedId == R.id.revolution) gameMode = GameMode.REVOLUTION;
+            else gameMode = null;
+
+            // Update text fields according to selection
+            if (gameMode == null) {
                 gameModeDescriptionHeader.setText("");
                 gameModeDescription.setText("");
-                gameMode = null;
+            }
+            else {
+                gameModeDescriptionHeader.setText(gameMode.getName());
+                gameModeDescription.setText(gameMode.getDescription());
             }
         });
 
@@ -75,26 +55,19 @@ public class GameSettingsActivity extends AppCompatActivity {
         TextView difficultyDescription = findViewById(R.id.difficultyDescription);
         ChipGroup difficultySelect = findViewById(R.id.difficultyGroup);
         difficultySelect.setOnCheckedChangeListener((group, checkedId) -> {
-            if (checkedId == R.id.novice) {
-                difficultyDescriptionHeader.setText(R.string.novice);
-                difficultyDescription.setText(R.string.description_novice);
-                difficulty = Difficulty.NOVICE;
-            }
-            else if (checkedId == R.id.intermediate) {
-                difficultyDescriptionHeader.setText(R.string.intermediate);
-                difficultyDescription.setText(R.string.description_intermediate);
-                difficulty = Difficulty.INTERMEDIATE;
-            }
-            else if (checkedId == R.id.master) {
-                difficultyDescriptionHeader.setText(R.string.master);
-                difficultyDescription.setText(R.string.description_master);
-                difficulty = Difficulty.MASTER;
-            }
-            else {
-                Log.i(this.getClass().getSimpleName(), "NO DIFFICULTY SELECTED");
+            if (checkedId == R.id.novice) difficulty = Difficulty.NOVICE;
+            else if (checkedId == R.id.intermediate) difficulty = Difficulty.INTERMEDIATE;
+            else if (checkedId == R.id.master) difficulty = Difficulty.MASTER;
+            else difficulty = null;
+
+            // Update text fields according to selection
+            if (difficulty == null) {
                 difficultyDescriptionHeader.setText("");
                 difficultyDescription.setText("");
-                difficulty = null;
+            }
+            else {
+                difficultyDescriptionHeader.setText(difficulty.getName());
+                difficultyDescription.setText(difficulty.getDescription());
             }
         });
 

@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Reflex Revolution</string>
     <string name="scoreLabel">Score: %1$d</string>
-    <string name="timerLabel">Timer: %1$d</string>
     <string name="title">REFLEX</string>
     <string name="subtitle">REVOLUTION</string>
     <string name="play">Play</string>
@@ -32,6 +31,13 @@
     <string name="description_master">Want to get straight into the action? Start the game with less time to complete each instruction.</string>
     <string name="_0">0</string>
     <string name="trophy_icon">Trophy icon</string>
-    <string name="mute_audio">Mute audio</string>
     <string name="pause_the_game">Pause the game</string>
+    <string name="game_over">Game Over!</string>
+    <string name="menu">Menu</string>
+    <string name="replay">Replay</string>
+    <string name="difficulty_colon">Difficulty:</string>
+    <string name="game_mode_colon">Game Mode:</string>
+    <string name="paused">PAUSED</string>
+    <string name="tap_to_resume">TAP TO RESUME</string>
+    <string name="custom">Custom</string>
 </resources>

@@ -1,11 +1,14 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.graphics.fonts.Font;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.res.ResourcesCompat;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 
@@ -55,7 +58,7 @@ public abstract class Instruction {
     }
 
     // Add a basic text view to the layout
-    protected void addTextView(String label, LabelType labelType, int gravity) {
+    protected void addTextView(String label, LabelType labelType) {
         ContextThemeWrapper styledContext;
         switch (labelType) {
             default:
@@ -64,11 +67,13 @@ public abstract class Instruction {
         }
         TextView text = new TextView(styledContext);
         text.setText(label);
-        text.setGravity(gravity);
+        text.setGravity(Gravity.CENTER);
+        text.setTypeface(getInstructionTypeFace());
         layout.addView(text);
     }
-    protected void addTextView(String label, LabelType labelType) {
-        addTextView(label, labelType, Gravity.CENTER);
+
+    protected Typeface getInstructionTypeFace() {
+        return ResourcesCompat.getFont(context, R.font.rocknroll_one);
     }
 
     // Initialize the state of the instruction

@@ -7,33 +7,46 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
-import ca.unb.mobiledev.reflexrevolution.R;
 
 public class GameOverActivity extends AppCompatActivity {
 
-    private GameMode gameMode;
-    private Difficulty difficulty;
+    private int score = 0;
+    private GameMode gameMode = GameMode.CLASSIC;
+    private Difficulty difficulty = Difficulty.INTERMEDIATE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_over);
 
-        TextView scoreText = findViewById(R.id.scoreText);
-        Button replayButton = findViewById(R.id.replayButton);
-        Button menuButton = findViewById(R.id.menuButton);
-
-        //Retrieve score
+        //Retrieve information
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            scoreText.setText(getString(R.string.scoreLabel, extras.getInt("Score")));
+            score = extras.getInt("Score");
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }
+        // TODO: get high score from local storage
+        int highScore = 0;
 
-        //Start activity for new game if "Play Again" is hit
+        // Get UI elements
+        TextView highScoreText = findViewById(R.id.highScore);
+        TextView scoreText = findViewById(R.id.score);
+        TextView gameModeValue = findViewById(R.id.gameModeValue);
+        TextView difficultyValue = findViewById(R.id.difficultyValue);
+        Button replayButton = findViewById(R.id.replayButton);
+        Button menuButton = findViewById(R.id.menuButton);
+
+        // Set values
+        highScoreText.setText(String.valueOf(highScore));
+        scoreText.setText(String.valueOf(score));
+        gameModeValue.setText(gameMode.getName());
+        difficultyValue.setText(difficulty.getName());
+
+        // Replay button to start new game
         replayButton.setOnClickListener(v -> {
             Intent intent = new Intent(GameOverActivity.this, GameActivity.class);
             intent.putExtra("GameMode", gameMode);
@@ -42,7 +55,7 @@ public class GameOverActivity extends AppCompatActivity {
             finish();
         });
 
-        //Close this activity if "Menu" button is hit, returning to menu
+        // Menu button to close this activity, returning to game select screen
         menuButton.setOnClickListener(v -> finish());
     }
 }
