@@ -1,7 +1,6 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.view.ContextThemeWrapper;
-import androidx.core.content.res.ResourcesCompat;
 
 import java.util.Random;
 

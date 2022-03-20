@@ -1,6 +1,5 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;

@@ -2,7 +2,6 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.graphics.fonts.Font;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
