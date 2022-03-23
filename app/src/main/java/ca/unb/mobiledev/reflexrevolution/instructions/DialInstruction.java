@@ -62,7 +62,7 @@ public class DialInstruction extends Instruction{
             //If text equals current word, trigger success
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().equals(number.replace("-", ""))){
+                if(s.toString().replace("-", "").equals(number.replace("-", ""))){
                     //Hide keyboard
                     success();
                 }
