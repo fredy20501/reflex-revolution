@@ -33,7 +33,7 @@ public class SwipeInstruction extends Instruction {
         touchDetector.addListener(new TouchDetector.ActionListener() {
             @Override
             public void onSwipe(TouchDetector.SwipeAction action) {
-                if (currentAction.getType() == action.getType()) {
+                if (currentAction != null && currentAction.getType() == action.getType()) {
                     // Same type and same instruction
                     if (currentAction == action) success();
                         // Same type but different instruction (wrong direction)

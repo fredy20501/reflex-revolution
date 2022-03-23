@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/UNB/SecondYear/Winter2022/CS2063/reflex-revolution/app/src/main/res/layout/game.xml" value="0.190625" />
+        <entry key="..\:/UNB/SecondYear/Winter2022/CS2063/reflex-revolution/app/src/main/res/layout/high_score.xml" value="0.190625" />
+        <entry key="..\:/UNB/SecondYear/Winter2022/CS2063/reflex-revolution/app/src/main/res/layout/main_menu.xml" value="0.190625" />
         <entry key="..\:/Users/carte/School/2022 Winter/CS2063/Reflex Revolution/reflex-revolution/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
         <entry key="..\:/Users/carte/School/2022 Winter/CS2063/Reflex Revolution/reflex-revolution/app/src/main/res/layout/game.xml" value="0.2" />
         <entry key="..\:/Users/carte/School/2022 Winter/CS2063/Reflex Revolution/reflex-revolution/app/src/main/res/layout/game_over.xml" value="0.176" />
