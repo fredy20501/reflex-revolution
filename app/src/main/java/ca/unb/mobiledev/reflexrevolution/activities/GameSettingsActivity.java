@@ -6,16 +6,15 @@ import android.os.SystemClock;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import ca.unb.mobiledev.reflexrevolution.R;
+import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 
-public class GameSettingsActivity extends AppCompatActivity {
+public class GameSettingsActivity extends BackgroundMusicActivity {
 
     private long lastClickTime = 0;
     private GameMode gameMode;
@@ -87,6 +86,9 @@ public class GameSettingsActivity extends AppCompatActivity {
             // Prevent double-clicking
             if (SystemClock.elapsedRealtime() - lastClickTime < 500) return;
             lastClickTime = SystemClock.elapsedRealtime();
+
+            // Force background music to stop
+            BackgroundMusic.onStop();
 
             // Start game activity
             Intent intent = new Intent(GameSettingsActivity.this, GameActivity.class);

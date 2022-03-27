@@ -99,6 +99,8 @@ public class GameActivity extends AppCompatActivity {
             if (isTimerDelayed) {
                 isTimerDelayed = false;
                 instructionTimerAnimation.start();
+                currentInstruction.playVoiceCommand();
+                updateMusicSpeed();
             }
         });
 
@@ -204,9 +206,9 @@ public class GameActivity extends AppCompatActivity {
         if (!isGamePaused) {
             currentInstruction.enable();
             currentInstruction.playVoiceCommand();
+            updateMusicSpeed();
         }
 
-        updateMusicSpeed();
         newTimer();
     }
 
@@ -235,7 +237,6 @@ public class GameActivity extends AppCompatActivity {
     private void endGame(){
         // Stop music and play lose sound effect
         losePlayer.start();
-        stopMediaPlayers();
         // Stop timer
         instructionTimerAnimation.cancel();
 
@@ -293,6 +294,12 @@ public class GameActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         pauseGame();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopMediaPlayers();
     }
 
     @Override

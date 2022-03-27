@@ -7,7 +7,6 @@ import android.media.MediaPlayer;
 
 public class LoopMediaPlayer {
 
-    private final Context mContext;
     private final int mResId;
 
     private MediaPlayer mCurrentPlayer;
@@ -19,27 +18,24 @@ public class LoopMediaPlayer {
     }
 
     private LoopMediaPlayer(Context context, int resId) {
-        mContext = context;
         mResId = resId;
 
-        mCurrentPlayer = MediaPlayer.create(mContext, mResId);
+        mCurrentPlayer = MediaPlayer.create(context, mResId);
         mCurrentPlayer.setOnPreparedListener(mediaPlayer -> mCurrentPlayer.start());
-        createNextMediaPlayer();
+        createNextMediaPlayer(context);
     }
 
-    private void createNextMediaPlayer() {
-        mNextPlayer = MediaPlayer.create(mContext, mResId);
+    private void createNextMediaPlayer(Context context) {
+        mNextPlayer = MediaPlayer.create(context, mResId);
         mCurrentPlayer.setNextMediaPlayer(mNextPlayer);
-        mCurrentPlayer.setOnCompletionListener(onCompletionListener);
+        mCurrentPlayer.setOnCompletionListener(mediaPlayer -> {
+            mediaPlayer.release();
+            mCurrentPlayer = mNextPlayer;
+            // Reset playback speed when switching to next player
+            setPlaybackSpeed(lastSpeed);
+            createNextMediaPlayer(context);
+        });
     }
-
-    private final MediaPlayer.OnCompletionListener onCompletionListener = mediaPlayer -> {
-        mediaPlayer.release();
-        mCurrentPlayer = mNextPlayer;
-        // Reset playback speed when switching to next player
-        setPlaybackSpeed(lastSpeed);
-        createNextMediaPlayer();
-    };
 
     public void pause() {
         if (mCurrentPlayer.isPlaying()) mCurrentPlayer.pause();

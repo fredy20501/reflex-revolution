@@ -1,23 +1,19 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
-import android.media.MediaPlayer;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.res.ResourcesCompat;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 
