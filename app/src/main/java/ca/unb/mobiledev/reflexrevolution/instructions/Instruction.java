@@ -1,31 +1,39 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
-import android.util.TypedValue;
-import android.view.View;
-import android.view.ViewGroup;
+import android.graphics.Typeface;
+import android.view.Gravity;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.res.ResourcesCompat;
+
+import ca.unb.mobiledev.reflexrevolution.R;
 
 public abstract class Instruction {
 
     // Static constants
-    protected static final float DEFAULT_TEXT_SIZE = 80;
-    protected static final float SMALL_TEXT_SIZE = 16;
+    protected enum LabelType { PRIMARY, SECONDARY }
+    protected final ContextThemeWrapper primaryContext;
+    protected final ContextThemeWrapper secondaryContext;
 
     // Initialized constants
     protected final Context context;
-    protected final ViewGroup layout;
+    protected final LinearLayout layout;
 
     // Callback variables
     private final Callback callback;
     private boolean done;
 
     // Default constructor
-    public Instruction(ViewGroup layout, Callback callback) {
+    public Instruction(LinearLayout layout, Callback callback) {
         this.context = layout.getContext();
         this.layout = layout;
         this.callback = callback;
         this.done = false;
+        this.primaryContext = new ContextThemeWrapper(context, R.style.instructionPrimary);
+        this.secondaryContext = new ContextThemeWrapper(context, R.style.instructionSecondary);
     }
 
     // Callback functions used to tell the game if success/fail
@@ -49,12 +57,22 @@ public abstract class Instruction {
     }
 
     // Add a basic text view to the layout
-    protected void addTextView(String label, float textSize) {
-        TextView text = new TextView(context);
-        text.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+    protected void addTextView(String label, LabelType labelType) {
+        ContextThemeWrapper styledContext;
+        switch (labelType) {
+            default:
+            case PRIMARY: styledContext = primaryContext; break;
+            case SECONDARY: styledContext = secondaryContext; break;
+        }
+        TextView text = new TextView(styledContext);
         text.setText(label);
+        text.setGravity(Gravity.CENTER);
+        text.setTypeface(getInstructionTypeFace());
         layout.addView(text);
+    }
+
+    protected Typeface getInstructionTypeFace() {
+        return ResourcesCompat.getFont(context, R.font.rocknroll_one);
     }
 
     // Initialize the state of the instruction

@@ -1,7 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.utils;
 
 
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 
 public class InstructionManager {
 
-    private final ViewGroup layout;
+    private final LinearLayout layout;
     private final Instruction.Callback callback;
     private final TouchDetector touchDetector;
 
@@ -28,7 +28,7 @@ public class InstructionManager {
     private final Random rand;
     private float totalProbability;
 
-    public InstructionManager(ViewGroup layout, Instruction.Callback callback){
+    public InstructionManager(LinearLayout layout, Instruction.Callback callback){
         this.layout = layout;
         this.callback = callback;
         this.touchDetector = new TouchDetector(layout);
@@ -43,15 +43,37 @@ public class InstructionManager {
 
         // Construct list of instructions based on game mode
         switch(gameMode){
-            case REVOLUTION:
+            case CLASSIC:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 9);
-                addEntry(new ShakeInstruction(layout, callback), 1);
-                addEntry(new JumpInstruction(layout, callback), 1);
-                addEntry(new FreezeInstruction(layout, callback), 1);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
+                addEntry(new ShakeInstruction(layout, callback), 2);
+                break;
+            case TACTILE:
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
+                break;
+            case SWIPE:
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
+                break;
+            case KINETIC:
+                addEntry(new ShakeInstruction(layout, callback), 2);
+                addEntry(new JumpInstruction(layout, callback), 2);
+                addEntry(new FreezeInstruction(layout, callback), 2);
                 addEntry(new RotationInstruction(layout, callback), 6);
+                break;
+            case KEYBOARD:
                 addEntry(new TypeInstruction(layout, callback), 1);
                 addEntry(new DialInstruction(layout, callback), 1);
+                break;
+            case REVOLUTION:
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
+                addEntry(new ShakeInstruction(layout, callback), 2);
+                addEntry(new JumpInstruction(layout, callback), 2);
+                addEntry(new FreezeInstruction(layout, callback), 2);
+                addEntry(new RotationInstruction(layout, callback), 6);
+                addEntry(new TypeInstruction(layout, callback), 2);
+                addEntry(new DialInstruction(layout, callback), 2);
                 break;
         }
     }

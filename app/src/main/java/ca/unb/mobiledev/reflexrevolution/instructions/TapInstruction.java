@@ -1,7 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class TapInstruction extends Instruction {
     private TouchDetector.TapAction currentAction;
     private Random rand;
 
-    public TapInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
+    public TapInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
         setup();
@@ -43,11 +43,11 @@ public class TapInstruction extends Instruction {
     @Override
     public void display() {
         switch(currentAction) {
-            case DOUBLE_TAP: addTextView("DOUBLE", SMALL_TEXT_SIZE); break;
-            case HOLD_TAP: addTextView("HOLD", SMALL_TEXT_SIZE); break;
-            case DONT_TAP: addTextView("DONT", SMALL_TEXT_SIZE); break;
+            case DOUBLE_TAP: addTextView("DOUBLE", LabelType.SECONDARY); break;
+            case HOLD_TAP: addTextView("HOLD", LabelType.SECONDARY); break;
+            case DONT_TAP: addTextView("DONT", LabelType.SECONDARY); break;
         }
-        addTextView("TAP", DEFAULT_TEXT_SIZE);
+        addTextView("TAP", LabelType.PRIMARY);
     }
 
     @Override

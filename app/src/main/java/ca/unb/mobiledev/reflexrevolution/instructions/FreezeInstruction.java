@@ -4,7 +4,7 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 import ca.unb.mobiledev.reflexrevolution.detectors.ShakeDetector;
@@ -17,7 +17,7 @@ public class FreezeInstruction extends Instruction {
     private ShakeDetector shakeDetector;
     private RotationDetector rotationDetector;
 
-    public FreezeInstruction(ViewGroup layout, Callback callback) {
+    public FreezeInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
         setup();
     }
@@ -49,7 +49,7 @@ public class FreezeInstruction extends Instruction {
 
     @Override
     public void display() {
-        addTextView("FREEZE", DEFAULT_TEXT_SIZE);
+        addTextView("FREEZE", LabelType.PRIMARY);
     }
 
     @Override

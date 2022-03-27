@@ -4,7 +4,7 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.JumpDetector;
 
@@ -15,7 +15,7 @@ public class JumpInstruction extends Instruction {
     private Sensor gravitySensor;
     private JumpDetector jumpDetector;
 
-    public JumpInstruction(ViewGroup layout, Callback callback) {
+    public JumpInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
         setup();
     }
@@ -30,7 +30,7 @@ public class JumpInstruction extends Instruction {
 
     @Override
     public void display() {
-        addTextView("JUMP", DEFAULT_TEXT_SIZE);
+        addTextView("JUMP", LabelType.PRIMARY);
     }
 
     @Override

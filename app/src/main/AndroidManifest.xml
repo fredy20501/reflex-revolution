@@ -3,11 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ca.unb.mobiledev.reflexrevolution">
 
-    <uses-feature android:name="android.hardware.screen.portrait"
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
         android:required="true" />
-    <uses-feature android:name="android.hardware.sensor.accelerometer"
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
         android:required="true" />
-    <uses-feature android:name="android.hardware.sensor.gyroscope"
+    <uses-feature
+        android:name="android.hardware.sensor.gyroscope"
         android:required="true" />
 
     <application
@@ -18,12 +21,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReflexRevolution">
         <activity
+            android:name=".activities.GameSettingsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -33,6 +40,10 @@
         <activity
             android:name=".activities.GameOverActivity"
             android:screenOrientation="behind" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>
