@@ -1,7 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
 
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class SwipeInstruction extends Instruction {
     private Integer[] swipeVoiceCommands;
     private Integer[] flickVoiceCommands;
 
-    public SwipeInstruction(ViewGroup layout, Callback callback, TouchDetector touchDetector) {
+    public SwipeInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
         setup();
@@ -32,7 +32,7 @@ public class SwipeInstruction extends Instruction {
         touchDetector.addListener(new TouchDetector.ActionListener() {
             @Override
             public void onSwipe(TouchDetector.SwipeAction action) {
-                if (currentAction.getType() == action.getType()) {
+                if (currentAction != null && currentAction.getType() == action.getType()) {
                     // Same type and same instruction
                     if (currentAction == action) success();
                         // Same type but different instruction (wrong direction)
@@ -64,13 +64,13 @@ public class SwipeInstruction extends Instruction {
             // Add small label for swipe instructions
             int index = rand.nextInt(2);
             String displayTxt = Objects.requireNonNull(textLabels.get(currentAction))[index];
-            addTextView(displayTxt, SMALL_TEXT_SIZE);
+            addTextView(displayTxt, LabelType.SECONDARY);
             // Main label
-            addTextView("SWIPE", DEFAULT_TEXT_SIZE);
+            addTextView("SWIPE", LabelType.PRIMARY);
         }
         else {
             // Main label
-            addTextView("FLICK", DEFAULT_TEXT_SIZE);
+            addTextView("FLICK", LabelType.PRIMARY);
         }
     }
 

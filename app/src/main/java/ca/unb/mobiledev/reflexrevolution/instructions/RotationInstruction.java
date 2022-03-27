@@ -4,7 +4,7 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 
@@ -19,7 +19,7 @@ public class RotationInstruction extends Instruction {
     private Integer[] turnVoiceCommands;
     private Integer[] twistVoiceCommands;
 
-    public RotationInstruction(ViewGroup layout, Callback callback) {
+    public RotationInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
         setup();
     }
@@ -65,17 +65,17 @@ public class RotationInstruction extends Instruction {
     @Override
     public void display() {
         switch(currentAction) {
-            case TILT_FORWARD: addTextView("FORWARD", SMALL_TEXT_SIZE); break;
-            case TILT_BACKWARD: addTextView("BACKWARD", SMALL_TEXT_SIZE); break;
+            case TILT_FORWARD: addTextView("FORWARD", LabelType.SECONDARY); break;
+            case TILT_BACKWARD: addTextView("BACKWARD", LabelType.SECONDARY); break;
             case TURN_RIGHT:
-            case TWIST_RIGHT: addTextView("RIGHT", SMALL_TEXT_SIZE); break;
+            case TWIST_RIGHT: addTextView("RIGHT", LabelType.SECONDARY); break;
             case TURN_LEFT:
-            case TWIST_LEFT: addTextView("LEFT", SMALL_TEXT_SIZE); break;
+            case TWIST_LEFT: addTextView("LEFT", LabelType.SECONDARY); break;
         }
         switch(currentAction.getType()) {
-            case TURN: addTextView("TURN", DEFAULT_TEXT_SIZE); break;
-            case TWIST: addTextView("TWIST", DEFAULT_TEXT_SIZE); break;
-            case TILT: addTextView("TILT", DEFAULT_TEXT_SIZE); break;
+            case TURN: addTextView("TURN", LabelType.PRIMARY); break;
+            case TWIST: addTextView("TWIST", LabelType.PRIMARY); break;
+            case TILT: addTextView("TILT", LabelType.PRIMARY); break;
         }
     }
 

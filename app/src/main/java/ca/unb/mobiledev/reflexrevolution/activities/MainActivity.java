@@ -1,35 +1,37 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.widget.Button;
 
-import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
-import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
+import androidx.appcompat.app.AppCompatActivity;
+
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class MainActivity extends AppCompatActivity {
 
     private LoopMediaPlayer musicPlayer;
+    private long lastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        musicPlayer = LoopMediaPlayer.create(this, R.raw.menu_music);
+        setContentView(R.layout.main_menu);
 
-        Button startButton = findViewById(R.id.startButton);
-        startButton.setOnClickListener(v -> {
+        Button playButton = findViewById(R.id.playButton);
+        playButton.setOnClickListener(v -> {
+            // Prevent double-clicking
+            if (SystemClock.elapsedRealtime() - lastClickTime < 500) return;
+            lastClickTime = SystemClock.elapsedRealtime();
+
             //Instead of stopping, pause the music player, since this activity is never destroyed
             //This way, we can reuse the same music player
             musicPlayer.pause();
 
-            Intent intent = new Intent(MainActivity.this, GameActivity.class);
-            intent.putExtra("GameMode", GameMode.REVOLUTION);
-            intent.putExtra("Difficulty", Difficulty.NOVICE);
+            // Start next activity
+            Intent intent = new Intent(MainActivity.this, GameSettingsActivity.class);
             startActivity(intent);
         });
     }

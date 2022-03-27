@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import androidx.appcompat.view.ContextThemeWrapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,17 +26,21 @@ public class TypeInstruction extends Instruction{
     @SuppressWarnings("FieldCanBeLocal")
     private final int SIZE_OF_FILE_LINE = 7;
     private final InputMethodManager keyboardDisplayManager;
+    private final ContextThemeWrapper keyboardInputContext;
+    private final ViewGroup.LayoutParams wrapContent;
 
     private String word;
     private EditText field;
     private RandomAccessFile wordListFile;
     private long fileLength;
 
-    public TypeInstruction(ViewGroup layout, Callback callback) {
+    public TypeInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
-        keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        voiceCommands = getVoiceCommands("type");
         fileLength = 0;
+        voiceCommands = getVoiceCommands("type");
+        keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        keyboardInputContext = new ContextThemeWrapper(context, R.style.keyboardInput);
+        wrapContent = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setUpRandomWordList();
     }
 
@@ -79,9 +88,17 @@ public class TypeInstruction extends Instruction{
 
     @Override
     public void display() {
-        addTextView(word, SMALL_TEXT_SIZE);
-        addTextView("TYPE", DEFAULT_TEXT_SIZE);
-        field = new EditText(context);
+        // Align the labels to the top of the screen to make room for the keyboard
+        layout.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+
+        addTextView("TYPE", LabelType.PRIMARY);
+        addTextView(word, LabelType.SECONDARY);
+        field = new EditText(keyboardInputContext);
+        field.setTypeface(getInstructionTypeFace());
+        field.setLayoutParams(wrapContent);
+        field.setEms(5);
+        field.setAllCaps(true);
+        field.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         //Listener that checks for text being updated
         field.addTextChangedListener(new TextWatcher() {

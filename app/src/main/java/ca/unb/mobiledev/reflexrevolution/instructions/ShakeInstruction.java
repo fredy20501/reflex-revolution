@@ -4,7 +4,7 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import ca.unb.mobiledev.reflexrevolution.detectors.ShakeDetector;
 
@@ -14,7 +14,7 @@ public class ShakeInstruction extends Instruction {
     private Sensor accelerometer;
     private ShakeDetector shakeDetector;
 
-    public ShakeInstruction(ViewGroup layout, Callback callback) {
+    public ShakeInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
         setup();
     }
@@ -36,7 +36,7 @@ public class ShakeInstruction extends Instruction {
 
     @Override
     public void display() {
-        addTextView("SHAKE", DEFAULT_TEXT_SIZE);
+        addTextView("SHAKE", LabelType.PRIMARY);
     }
 
     @Override
