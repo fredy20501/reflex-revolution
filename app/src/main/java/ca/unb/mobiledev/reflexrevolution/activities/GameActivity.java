@@ -21,6 +21,7 @@ import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.instructions.DialInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
+import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.InstructionManager;
@@ -62,6 +63,9 @@ public class GameActivity extends AppCompatActivity {
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }
+
+        // Force background music to stop
+        BackgroundMusic.onStop();
 
         // Get UI elements
         scoreText = findViewById(R.id.score);
@@ -204,8 +208,8 @@ public class GameActivity extends AppCompatActivity {
         currentInstruction.init();
         currentInstruction.display();
         if (!isGamePaused) {
-            currentInstruction.enable();
             currentInstruction.playVoiceCommand();
+            currentInstruction.enable();
             updateMusicSpeed();
         }
 

@@ -10,7 +10,6 @@ public class BackgroundMusicActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        BackgroundMusic.onCreate();
     }
 
     @Override
@@ -23,11 +22,5 @@ public class BackgroundMusicActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         BackgroundMusic.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        BackgroundMusic.onDestroy();
     }
 }

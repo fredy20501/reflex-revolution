@@ -87,9 +87,6 @@ public class GameSettingsActivity extends BackgroundMusicActivity {
             if (SystemClock.elapsedRealtime() - lastClickTime < 500) return;
             lastClickTime = SystemClock.elapsedRealtime();
 
-            // Force background music to stop
-            BackgroundMusic.onStop();
-
             // Start game activity
             Intent intent = new Intent(GameSettingsActivity.this, GameActivity.class);
             intent.putExtra("GameMode", gameMode);
