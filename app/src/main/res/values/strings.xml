@@ -39,4 +39,11 @@
     <string name="paused">PAUSED</string>
     <string name="tap_to_resume">TAP TO RESUME</string>
     <string name="custom">Custom</string>
+    <string name="description_data_clear">Your high score information is saved automatically for each game mode and difficulty.\n\nPress and hold down the button below to delete your high score information.</string>
+    <string name="sound_volume">Sound Volume</string>
+    <string name="data">Data</string>
+    <string name="music">Music</string>
+    <string name="voice_commands">Voice Commands</string>
+    <string name="sound_effects">Sound Effects</string>
+    <string name="clear_data">Clear Data</string>
 </resources>
