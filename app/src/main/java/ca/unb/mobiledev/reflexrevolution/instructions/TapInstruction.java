@@ -3,15 +3,12 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.widget.LinearLayout;
 
-import java.util.Random;
-
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class TapInstruction extends Instruction {
 
     private final TouchDetector touchDetector;
     private TouchDetector.TapAction currentAction;
-    private Random rand;
 
     public TapInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
@@ -20,7 +17,6 @@ public class TapInstruction extends Instruction {
     }
 
     private void setup() {
-        rand = new Random();
         touchDetector.addListener(new TouchDetector.ActionListener() {
             @Override
             public void onSwipe(TouchDetector.SwipeAction action) {}
@@ -30,6 +26,7 @@ public class TapInstruction extends Instruction {
                 else if (currentAction == action) success();
             }
         });
+        voiceCommands = getVoiceCommands("tap");
     }
 
     @Override
