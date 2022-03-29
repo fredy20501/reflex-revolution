@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void initialize() {
+        success = true;
         score = 0;
         updateScoreText();
 
@@ -154,6 +156,7 @@ public class GameActivity extends AppCompatActivity {
         if(gameMode.isTutorial()){
             scoreText.setVisibility(View.INVISIBLE);
             findViewById(R.id.highScore).setVisibility(View.INVISIBLE);
+            findViewById(R.id.highScoreTrophy).setVisibility(View.INVISIBLE);
         }
 
         setMediaPlayers();
@@ -226,8 +229,14 @@ public class GameActivity extends AppCompatActivity {
 
     // Prepare and start new instruction loop
     private void gameLoop() {
+        // If normal game, get random instruction
         if(!gameMode.isTutorial()) currentInstruction = instructionManager.getInstruction();
-        else if (success) currentInstruction = instructionManager.getOrderedInstruction();
+        // If tutorial and success, get next instruction in order
+        // If not success, same instruction will be replayed
+        else if (success){
+            currentInstruction = instructionManager.getOrderedInstruction();
+            Log.e("tag", "here");
+        }
 
         currentInstruction.init();
         currentInstruction.display();
@@ -289,14 +298,18 @@ public class GameActivity extends AppCompatActivity {
         //If normal game, start next instruction as normal
         if(!gameMode.isTutorial()) startResetTimer();
 
-        //If tutorial, show success state for a half a second before starting next instruction
+        //If tutorial, show success state for a half a second before starting reset timer
         else{
             showSuccessFeedback();
+            instructionTimerAnimation.cancel();
             new CountDownTimer(DISPLAY_SUCCESS_TIME, 500) {
                 @Override
                 public void onTick(long l) {}
                 @Override
-                public void onFinish() { startResetTimer(); }
+                public void onFinish() {
+                    resetUI();
+                    startResetTimer();
+                }
             }.start();
         }
     }

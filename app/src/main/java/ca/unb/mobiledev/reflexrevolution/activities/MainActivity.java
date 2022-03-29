@@ -7,6 +7,8 @@ import android.widget.Button;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
+import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
+import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 
 public class MainActivity extends BackgroundMusicActivity {
     private long lastClickTime = 0;
@@ -26,7 +28,12 @@ public class MainActivity extends BackgroundMusicActivity {
             lastClickTime = SystemClock.elapsedRealtime();
 
             // Start next activity
-            Intent intent = new Intent(MainActivity.this, GameSettingsActivity.class);
+//            Intent intent = new Intent(MainActivity.this, GameSettingsActivity.class);
+//            startActivity(intent);
+
+            Intent intent = new Intent(MainActivity.this, GameActivity.class);
+            intent.putExtra("GameMode", GameMode.TAP_TUTORIAL);
+            intent.putExtra("Difficulty", Difficulty.INTERMEDIATE);
             startActivity(intent);
         });
     }
