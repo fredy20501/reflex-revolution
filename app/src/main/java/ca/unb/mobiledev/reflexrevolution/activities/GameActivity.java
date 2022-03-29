@@ -128,6 +128,12 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onAnimationRepeat(Animator animator) {}
         });
+
+        //Hide score and high score if this is a tutorial
+        if(gameMode.isTutorial()){
+            scoreText.setVisibility(View.INVISIBLE);
+            findViewById(R.id.highScore).setVisibility(View.INVISIBLE);
+        }
     }
 
     private void updateScoreText(){
@@ -197,9 +203,7 @@ public class GameActivity extends AppCompatActivity {
 
     // Scuffed function that will give a scaled timer based on score.
     // Starts at ~3000ms and min value is ~1000ms
-    private int scaleTimerFromScore() {
-        return (int)Math.pow(2, -0.04*score + 11) + 1000;
-    }
+    private int scaleTimerFromScore() { return (int)Math.pow(2, -0.04*score + 11) + 1000; }
 
     private void pauseGame() {
         if (currentInstruction != null) currentInstruction.disable();

@@ -27,6 +27,7 @@ public class InstructionManager {
     private final ArrayList<AbstractMap.Entry<Instruction, Float>> instructions;
     private final Random rand;
     private float totalProbability;
+    private int currentIndex;
 
     public InstructionManager(LinearLayout layout, Instruction.Callback callback){
         this.layout = layout;
@@ -35,11 +36,13 @@ public class InstructionManager {
         rand = new Random();
         instructions = new ArrayList<>();
         totalProbability = 0;
+        currentIndex = 0;
     }
 
     public void generateInstructions(GameMode gameMode) {
         instructions.clear();
         totalProbability = 0;
+        currentIndex = 0;
 
         // Construct list of instructions based on game mode
         switch(gameMode){
@@ -75,6 +78,30 @@ public class InstructionManager {
                 addEntry(new TypeInstruction(layout, callback), 2);
                 addEntry(new DialInstruction(layout, callback), 2);
                 break;
+            case TAP_TUTORIAL:
+                addEntry(new TapInstruction(layout, callback, touchDetector), 4);
+                break;
+            case SWIPE_TUTORIAL:
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
+                break;
+            case SHAKE_TUTORIAL:
+                addEntry(new ShakeInstruction(layout, callback), 2);
+                break;
+            case JUMP_TUTORIAL:
+                addEntry(new JumpInstruction(layout, callback), 2);
+                break;
+            case ROTATION_TUTORIAL:
+                addEntry(new RotationInstruction(layout, callback), 6);
+                break;
+            case FREEZE_TUTORIAL:
+                addEntry(new FreezeInstruction(layout, callback), 2);
+                break;
+            case TYPE_TUTORIAL:
+                addEntry(new TypeInstruction(layout, callback), 2);
+                break;
+            case DIAL_TUTORIAL:
+                addEntry(new DialInstruction(layout, callback), 2);
+                break;
         }
     }
 
@@ -95,6 +122,14 @@ public class InstructionManager {
         // This should only happen if p is exactly 1.0
         int randomIndex = rand.nextInt(instructions.size());
         return instructions.get(randomIndex).getKey();
+    }
+
+    //Return the next instruction in the list, using the order in which they appear
+    public Instruction getOrderedInstruction(){
+        int prevIndex = currentIndex;
+        //If we are at the end of the list, loop back to the start
+        currentIndex = currentIndex < instructions.size()-1 ? currentIndex++ : 0;
+        return instructions.get(prevIndex).getKey();
     }
 
     // Add a new entry to the list of instructions
