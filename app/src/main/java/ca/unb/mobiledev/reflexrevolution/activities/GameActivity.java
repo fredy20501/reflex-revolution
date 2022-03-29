@@ -233,10 +233,7 @@ public class GameActivity extends AppCompatActivity {
         if(!gameMode.isTutorial()) currentInstruction = instructionManager.getInstruction();
         // If tutorial and success, get next instruction in order
         // If not success, same instruction will be replayed
-        else if (success){
-            currentInstruction = instructionManager.getOrderedInstruction();
-            Log.e("tag", "here");
-        }
+        else if (success){ currentInstruction = instructionManager.getOrderedInstruction(); }
 
         currentInstruction.init();
         currentInstruction.display();
