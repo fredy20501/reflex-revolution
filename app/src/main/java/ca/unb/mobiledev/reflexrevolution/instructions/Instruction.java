@@ -2,12 +2,18 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.res.ResourcesCompat;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 
@@ -26,12 +32,18 @@ public abstract class Instruction {
     private final Callback callback;
     private boolean done;
 
+    //Voice command variables
+    protected final Random rand;
+    protected Integer[] voiceCommands;
+    private MediaPlayer player;
+
     // Default constructor
     public Instruction(LinearLayout layout, Callback callback) {
         this.context = layout.getContext();
         this.layout = layout;
         this.callback = callback;
         this.done = false;
+        this.rand = new Random();
         this.primaryContext = new ContextThemeWrapper(context, R.style.instructionPrimary);
         this.secondaryContext = new ContextThemeWrapper(context, R.style.instructionSecondary);
     }
@@ -70,9 +82,41 @@ public abstract class Instruction {
         text.setTypeface(getInstructionTypeFace());
         layout.addView(text);
     }
-
     protected Typeface getInstructionTypeFace() {
         return ResourcesCompat.getFont(context, R.font.rocknroll_one);
+    }
+
+    // Return the voice command resources using the given prefix
+    protected Integer[] getVoiceCommands(String prefix) {
+        List<Integer> idList = new ArrayList<>();
+        Field[] fields = R.raw.class.getFields();
+        for (Field field : fields) {
+            try {
+                if (field.getName().contains(prefix)) {
+                    idList.add(field.getInt(null));
+                }
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return idList.toArray(new Integer[0]);
+    }
+
+    // Play a random voice command associated with this instruction
+    public void playVoiceCommand() {
+        // Do nothing if don't have any voiceCommands set
+        if (voiceCommands == null || voiceCommands.length == 0) return;
+
+        // Setup a random voice command
+        int randomSoundFileID = voiceCommands[rand.nextInt(voiceCommands.length)];
+        player = MediaPlayer.create(context, randomSoundFileID);
+        //When sound is done, release media player properly
+        player.setOnCompletionListener(v -> {
+            player.stop();
+            player.release();
+            player = null;
+        });
+        player.start();
     }
 
     // Initialize the state of the instruction

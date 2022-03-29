@@ -26,6 +26,7 @@ public class JumpInstruction extends Instruction {
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         jumpDetector = new JumpDetector();
         jumpDetector.setOnJumpListener(this::success);
+        voiceCommands = getVoiceCommands("jump");
     }
 
     @Override

@@ -13,12 +13,9 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.view.ContextThemeWrapper;
 
-import java.util.Random;
-
 import ca.unb.mobiledev.reflexrevolution.R;
 
 public class DialInstruction extends Instruction{
-    private final Random rand;
     private String number;
     private EditText field;
     private final InputMethodManager keyboardDisplayManager;
@@ -27,7 +24,7 @@ public class DialInstruction extends Instruction{
 
     public DialInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
-        rand = new Random();
+        voiceCommands = getVoiceCommands("dial");
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboardInputContext = new ContextThemeWrapper(context, R.style.keyboardInput);
         wrapContent = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -83,6 +80,7 @@ public class DialInstruction extends Instruction{
     //Select field and force the keyboard to show
     @Override
     public void enable() {
+        if (field == null) return;
         field.requestFocus();
         keyboardDisplayManager.showSoftInput(field, InputMethodManager.SHOW_IMPLICIT);
     }
@@ -90,6 +88,7 @@ public class DialInstruction extends Instruction{
     //Close keyboard
     @Override
     public void disable() {
+        if (field == null) return;
         keyboardDisplayManager.hideSoftInputFromWindow(field.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 

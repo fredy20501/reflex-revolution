@@ -45,6 +45,7 @@ public class FreezeInstruction extends Instruction {
                 fail();
             }
         });
+        voiceCommands = getVoiceCommands("freeze");
     }
 
     @Override
