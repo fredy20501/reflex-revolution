@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.res.ResourcesCompat;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.instructions.DialInstruction;
@@ -29,6 +31,9 @@ import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class GameActivity extends AppCompatActivity {
     private final int TIME_BETWEEN_LOOPS = 1000;
+    private final int DISPLAY_SUCCESS_TIME = 500;
+    private final double MIN_SONG_SPEED = 0.5;
+    private final double MAX_SONG_SPEED = 1.5;
 
     private ObjectAnimator instructionTimerAnimation;
     private ProgressBar timeProgressBar;
@@ -49,6 +54,7 @@ public class GameActivity extends AppCompatActivity {
     private LoopMediaPlayer musicPlayer;
     
     private int score;
+    private boolean success;
     private boolean isGamePaused = false;
     private boolean isTimerDelayed = false;
 
@@ -113,7 +119,10 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onSuccess() { instructionSuccess(); }
             @Override
-            public void onFailure() { endGame(); }
+            public void onFailure() {
+                if(!gameMode.isTutorial()) endGame();
+                else failedInstruction();
+            }
         });
         instructionManager.generateInstructions(gameMode);
 
@@ -161,13 +170,12 @@ public class GameActivity extends AppCompatActivity {
         //Rewind sound when it ends so that it can be played again later
         scorePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
 
-        //Allow losePlayer to continue playing when the activity is closed
+        //If in the main game, allow losePlayer to continue playing when the activity is closed
         //but stop it properly once it finishes playing
-        losePlayer.setOnCompletionListener(v -> {
-            losePlayer.stop();
-            losePlayer.release();
-            losePlayer = null;
-        });
+        if(!gameMode.isTutorial()) losePlayer.setOnCompletionListener(v -> { stopLosePlayer(); });
+
+        //If we are in a tutorial, rewind it when it finishes
+        else losePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
     }
 
     //Properly handle stopping all media players
@@ -179,6 +187,14 @@ public class GameActivity extends AppCompatActivity {
 
         musicPlayer.release();
         musicPlayer = null;
+    }
+
+    //Separate since we don't want to call it right away
+    //when the game ends
+    private void stopLosePlayer(){
+        losePlayer.stop();
+        losePlayer.release();
+        losePlayer = null;
     }
 
     private void updateScoreText(){
@@ -210,7 +226,9 @@ public class GameActivity extends AppCompatActivity {
 
     // Prepare and start new instruction loop
     private void gameLoop() {
-        currentInstruction = instructionManager.getInstruction();
+        if(!gameMode.isTutorial()) currentInstruction = instructionManager.getInstruction();
+        else if (success) currentInstruction = instructionManager.getOrderedInstruction();
+
         currentInstruction.init();
         currentInstruction.display();
         if (!isGamePaused) {
@@ -229,18 +247,58 @@ public class GameActivity extends AppCompatActivity {
         instructionSpace.setGravity(defaultGravity);
     }
 
+    private void showSuccessFeedback(){
+        ContextThemeWrapper style = new ContextThemeWrapper(this, R.style.instructionPrimary);
+        TextView text = new TextView(style);
+        if(success) text.setText(R.string.correct);
+        else text.setText(R.string.incorrect);
+        text.setGravity(Gravity.CENTER);
+        text.setTypeface(ResourcesCompat.getFont(this, R.font.rocknroll_one));
+        instructionSpace.addView(text);
+    }
+
     private void instructionSuccess() {
         // Play success sound effect
         scorePlayer.start();
 
-        // Update score
-        score++;
-        updateScoreText();
+        // Update score if not in tutorial
+        if(!gameMode.isTutorial()) {
+            score++;
+            updateScoreText();
+        }
 
-        // Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
+        // Set success state before calling next instruction
+        success = true;
+        nextInstruction();
+    }
+
+    private void failedInstruction(){
+        // Play fail sound
+        losePlayer.start();
+
+        // Set success state before calling next instruction
+        success = false;
+        nextInstruction();
+    }
+
+    // Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
+    private void nextInstruction(){
         currentInstruction.disable();
         resetUI();
-        startResetTimer();
+
+        //If normal game, start next instruction as normal
+        if(!gameMode.isTutorial()) startResetTimer();
+
+        //If tutorial, show success state for a half a second before starting next instruction
+        else{
+            showSuccessFeedback();
+            new CountDownTimer(DISPLAY_SUCCESS_TIME, 500) {
+                @Override
+                public void onTick(long l) {}
+                @Override
+                public void onFinish() { startResetTimer(); }
+            }.start();
+        }
     }
 
     // Ends the game, sending score and game options to the Game Over screen
@@ -270,7 +328,7 @@ public class GameActivity extends AppCompatActivity {
     //Returns a value between 0.5 and 1.5 based on the time the user has to complete the instruction
     //Scales linearly, with 0.5 as 5000ms, 1 as 3000ms, and 1.5 as 1000ms
     private float scaleSongSpeedFromTimer() {
-        return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, 0.5, 1.5);
+        return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, MIN_SONG_SPEED, MAX_SONG_SPEED);
     }
 
     //Clamp function using double for maximum compatibility
@@ -315,6 +373,8 @@ public class GameActivity extends AppCompatActivity {
         currentInstruction = null;
         instructionTimerAnimation.cancel();
         resetTimer.cancel();
+        stopLosePlayer();
+        stopMediaPlayers();
         finish();
     }
 }

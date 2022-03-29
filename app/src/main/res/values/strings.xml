@@ -39,4 +39,6 @@
     <string name="paused">PAUSED</string>
     <string name="tap_to_resume">TAP TO RESUME</string>
     <string name="custom">Custom</string>
+    <string name="correct">CORRECT</string>
+    <string name="incorrect">INCORRECT</string>
 </resources>
