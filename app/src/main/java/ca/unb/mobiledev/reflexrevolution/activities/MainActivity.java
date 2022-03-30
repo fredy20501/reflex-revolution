@@ -28,12 +28,7 @@ public class MainActivity extends BackgroundMusicActivity {
             lastClickTime = SystemClock.elapsedRealtime();
 
             // Start next activity
-//            Intent intent = new Intent(MainActivity.this, GameSettingsActivity.class);
-//            startActivity(intent);
-
-            Intent intent = new Intent(MainActivity.this, GameActivity.class);
-            intent.putExtra("GameMode", GameMode.TAP_TUTORIAL);
-            intent.putExtra("Difficulty", Difficulty.INTERMEDIATE);
+            Intent intent = new Intent(MainActivity.this, GameSettingsActivity.class);
             startActivity(intent);
         });
     }
