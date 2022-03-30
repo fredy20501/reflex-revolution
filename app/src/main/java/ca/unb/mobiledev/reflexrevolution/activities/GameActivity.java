@@ -33,6 +33,7 @@ public class GameActivity extends AppCompatActivity {
     private ObjectAnimator instructionTimerAnimation;
     private ProgressBar timeProgressBar;
     private TextView scoreText;
+    private TextView highScoreText;
     private LinearLayout instructionSpace;
     private ImageButton pauseButton;
     private ViewGroup pauseOverlay;
@@ -49,6 +50,7 @@ public class GameActivity extends AppCompatActivity {
     private LoopMediaPlayer musicPlayer;
     
     private int score;
+    private int highScore;
     private boolean isGamePaused = false;
     private boolean isTimerDelayed = false;
 
@@ -69,6 +71,7 @@ public class GameActivity extends AppCompatActivity {
 
         // Get UI elements
         scoreText = findViewById(R.id.score);
+        highScoreText = findViewById(R.id.highScore);
         instructionSpace = findViewById(R.id.instructionSpace);
         timeProgressBar = findViewById(R.id.progressBar);
         pauseButton = findViewById(R.id.pauseButton);
@@ -85,6 +88,7 @@ public class GameActivity extends AppCompatActivity {
     private void initialize() {
         score = 0;
         updateScoreText();
+        updateHighScoreText();
 
         // Set up UI interactions
         pauseButton.setOnClickListener(v -> {
@@ -177,6 +181,11 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateScoreText(){
         scoreText.setText(String.valueOf(score));
+    }
+
+    private void updateHighScoreText(){
+        //highScore = readHighScoreFromSharedPreferences();
+        highScoreText.setText(String.valueOf(highScore));
     }
 
     // Stop current timer then call game loop after one second

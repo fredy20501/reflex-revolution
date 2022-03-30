@@ -1,6 +1,8 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,11 +18,15 @@ public class GameOverActivity extends AppCompatActivity {
     private int score = 0;
     private GameMode gameMode = GameMode.CLASSIC;
     private Difficulty difficulty = Difficulty.INTERMEDIATE;
+    private static final String PREFS_FILE_NAME = "AppPrefs";
+    private static final String HIGH_SCORE_KEY = "HIGH_SCORE_KEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_over);
+
+        initSharedPreferences();
 
         //Retrieve information
         Bundle extras = getIntent().getExtras();
@@ -29,8 +35,6 @@ public class GameOverActivity extends AppCompatActivity {
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }
-        // TODO: get high score from local storage
-        int highScore = 0;
 
         // Get UI elements
         TextView highScoreText = findViewById(R.id.highScore);
@@ -41,10 +45,16 @@ public class GameOverActivity extends AppCompatActivity {
         Button menuButton = findViewById(R.id.menuButton);
 
         // Set values
-        highScoreText.setText(String.valueOf(highScore));
+        highScoreText.setText(String.valueOf(readHighScoreFromSharedPreferences()));
         scoreText.setText(String.valueOf(score));
         gameModeValue.setText(gameMode.getName());
         difficultyValue.setText(difficulty.getName());
+
+        if (score > readHighScoreFromSharedPreferences()) {
+            // Get and edit high score
+            writeHighScoreToSharedPreferences(score);
+            highScoreText.setText(String.valueOf(score));
+        }
 
         // Replay button to start new game
         replayButton.setOnClickListener(v -> {
@@ -58,4 +68,19 @@ public class GameOverActivity extends AppCompatActivity {
         // Menu button to close this activity, returning to game select screen
         menuButton.setOnClickListener(v -> finish());
     }
+
+    private void initSharedPreferences() {
+        prefs = getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
+    }
+
+    private int readHighScoreFromSharedPreferences() {
+        return prefs.getInt(HIGH_SCORE_KEY, 0);
+    }
+
+    private void writeHighScoreToSharedPreferences(int score) {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(HIGH_SCORE_KEY, score);
+        editor.apply();
+    }
+
 }
