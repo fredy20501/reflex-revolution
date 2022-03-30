@@ -10,9 +10,12 @@ public class TapInstruction extends Instruction {
     private final TouchDetector touchDetector;
     private TouchDetector.TapAction currentAction;
 
+    private int index;
+
     public TapInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
+        this.index = 0;
         setup();
     }
 
@@ -35,6 +38,19 @@ public class TapInstruction extends Instruction {
         // Initialize as a random action
         TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
+    }
+
+    // Second init which will only be called in tutorial mode
+    @Override
+    public void init(boolean success){
+        super.init(success);
+        // Initialize as a random action
+        TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
+
+        // Override previously set instruction with the next action in order
+        // If there was no success, show same action as last time
+        if(success) index = (index+1) % actions.length;
+        currentAction = actions[index];
     }
 
     @Override

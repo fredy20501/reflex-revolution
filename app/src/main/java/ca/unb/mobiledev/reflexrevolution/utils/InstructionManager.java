@@ -124,14 +124,6 @@ public class InstructionManager {
         return instructions.get(randomIndex).getKey();
     }
 
-    //Return the next instruction in the list, using the order in which they appear
-    public Instruction getOrderedInstruction(){
-        int prevIndex = currentIndex;
-        //If we are at the end of the list, loop back to the start
-        currentIndex = currentIndex < instructions.size()-1 ? currentIndex++ : 0;
-        return instructions.get(prevIndex).getKey();
-    }
-
     // Add a new entry to the list of instructions
     private void addEntry(Instruction instr, float relativeProbability) {
         AbstractMap.SimpleImmutableEntry<Instruction, Float> newEntry = 

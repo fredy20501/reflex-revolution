@@ -90,7 +90,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        success = true;
+        success = false;
         score = 0;
         updateScoreText();
 
@@ -229,13 +229,12 @@ public class GameActivity extends AppCompatActivity {
 
     // Prepare and start new instruction loop
     private void gameLoop() {
-        // If normal game, get random instruction
-        if(!gameMode.isTutorial()) currentInstruction = instructionManager.getInstruction();
-        // If tutorial and success, get next instruction in order
-        // If not success, same instruction will be replayed
-        else if (success){ currentInstruction = instructionManager.getOrderedInstruction(); }
+        currentInstruction = instructionManager.getInstruction();
 
-        currentInstruction.init();
+        // Call proper init function depending on if this is tutorial mode or not
+        if(gameMode.isTutorial()) currentInstruction.init(success);
+        else currentInstruction.init();
+
         currentInstruction.display();
         if (!isGamePaused) {
             currentInstruction.playVoiceCommand();

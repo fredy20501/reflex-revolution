@@ -19,8 +19,11 @@ public class RotationInstruction extends Instruction {
     private Integer[] turnVoiceCommands;
     private Integer[] twistVoiceCommands;
 
+    private int index;
+
     public RotationInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
+        this.index = 0;
         setup();
     }
 
@@ -54,12 +57,28 @@ public class RotationInstruction extends Instruction {
         // Initialize as a random action
         RotationDetector.Action[] actions = RotationDetector.Action.values();
         currentAction = actions[rand.nextInt(actions.length)];
+
         // Set the proper voice commands
         switch(currentAction.getType()) {
             case TURN: voiceCommands = turnVoiceCommands; break;
             case TWIST: voiceCommands = twistVoiceCommands; break;
             case TILT: voiceCommands = tiltVoiceCommands; break;
         }
+    }
+
+    // Second init which will only be called in tutorial mode
+    @Override
+    public void init(boolean success){
+        // No need to set voice commands, as this calls
+        // init() first
+        super.init(success);
+        // Initialize as a random action
+        RotationDetector.Action[] actions = RotationDetector.Action.values();
+
+        // Override previously set instruction with the next action in order
+        // If there was no success, show same action as last time
+        if(success) index = (index+1) % actions.length;
+        currentAction = actions[index];
     }
 
     @Override
