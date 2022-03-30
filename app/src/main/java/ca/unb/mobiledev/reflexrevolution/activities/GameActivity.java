@@ -253,7 +253,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showSuccessFeedback(){
-        ContextThemeWrapper style = new ContextThemeWrapper(this, R.style.instructionPrimary);
+        ContextThemeWrapper style = new ContextThemeWrapper(this, R.style.successFeedback);
         TextView text = new TextView(style);
         if(success) text.setText(R.string.correct);
         else text.setText(R.string.incorrect);
