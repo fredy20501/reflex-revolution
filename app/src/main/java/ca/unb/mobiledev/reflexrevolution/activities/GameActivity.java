@@ -88,7 +88,6 @@ public class GameActivity extends AppCompatActivity {
     private void initialize() {
         score = 0;
         updateScoreText();
-        updateHighScoreText();
 
         // Set up UI interactions
         pauseButton.setOnClickListener(v -> {
@@ -181,11 +180,6 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateScoreText(){
         scoreText.setText(String.valueOf(score));
-    }
-
-    private void updateHighScoreText(){
-        //highScore = readHighScoreFromSharedPreferences();
-        highScoreText.setText(String.valueOf(highScore));
     }
 
     // Stop current timer then call game loop after one second
