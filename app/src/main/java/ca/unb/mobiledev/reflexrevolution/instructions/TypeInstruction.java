@@ -19,28 +19,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 
 public class TypeInstruction extends Instruction{
-    private final Random rand;
-    private String word;
-    private EditText field;
-    private RandomAccessFile wordListFile;
-    private long fileLength;
+    @SuppressWarnings("FieldCanBeLocal")
     private final int SIZE_OF_FILE_LINE = 7;
     private final InputMethodManager keyboardDisplayManager;
     private final ContextThemeWrapper keyboardInputContext;
     private final ViewGroup.LayoutParams wrapContent;
 
+    private String word;
+    private EditText field;
+    private RandomAccessFile wordListFile;
+    private long fileLength;
+
     public TypeInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
-        rand = new Random();
+        fileLength = 0;
+        voiceCommands = getVoiceCommands("type");
         keyboardDisplayManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         keyboardInputContext = new ContextThemeWrapper(context, R.style.keyboardInput);
         wrapContent = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        fileLength = 0;
         setUpRandomWordList();
     }
 

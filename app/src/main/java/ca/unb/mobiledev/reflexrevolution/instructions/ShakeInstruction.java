@@ -31,6 +31,7 @@ public class ShakeInstruction extends Instruction {
             @Override
             public void onMove() {}
         });
+        voiceCommands = getVoiceCommands("shake");
     }
 
     @Override

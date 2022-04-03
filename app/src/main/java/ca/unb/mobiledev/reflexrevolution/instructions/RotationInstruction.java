@@ -6,8 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.widget.LinearLayout;
 
-import java.util.Random;
-
 import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 
 public class RotationInstruction extends Instruction {
@@ -16,7 +14,10 @@ public class RotationInstruction extends Instruction {
     private Sensor gyroscope;
     private RotationDetector rotationDetector;
     private RotationDetector.Action currentAction;
-    private Random rand;
+
+    private Integer[] tiltVoiceCommands;
+    private Integer[] turnVoiceCommands;
+    private Integer[] twistVoiceCommands;
 
     public RotationInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
@@ -24,7 +25,6 @@ public class RotationInstruction extends Instruction {
     }
 
     private void setup() {
-        rand = new Random();
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
@@ -42,6 +42,10 @@ public class RotationInstruction extends Instruction {
             @Override
             public void onMove() {}
         });
+
+        tiltVoiceCommands = getVoiceCommands("tilt");
+        turnVoiceCommands = getVoiceCommands("turn");
+        twistVoiceCommands = getVoiceCommands("twist");
     }
 
     @Override
@@ -50,6 +54,12 @@ public class RotationInstruction extends Instruction {
         // Initialize as a random action
         RotationDetector.Action[] actions = RotationDetector.Action.values();
         currentAction = actions[rand.nextInt(actions.length)];
+        // Set the proper voice commands
+        switch(currentAction.getType()) {
+            case TURN: voiceCommands = turnVoiceCommands; break;
+            case TWIST: voiceCommands = twistVoiceCommands; break;
+            case TILT: voiceCommands = tiltVoiceCommands; break;
+        }
     }
 
     @Override
