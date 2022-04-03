@@ -8,8 +8,7 @@ public enum GameMode {
     SWIPE(R.string.swipe, R.string.description_swipe),
     KINETIC(R.string.kinetic, R.string.description_kinetic),
     KEYBOARD(R.string.keyboard, R.string.description_keyboard),
-    REVOLUTION(R.string.revolution, R.string.description_revolution),
-    CUSTOM(0,0);
+    REVOLUTION(R.string.revolution, R.string.description_revolution);
 
     private final int name;
     private final int description;

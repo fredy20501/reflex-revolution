@@ -13,6 +13,10 @@ public abstract class BackgroundMusic {
         musicPlayer = LoopMediaPlayer.create(context, R.raw.menu_music);
     }
 
+    public static void setVolume(float volume) {
+        musicPlayer.setVolume(volume);
+    }
+
     public static void onStart() {
         startCounter++;
         if (startCounter == 1) {

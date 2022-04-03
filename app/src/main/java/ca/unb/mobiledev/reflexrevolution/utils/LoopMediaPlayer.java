@@ -12,6 +12,7 @@ public class LoopMediaPlayer {
     private MediaPlayer mCurrentPlayer;
     private MediaPlayer mNextPlayer;
     private float lastSpeed = 1;
+    private float volume = 1.0f;
 
     public static LoopMediaPlayer create(Context context, int resId) {
         return new LoopMediaPlayer(context, resId);
@@ -27,6 +28,7 @@ public class LoopMediaPlayer {
 
     private void createNextMediaPlayer(Context context) {
         mNextPlayer = MediaPlayer.create(context, mResId);
+        updateVolume();
         mCurrentPlayer.setNextMediaPlayer(mNextPlayer);
         mCurrentPlayer.setOnCompletionListener(mediaPlayer -> {
             mediaPlayer.release();
@@ -58,5 +60,15 @@ public class LoopMediaPlayer {
         mCurrentPlayer.release();
         mNextPlayer.stop();
         mNextPlayer.release();
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+        updateVolume();
+    }
+
+    private void updateVolume() {
+        mCurrentPlayer.setVolume(volume, volume);
+        mNextPlayer.setVolume(volume, volume);
     }
 }
