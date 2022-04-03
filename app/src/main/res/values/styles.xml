@@ -77,7 +77,7 @@
     <dimen name="defaultCornerRadius">20sp</dimen>
     <dimen name="instructionPrimary">64sp</dimen>
     <dimen name="instructionSecondary">18sp</dimen>
-    <dimen name="successFeedback">58sp</dimen>
+    <dimen name="successFeedback">52sp</dimen>
     <dimen name="h1">44sp</dimen>
     <dimen name="h2">18sp</dimen>
     <dimen name="score">44sp</dimen>

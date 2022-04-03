@@ -27,7 +27,6 @@ public class InstructionManager {
     private final ArrayList<AbstractMap.Entry<Instruction, Float>> instructions;
     private final Random rand;
     private float totalProbability;
-    private int currentIndex;
 
     public InstructionManager(LinearLayout layout, Instruction.Callback callback){
         this.layout = layout;
@@ -36,13 +35,11 @@ public class InstructionManager {
         rand = new Random();
         instructions = new ArrayList<>();
         totalProbability = 0;
-        currentIndex = 0;
     }
 
     public void generateInstructions(GameMode gameMode) {
         instructions.clear();
         totalProbability = 0;
-        currentIndex = 0;
 
         // Construct list of instructions based on game mode
         switch(gameMode){
@@ -55,6 +52,7 @@ public class InstructionManager {
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
                 addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
                 break;
+            case SWIPE_PRACTICE:
             case SWIPE:
                 addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
                 break;
@@ -78,28 +76,25 @@ public class InstructionManager {
                 addEntry(new TypeInstruction(layout, callback), 2);
                 addEntry(new DialInstruction(layout, callback), 2);
                 break;
-            case TAP_TUTORIAL:
+            case TAP_PRACTICE:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
                 break;
-            case SWIPE_TUTORIAL:
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
-                break;
-            case SHAKE_TUTORIAL:
+            case SHAKE_PRACTICE:
                 addEntry(new ShakeInstruction(layout, callback), 2);
                 break;
-            case JUMP_TUTORIAL:
+            case JUMP_PRACTICE:
                 addEntry(new JumpInstruction(layout, callback), 2);
                 break;
-            case ROTATION_TUTORIAL:
+            case ROTATION_PRACTICE:
                 addEntry(new RotationInstruction(layout, callback), 6);
                 break;
-            case FREEZE_TUTORIAL:
+            case FREEZE_PRACTICE:
                 addEntry(new FreezeInstruction(layout, callback), 2);
                 break;
-            case TYPE_TUTORIAL:
+            case TYPE_PRACTICE:
                 addEntry(new TypeInstruction(layout, callback), 2);
                 break;
-            case DIAL_TUTORIAL:
+            case DIAL_PRACTICE:
                 addEntry(new DialInstruction(layout, callback), 2);
                 break;
         }

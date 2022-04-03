@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 import ca.unb.mobiledev.reflexrevolution.detectors.TouchDetector;
 
 public class SwipeInstruction extends Instruction {
 
     private final TouchDetector touchDetector;
     private TouchDetector.SwipeAction currentAction;
+    private TouchDetector.SwipeAction[] actions;
     private final Map<TouchDetector.SwipeAction, String[]> textLabels = new HashMap<>();
     private Integer[] swipeVoiceCommands;
     private Integer[] flickVoiceCommands;
@@ -48,35 +48,34 @@ public class SwipeInstruction extends Instruction {
         });
         swipeVoiceCommands = getVoiceCommands("swipe");
         flickVoiceCommands = getVoiceCommands("flick");
+        actions = TouchDetector.SwipeAction.values();
     }
 
     @Override
     public void init() {
         super.init();
         // Initialize as a random action
-        TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
+        setVoiceCommands();
+    }
 
-        // Set the proper voice commands
+    // Second init which will only be called in practice mode
+    @Override
+    public void init(boolean success){
+        super.init(success);
+        // Initialize as next instruction in sequence (if success)
+        // Else keep the same instruction
+        if(success) index = (index+1) % actions.length;
+        currentAction = actions[index];
+        setVoiceCommands();
+    }
+
+    // Set the proper voice commands based on current instruction
+    private void setVoiceCommands() {
         switch(currentAction.getType()) {
             case SWIPE: voiceCommands = swipeVoiceCommands; break;
             case FLICK: voiceCommands = flickVoiceCommands; break;
         }
-    }
-
-    // Second init which will only be called in tutorial mode
-    @Override
-    public void init(boolean success){
-        // No need to set voice commands, as this calls
-        // init() first
-        super.init(success);
-        // Initialize as a random action
-        TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
-
-        // Override previously set instruction with the next action in order
-        // If there was no success, show same action as last time
-        if(success) index = (index+1) % actions.length;
-        currentAction = actions[index];
     }
 
     @Override

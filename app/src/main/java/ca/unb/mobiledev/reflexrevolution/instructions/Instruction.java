@@ -123,7 +123,7 @@ public abstract class Instruction {
     // (Called before each time the instruction is used)
     public void init() { this.done = false; }
 
-    // Second init for tutorial mode
+    // Second init for practice mode
     public void init(boolean success) { init(); }
 
     // Add the UI elements to the layout

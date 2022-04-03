@@ -10,22 +10,22 @@ public enum GameMode {
     KEYBOARD(R.string.keyboard, R.string.description_keyboard, false),
     REVOLUTION(R.string.revolution, R.string.description_revolution, false),
     CUSTOM(0,0, false),
-    TAP_TUTORIAL(0, 0, true),
-    SWIPE_TUTORIAL(0, 0, true),
-    SHAKE_TUTORIAL(0, 0, true),
-    JUMP_TUTORIAL(0, 0, true),
-    ROTATION_TUTORIAL(0, 0, true),
-    FREEZE_TUTORIAL(0, 0, true),
-    TYPE_TUTORIAL(0, 0, true),
-    DIAL_TUTORIAL(0, 0, true);
+    TAP_PRACTICE(0, 0, true),
+    SWIPE_PRACTICE(0, 0, true),
+    SHAKE_PRACTICE(0, 0, true),
+    JUMP_PRACTICE(0, 0, true),
+    ROTATION_PRACTICE(0, 0, true),
+    FREEZE_PRACTICE(0, 0, true),
+    TYPE_PRACTICE(0, 0, true),
+    DIAL_PRACTICE(0, 0, true);
 
     private final int name;
     private final int description;
-    private final boolean isTutorial;
-    GameMode(int name, int description, boolean isTutorial) {
+    private final boolean isPractice;
+    GameMode(int name, int description, boolean isPractice) {
         this.name = name;
         this.description = description;
-        this.isTutorial = isTutorial;
+        this.isPractice = isPractice;
     }
     public int getName() {
         return this.name;
@@ -33,5 +33,5 @@ public enum GameMode {
     public int getDescription() {
         return this.description;
     }
-    public boolean isTutorial() { return this.isTutorial; }
+    public boolean isPractice() { return this.isPractice; }
 }

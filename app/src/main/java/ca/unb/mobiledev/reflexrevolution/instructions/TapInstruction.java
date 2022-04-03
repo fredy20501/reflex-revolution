@@ -9,6 +9,7 @@ public class TapInstruction extends Instruction {
 
     private final TouchDetector touchDetector;
     private TouchDetector.TapAction currentAction;
+    private TouchDetector.TapAction[] actions;
 
     private int index;
 
@@ -30,25 +31,22 @@ public class TapInstruction extends Instruction {
             }
         });
         voiceCommands = getVoiceCommands("tap");
+        actions = TouchDetector.TapAction.values();
     }
 
     @Override
     public void init() {
         super.init();
         // Initialize as a random action
-        TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
     }
 
-    // Second init which will only be called in tutorial mode
+    // Second init which will only be called in practice mode
     @Override
     public void init(boolean success){
         super.init(success);
-        // Initialize as a random action
-        TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
-
-        // Override previously set instruction with the next action in order
-        // If there was no success, show same action as last time
+        // Initialize as next instruction in sequence (if success)
+        // Else keep the same instruction
         if(success) index = (index+1) % actions.length;
         currentAction = actions[index];
     }

@@ -14,6 +14,7 @@ public class RotationInstruction extends Instruction {
     private Sensor gyroscope;
     private RotationDetector rotationDetector;
     private RotationDetector.Action currentAction;
+    private RotationDetector.Action[] actions;
 
     private Integer[] tiltVoiceCommands;
     private Integer[] turnVoiceCommands;
@@ -49,36 +50,34 @@ public class RotationInstruction extends Instruction {
         tiltVoiceCommands = getVoiceCommands("tilt");
         turnVoiceCommands = getVoiceCommands("turn");
         twistVoiceCommands = getVoiceCommands("twist");
+        actions = RotationDetector.Action.values();
     }
 
     @Override
     public void init() {
         super.init();
         // Initialize as a random action
-        RotationDetector.Action[] actions = RotationDetector.Action.values();
         currentAction = actions[rand.nextInt(actions.length)];
+        setVoiceCommands();
+    }
 
-        // Set the proper voice commands
+    @Override
+    public void init(boolean success){
+        super.init(success);
+        // Initialize as next instruction in sequence (if success)
+        // Else keep the same instruction
+        if(success) index = (index+1) % actions.length;
+        currentAction = actions[index];
+        setVoiceCommands();
+    }
+
+    // Set the proper voice commands based on current instruction
+    private void setVoiceCommands() {
         switch(currentAction.getType()) {
             case TURN: voiceCommands = turnVoiceCommands; break;
             case TWIST: voiceCommands = twistVoiceCommands; break;
             case TILT: voiceCommands = tiltVoiceCommands; break;
         }
-    }
-
-    // Second init which will only be called in tutorial mode
-    @Override
-    public void init(boolean success){
-        // No need to set voice commands, as this calls
-        // init() first
-        super.init(success);
-        // Initialize as a random action
-        RotationDetector.Action[] actions = RotationDetector.Action.values();
-
-        // Override previously set instruction with the next action in order
-        // If there was no success, show same action as last time
-        if(success) index = (index+1) % actions.length;
-        currentAction = actions[index];
     }
 
     @Override
