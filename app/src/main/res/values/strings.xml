@@ -64,7 +64,9 @@
     <string name="explain_dont_tap"><font color="#FFD6BC38"><b>> Don\'t Tap: </b></font>Wait for the timer to run out without taping the screen. You lose the game if you tap.</string>
     <string name="explain_swipe">Swipe the screen in the given direction. You lose the game if you swipe in the wrong direction.</string>
     <string name="explain_swipe_directions"><font color="#FFD200E4"><b>Possible Directions: </b></font>Left, Right, Up, Down.</string>
-    <string name="explain_swipe_opposite"><font color="#FFD6BC38"><b>> Opposite Swipe: </b></font>Swipe in the opposite direction of the given direction. For example, if the action is "Opposite of up" then you must swipe down.</string>
+    <string name="explain_swipe_flick"><font color="#FFD6BC38"><b>> Flick: </b></font>Swipe in any direction.</string>
+    <string name="explain_swipe_opposite"><font color="#FFD6BC38"><b>> Opposite Swipe: </b></font>Swipe in the opposite direction of the given direction.</string>
+    <string name="explain_shake">Shake it up! Shake your device in any direction.</string>
     <string name="explain_jump">Jump in the air! Move the device up, regardless of the device\'s orientation.</string>
     <string name="explain_freeze">Don\'t move! Keep the device as still as possible until the timer runs out. You lose the game if the device moves/rotates too much.</string>
     <string name="explain_turn">Turn the device in the given direction (left or right).</string>
@@ -75,6 +77,7 @@
 
     <string name="practice_tap">Practice Tap</string>
     <string name="practice_swipe">Practice Swipe</string>
+    <string name="practice_shake">Practice Shake</string>
     <string name="practice_jump">Practice Jump</string>
     <string name="practice_freeze">Practice Freeze</string>
     <string name="practice_turn">Practice Turn</string>
@@ -83,6 +86,8 @@
     <string name="practice_type">Practice Type</string>
     <string name="practice_dial">Practice Dial</string>
 
+    <string name="tap">Tap</string>
+    <string name="shake">Shake</string>
     <string name="jump">Jump</string>
     <string name="freeze">Freeze</string>
     <string name="turn">Turn</string>
@@ -91,10 +96,10 @@
     <string name="type">Type</string>
     <string name="dial">Dial</string>
 
-    <string name="tilt_forward">Tilt Forward</string>
-    <string name="tilt_backward">Tilt Backward</string>
-    <string name="twist_left">Twist Left</string>
-    <string name="twist_right">Twist Right</string>
+    <string name="tilt_forward">Forward</string>
+    <string name="tilt_backward">Backward</string>
+    <string name="twist_left">Left</string>
+    <string name="twist_right">Right</string>
 
     <string name="tilt_phone_forward">Tilt Phone Forward</string>
     <string name="turn_phone_left_right">Turn Phone Left/Right</string>
