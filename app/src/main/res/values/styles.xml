@@ -36,6 +36,14 @@
         <item name="android:textSize">@dimen/h2</item>
         <item name="android:layout_marginTop">10dp</item>
     </style>
+    <style name="h3_primary" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/magenta_light</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="h3_secondary" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/gold_light</item>
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="score" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/gold_light</item>
         <item name="android:textStyle">bold</item>
