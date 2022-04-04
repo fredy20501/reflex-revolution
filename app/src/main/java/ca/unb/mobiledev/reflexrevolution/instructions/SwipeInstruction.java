@@ -18,18 +18,21 @@ public class SwipeInstruction extends Instruction {
     private Integer[] swipeVoiceCommands;
     private Integer[] flickVoiceCommands;
 
-    private int index;
+    private int actionIndex;
+    private int typeIndex;
+    private boolean isPractice;
 
     public SwipeInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
-        this.index = 0;
+        this.actionIndex = 0;
+        this.typeIndex = 0;
         setup();
     }
 
     private void setup() {
-        textLabels.put(TouchDetector.SwipeAction.SWIPE_RIGHT, new String[] {"RIGHT", "OPPOSITE OF LEFT"});
         textLabels.put(TouchDetector.SwipeAction.SWIPE_LEFT, new String[] {"LEFT", "OPPOSITE OF RIGHT"});
+        textLabels.put(TouchDetector.SwipeAction.SWIPE_RIGHT, new String[] {"RIGHT", "OPPOSITE OF LEFT"});
         textLabels.put(TouchDetector.SwipeAction.SWIPE_UP, new String[] {"UP", "OPPOSITE OF DOWN"});
         textLabels.put(TouchDetector.SwipeAction.SWIPE_DOWN, new String[] {"DOWN", "OPPOSITE OF UP"});
 
@@ -54,6 +57,7 @@ public class SwipeInstruction extends Instruction {
     @Override
     public void init() {
         super.init();
+        isPractice = false;
         // Initialize as a random action
         currentAction = actions[rand.nextInt(actions.length)];
         setVoiceCommands();
@@ -63,10 +67,16 @@ public class SwipeInstruction extends Instruction {
     @Override
     public void init(boolean success){
         super.init(success);
+        isPractice = true;
         // Initialize as next instruction in sequence (if success)
         // Else keep the same instruction
-        if(success) index = (index+1) % actions.length;
-        currentAction = actions[index];
+        if (success) {
+            // Increment to next type if reached the end
+            if (actionIndex+1 == actions.length) typeIndex = (typeIndex+1) % 2;
+            // Increment to next action
+            actionIndex = (actionIndex +1) % actions.length;
+        }
+        currentAction = actions[actionIndex];
         setVoiceCommands();
     }
 
@@ -81,9 +91,10 @@ public class SwipeInstruction extends Instruction {
     @Override
     public void display() {
         if (currentAction.getType() == TouchDetector.Type.SWIPE) {
-            // Add small label for swipe instructions
-            int index = rand.nextInt(2);
+            // Randomly pick if opposite or normal type
+            int index = isPractice ? typeIndex : rand.nextInt(2);
             String displayTxt = Objects.requireNonNull(textLabels.get(currentAction))[index];
+            // Add small label for swipe instructions
             addTextView(displayTxt, LabelType.SECONDARY);
             // Main label
             addTextView("SWIPE", LabelType.PRIMARY);
