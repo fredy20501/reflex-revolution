@@ -8,7 +8,7 @@ public class LocalData {
     private static final String HIGH_SCORE_KEY = "HIGH_SCORE_KEY";
     private static SharedPreferences prefs;
 
-    public static void initialize(Context context) {
+    public static void initializeSP(Context context) {
         prefs = context.getSharedPreferences(PREFS_FILE_NAME, Context.MODE_PRIVATE);
     }
 

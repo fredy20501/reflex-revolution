@@ -1,7 +1,7 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
 import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.getHighScore;
-import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.initialize;
+import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.initializeSP;
 import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.setHighScore;
 
 import android.content.Intent;
@@ -25,7 +25,7 @@ public class GameOverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_over);
 
-        initialize(GameOverActivity.this);
+        initializeSP(GameOverActivity.this);
 
         //Retrieve information
         Bundle extras = getIntent().getExtras();

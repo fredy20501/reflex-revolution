@@ -1,5 +1,8 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
+import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.getHighScore;
+import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.initializeSP;
+
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -59,6 +62,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
 
+        initializeSP(GameActivity.this);
+
         // Retrieve game mode and difficulty
         Bundle extras = getIntent().getExtras();
         if (extras != null){
@@ -83,11 +88,13 @@ public class GameActivity extends AppCompatActivity {
 
         // Start the game
         startResetTimer();
+
     }
 
     private void initialize() {
         score = 0;
         updateScoreText();
+        updateHighScoreText();
 
         // Set up UI interactions
         pauseButton.setOnClickListener(v -> {
@@ -181,6 +188,8 @@ public class GameActivity extends AppCompatActivity {
     private void updateScoreText(){
         scoreText.setText(String.valueOf(score));
     }
+
+    private void updateHighScoreText(){ highScoreText.setText(String.valueOf(getHighScore(gameMode, difficulty))); }
 
     // Stop current timer then call game loop after one second
     private void startResetTimer() {
