@@ -14,13 +14,17 @@ public class RotationInstruction extends Instruction {
     private Sensor gyroscope;
     private RotationDetector rotationDetector;
     private RotationDetector.Action currentAction;
+    private RotationDetector.Action[] actions;
 
     private Integer[] tiltVoiceCommands;
     private Integer[] turnVoiceCommands;
     private Integer[] twistVoiceCommands;
 
+    private int index;
+
     public RotationInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
+        this.index = 0;
         setup();
     }
 
@@ -46,15 +50,29 @@ public class RotationInstruction extends Instruction {
         tiltVoiceCommands = getVoiceCommands("tilt");
         turnVoiceCommands = getVoiceCommands("turn");
         twistVoiceCommands = getVoiceCommands("twist");
+        actions = RotationDetector.Action.values();
     }
 
     @Override
     public void init() {
         super.init();
         // Initialize as a random action
-        RotationDetector.Action[] actions = RotationDetector.Action.values();
         currentAction = actions[rand.nextInt(actions.length)];
-        // Set the proper voice commands
+        setVoiceCommands();
+    }
+
+    @Override
+    public void init(boolean success){
+        super.init(success);
+        // Initialize as next instruction in sequence (if success)
+        // Else keep the same instruction
+        if(success) index = (index+1) % actions.length;
+        currentAction = actions[index];
+        setVoiceCommands();
+    }
+
+    // Set the proper voice commands based on current instruction
+    private void setVoiceCommands() {
         switch(currentAction.getType()) {
             case TURN: voiceCommands = turnVoiceCommands; break;
             case TWIST: voiceCommands = twistVoiceCommands; break;

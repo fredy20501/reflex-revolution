@@ -15,16 +15,16 @@ public abstract class BackgroundMusic {
 
     public static void onStart() {
         startCounter++;
-        if (startCounter == 1) {
+        if (startCounter == 1 && musicPlayer != null) {
             musicPlayer.restart();
         }
     }
 
     public static void onStop() {
         startCounter--;
-        if (startCounter == 0) {
+        if (startCounter < 0) startCounter = 0;
+        if (startCounter == 0 && musicPlayer != null) {
             musicPlayer.pause();
         }
-        else if (startCounter < 0) startCounter = 0;
     }
 }

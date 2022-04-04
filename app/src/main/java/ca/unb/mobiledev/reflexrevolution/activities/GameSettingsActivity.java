@@ -10,7 +10,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 

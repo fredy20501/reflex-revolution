@@ -10,12 +10,15 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.core.content.res.ResourcesCompat;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.instructions.DialInstruction;
@@ -29,6 +32,9 @@ import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class GameActivity extends AppCompatActivity {
     private final int TIME_BETWEEN_LOOPS = 1000;
+    private final int DISPLAY_SUCCESS_TIME = 1500;
+    private final double MIN_SONG_SPEED = 0.5;
+    private final double MAX_SONG_SPEED = 1.5;
 
     private ObjectAnimator instructionTimerAnimation;
     private ProgressBar timeProgressBar;
@@ -37,8 +43,11 @@ public class GameActivity extends AppCompatActivity {
     private ImageButton pauseButton;
     private ViewGroup pauseOverlay;
     private ViewGroup resumeSection;
+    private Button exitButton;
+    private TextView feedbackText;
 
     private CountDownTimer resetTimer;
+    private CountDownTimer feedbackTimer;
     private Instruction currentInstruction;
     private InstructionManager instructionManager;
     private GameMode gameMode;
@@ -49,6 +58,7 @@ public class GameActivity extends AppCompatActivity {
     private LoopMediaPlayer musicPlayer;
     
     private int score;
+    private boolean success;
     private boolean isGamePaused = false;
     private boolean isTimerDelayed = false;
 
@@ -74,6 +84,14 @@ public class GameActivity extends AppCompatActivity {
         pauseButton = findViewById(R.id.pauseButton);
         pauseOverlay = findViewById(R.id.pauseOverlay);
         resumeSection = findViewById(R.id.resumeSection);
+        exitButton = findViewById(R.id.exitButton);
+
+        // Create feedback text UI element
+        ContextThemeWrapper textFeedbackStyle = new ContextThemeWrapper(this, R.style.successFeedback);
+        feedbackText = new TextView(textFeedbackStyle);
+        feedbackText.setText(R.string.fail);
+        feedbackText.setGravity(Gravity.CENTER);
+        feedbackText.setTypeface(ResourcesCompat.getFont(this, R.font.rocknroll_one));
 
         // Set up the game
         initialize();
@@ -83,6 +101,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void initialize() {
+        success = false;
         score = 0;
         updateScoreText();
 
@@ -107,13 +126,17 @@ public class GameActivity extends AppCompatActivity {
                 updateMusicSpeed();
             }
         });
+        exitButton.setOnClickListener(v -> onBackPressed());
 
         // Set up the instructions
         instructionManager = new InstructionManager(instructionSpace, new Instruction.Callback() {
             @Override
             public void onSuccess() { instructionSuccess(); }
             @Override
-            public void onFailure() { endGame(); }
+            public void onFailure() {
+                if(!gameMode.isPractice()) endGame();
+                else instructionFailure();
+            }
         });
         instructionManager.generateInstructions(gameMode);
 
@@ -123,6 +146,16 @@ public class GameActivity extends AppCompatActivity {
             public void onTick(long l) {}
             @Override
             public void onFinish() { gameLoop(); }
+        };
+        // Set up the feedback timer (used as delay for showing feedback)
+        feedbackTimer = new CountDownTimer(DISPLAY_SUCCESS_TIME, 500) {
+            @Override
+            public void onTick(long l) {}
+            @Override
+            public void onFinish() {
+                resetUI();
+                startResetTimer();
+            }
         };
 
         // Set up the instruction timer (progress bar animation)
@@ -141,6 +174,14 @@ public class GameActivity extends AppCompatActivity {
             public void onAnimationRepeat(Animator animator) {}
         });
 
+        //Hide score and high score if this is a practice
+        if(gameMode.isPractice()){
+            scoreText.setVisibility(View.INVISIBLE);
+            findViewById(R.id.highScore).setVisibility(View.GONE);
+            findViewById(R.id.highScoreTrophy).setVisibility(View.GONE);
+            findViewById(R.id.exitButton).setVisibility(View.VISIBLE);
+        }
+
         setMediaPlayers();
     }
 
@@ -155,24 +196,33 @@ public class GameActivity extends AppCompatActivity {
         //Rewind sound when it ends so that it can be played again later
         scorePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
 
-        //Allow losePlayer to continue playing when the activity is closed
+        //If in the main game, allow losePlayer to continue playing when the activity is closed
         //but stop it properly once it finishes playing
-        losePlayer.setOnCompletionListener(v -> {
-            losePlayer.stop();
-            losePlayer.release();
-            losePlayer = null;
-        });
+        if(!gameMode.isPractice()) losePlayer.setOnCompletionListener(v -> stopLosePlayer());
+        //If we are in a practice, rewind it when it finishes
+        else losePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
     }
 
     //Properly handle stopping all media players
     //Lose player will be handled by its onCompletionListener
     private void stopMediaPlayers(){
-        scorePlayer.stop();
-        scorePlayer.release();
-        scorePlayer = null;
+        if (scorePlayer != null) {
+            scorePlayer.stop();
+            scorePlayer.release();
+            scorePlayer = null;
+        }
+        if (musicPlayer != null) {
+            musicPlayer.release();
+            musicPlayer = null;
+        }
+    }
 
-        musicPlayer.release();
-        musicPlayer = null;
+    private void stopLosePlayer(){
+        if (losePlayer != null) {
+            losePlayer.stop();
+            losePlayer.release();
+            losePlayer = null;
+        }
     }
 
     private void updateScoreText(){
@@ -181,7 +231,6 @@ public class GameActivity extends AppCompatActivity {
 
     // Stop current timer then call game loop after one second
     private void startResetTimer() {
-        instructionTimerAnimation.cancel();
         //Wait some delay before calling game loop
         resetTimer.cancel();
         resetTimer.start();
@@ -205,8 +254,14 @@ public class GameActivity extends AppCompatActivity {
     // Prepare and start new instruction loop
     private void gameLoop() {
         currentInstruction = instructionManager.getInstruction();
-        currentInstruction.init();
+
+        // Call proper init function depending on if this is practice mode or not
+        if(gameMode.isPractice()) currentInstruction.init(success);
+        else currentInstruction.init();
+
+        // Display the instruction
         currentInstruction.display();
+
         if (!isGamePaused) {
             currentInstruction.playVoiceCommand();
             currentInstruction.enable();
@@ -223,18 +278,47 @@ public class GameActivity extends AppCompatActivity {
         instructionSpace.setGravity(defaultGravity);
     }
 
+    private void showFeedback(){
+        instructionSpace.addView(feedbackText);
+    }
+
     private void instructionSuccess() {
         // Play success sound effect
         scorePlayer.start();
 
-        // Update score
-        score++;
-        updateScoreText();
+        // Update score if not in practice
+        if(!gameMode.isPractice()) {
+            score++;
+            updateScoreText();
+        }
 
-        // Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
+        // Set success state before calling next instruction
+        success = true;
+        nextInstruction();
+    }
+
+    private void instructionFailure(){
+        // Play fail sound
+        losePlayer.start();
+
+        // Set success state before calling next instruction
+        success = false;
+        nextInstruction();
+    }
+
+    // Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
+    private void nextInstruction(){
+        instructionTimerAnimation.cancel();
         currentInstruction.disable();
         resetUI();
-        startResetTimer();
+
+        // If practice & failed the instruction, show feedback
+        if(gameMode.isPractice() && !success) {
+            showFeedback();
+            feedbackTimer.start();
+        }
+        // Else start next instruction as normal
+        else startResetTimer();
     }
 
     // Ends the game, sending score and game options to the Game Over screen
@@ -259,14 +343,12 @@ public class GameActivity extends AppCompatActivity {
 
     // Scuffed function that will give a scaled timer based on score.
     // Starts at ~3000ms and min value is ~1000ms
-    private int scaleTimerFromScore() {
-        return (int)Math.pow(2, -0.04*score + 11) + 1000;
-    }
+    private int scaleTimerFromScore() { return (int)Math.pow(2, -0.04*score + 11) + 1000; }
 
     //Returns a value between 0.5 and 1.5 based on the time the user has to complete the instruction
     //Scales linearly, with 0.5 as 5000ms, 1 as 3000ms, and 1.5 as 1000ms
     private float scaleSongSpeedFromTimer() {
-        return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, 0.5, 1.5);
+        return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, MIN_SONG_SPEED, MAX_SONG_SPEED);
     }
 
     //Clamp function using double for maximum compatibility
@@ -311,6 +393,9 @@ public class GameActivity extends AppCompatActivity {
         currentInstruction = null;
         instructionTimerAnimation.cancel();
         resetTimer.cancel();
+        feedbackTimer.cancel();
+        stopLosePlayer();
+        stopMediaPlayers();
         finish();
     }
 }

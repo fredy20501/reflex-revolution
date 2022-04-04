@@ -9,10 +9,14 @@ public class TapInstruction extends Instruction {
 
     private final TouchDetector touchDetector;
     private TouchDetector.TapAction currentAction;
+    private TouchDetector.TapAction[] actions;
+
+    private int index;
 
     public TapInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
+        this.index = 0;
         setup();
     }
 
@@ -27,14 +31,24 @@ public class TapInstruction extends Instruction {
             }
         });
         voiceCommands = getVoiceCommands("tap");
+        actions = TouchDetector.TapAction.values();
     }
 
     @Override
     public void init() {
         super.init();
         // Initialize as a random action
-        TouchDetector.TapAction[] actions = TouchDetector.TapAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
+    }
+
+    // Second init which will only be called in practice mode
+    @Override
+    public void init(boolean success){
+        super.init(success);
+        // Initialize as next instruction in sequence (if success)
+        // Else keep the same instruction
+        if(success) index = (index+1) % actions.length;
+        currentAction = actions[index];
     }
 
     @Override
