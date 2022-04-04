@@ -80,22 +80,28 @@ public class InstructionManager {
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
                 break;
             case SHAKE_PRACTICE:
-                addEntry(new ShakeInstruction(layout, callback), 2);
+                addEntry(new ShakeInstruction(layout, callback), 1);
                 break;
             case JUMP_PRACTICE:
-                addEntry(new JumpInstruction(layout, callback), 2);
+                addEntry(new JumpInstruction(layout, callback), 1);
                 break;
-            case ROTATION_PRACTICE:
-                addEntry(new RotationInstruction(layout, callback), 6);
+            case TURN_PRACTICE:
+                addEntry(new RotationInstruction(layout, callback, RotationInstruction.Filter.TURN), 2);
+                break;
+            case TILT_PRACTICE:
+                addEntry(new RotationInstruction(layout, callback, RotationInstruction.Filter.TILT), 2);
+                break;
+            case TWIST_PRACTICE:
+                addEntry(new RotationInstruction(layout, callback, RotationInstruction.Filter.TWIST), 2);
                 break;
             case FREEZE_PRACTICE:
-                addEntry(new FreezeInstruction(layout, callback), 2);
+                addEntry(new FreezeInstruction(layout, callback), 1);
                 break;
             case TYPE_PRACTICE:
-                addEntry(new TypeInstruction(layout, callback), 2);
+                addEntry(new TypeInstruction(layout, callback), 1);
                 break;
             case DIAL_PRACTICE:
-                addEntry(new DialInstruction(layout, callback), 2);
+                addEntry(new DialInstruction(layout, callback), 1);
                 break;
         }
     }

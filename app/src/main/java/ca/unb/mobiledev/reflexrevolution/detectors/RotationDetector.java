@@ -56,10 +56,10 @@ public class RotationDetector implements SensorEventListener {
     public enum Action {
         TILT_FORWARD(Type.TILT),
         TILT_BACKWARD(Type.TILT),
-        TURN_RIGHT(Type.TURN),
         TURN_LEFT(Type.TURN),
-        TWIST_RIGHT(Type.TWIST),
-        TWIST_LEFT(Type.TWIST);
+        TURN_RIGHT(Type.TURN),
+        TWIST_LEFT(Type.TWIST),
+        TWIST_RIGHT(Type.TWIST);
 
         private final Type type;
         Action(Type type) {

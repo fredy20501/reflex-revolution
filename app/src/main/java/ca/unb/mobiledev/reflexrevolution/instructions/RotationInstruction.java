@@ -10,6 +10,19 @@ import ca.unb.mobiledev.reflexrevolution.detectors.RotationDetector;
 
 public class RotationInstruction extends Instruction {
 
+    public enum Filter {
+        ALL(0, RotationDetector.Action.values().length),
+        TILT(0, 2),
+        TURN(2, 4),
+        TWIST(4, 6);
+
+        private final int start, end;
+        Filter(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
+
     private SensorManager sensorManager;
     private Sensor gyroscope;
     private RotationDetector rotationDetector;
@@ -20,11 +33,20 @@ public class RotationInstruction extends Instruction {
     private Integer[] turnVoiceCommands;
     private Integer[] twistVoiceCommands;
 
+    private final Filter filter;
     private int index;
 
     public RotationInstruction(LinearLayout layout, Callback callback) {
         super(layout, callback);
+        this.filter = Filter.ALL;
         this.index = 0;
+        setup();
+    }
+
+    public RotationInstruction(LinearLayout layout, Callback callback, Filter filter) {
+        super(layout, callback);
+        this.filter = filter;
+        this.index = filter.start;
         setup();
     }
 
@@ -56,8 +78,9 @@ public class RotationInstruction extends Instruction {
     @Override
     public void init() {
         super.init();
-        // Initialize as a random action
-        currentAction = actions[rand.nextInt(actions.length)];
+        // Initialize as a random action (based on filter)
+        int randomIndex = rand.nextInt(filter.end - filter.start) + filter.start;
+        currentAction = actions[randomIndex];
         setVoiceCommands();
     }
 
@@ -66,7 +89,7 @@ public class RotationInstruction extends Instruction {
         super.init(success);
         // Initialize as next instruction in sequence (if success)
         // Else keep the same instruction
-        if(success) index = (index+1) % actions.length;
+        if (success) index = (index - filter.start + 1) % (filter.end - filter.start) + filter.start;
         currentAction = actions[index];
         setVoiceCommands();
     }

@@ -13,7 +13,9 @@ public enum GameMode {
     SWIPE_PRACTICE(0, 0, true),
     SHAKE_PRACTICE(0, 0, true),
     JUMP_PRACTICE(0, 0, true),
-    ROTATION_PRACTICE(0, 0, true),
+    TURN_PRACTICE(0, 0, true),
+    TILT_PRACTICE(0, 0, true),
+    TWIST_PRACTICE(0, 0, true),
     FREEZE_PRACTICE(0, 0, true),
     TYPE_PRACTICE(0, 0, true),
     DIAL_PRACTICE(0, 0, true);
