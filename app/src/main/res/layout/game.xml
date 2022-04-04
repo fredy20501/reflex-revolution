@@ -28,6 +28,15 @@
                 android:gravity="start|center_vertical"
                 android:orientation="horizontal">
 
+                <Button
+                    android:id="@+id/exitButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/exit"
+                    android:visibility="gone"
+                    app:cornerRadius="@dimen/defaultCornerRadius"
+                    tools:ignore="TextContrastCheck" />
+
                 <include
                     layout="@layout/high_score"
                     android:layout_width="wrap_content"

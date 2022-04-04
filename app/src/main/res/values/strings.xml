@@ -46,4 +46,6 @@
     <string name="voice_commands">Voice Commands</string>
     <string name="sound_effects">Sound Effects</string>
     <string name="clear_data">Clear Data</string>
+    <string name="fail">FAIL</string>
+    <string name="exit">Exit</string>
 </resources>

@@ -13,13 +13,17 @@ public class SwipeInstruction extends Instruction {
 
     private final TouchDetector touchDetector;
     private TouchDetector.SwipeAction currentAction;
+    private TouchDetector.SwipeAction[] actions;
     private final Map<TouchDetector.SwipeAction, String[]> textLabels = new HashMap<>();
     private Integer[] swipeVoiceCommands;
     private Integer[] flickVoiceCommands;
 
+    private int index;
+
     public SwipeInstruction(LinearLayout layout, Callback callback, TouchDetector touchDetector) {
         super(layout, callback);
         this.touchDetector = touchDetector;
+        this.index = 0;
         setup();
     }
 
@@ -44,20 +48,36 @@ public class SwipeInstruction extends Instruction {
         });
         swipeVoiceCommands = getVoiceCommands("swipe");
         flickVoiceCommands = getVoiceCommands("flick");
+        actions = TouchDetector.SwipeAction.values();
     }
 
     @Override
     public void init() {
         super.init();
         // Initialize as a random action
-        TouchDetector.SwipeAction[] actions = TouchDetector.SwipeAction.values();
         currentAction = actions[rand.nextInt(actions.length)];
-        // Set the proper voice commands
+        setVoiceCommands();
+    }
+
+    // Second init which will only be called in practice mode
+    @Override
+    public void init(boolean success){
+        super.init(success);
+        // Initialize as next instruction in sequence (if success)
+        // Else keep the same instruction
+        if(success) index = (index+1) % actions.length;
+        currentAction = actions[index];
+        setVoiceCommands();
+    }
+
+    // Set the proper voice commands based on current instruction
+    private void setVoiceCommands() {
         switch(currentAction.getType()) {
             case SWIPE: voiceCommands = swipeVoiceCommands; break;
             case FLICK: voiceCommands = flickVoiceCommands; break;
         }
     }
+
     @Override
     public void display() {
         if (currentAction.getType() == TouchDetector.Type.SWIPE) {
