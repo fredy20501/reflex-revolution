@@ -262,13 +262,14 @@ public class GameActivity extends AppCompatActivity {
         // Display the instruction
         currentInstruction.display();
 
+        // Start instruction timer
+        newTimer();
+
         if (!isGamePaused) {
+            updateMusicSpeed();
             currentInstruction.playVoiceCommand();
             currentInstruction.enable();
-            updateMusicSpeed();
         }
-
-        newTimer();
     }
 
     // Clear all added UI elements & reset gravity
@@ -284,7 +285,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void instructionSuccess() {
         // Play success sound effect
-        scorePlayer.start();
+        if (scorePlayer != null) scorePlayer.start();
 
         // Update score if not in practice
         if(!gameMode.isPractice()) {
@@ -309,7 +310,7 @@ public class GameActivity extends AppCompatActivity {
     // Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
     private void nextInstruction(){
         instructionTimerAnimation.cancel();
-        currentInstruction.disable();
+        if (currentInstruction != null) currentInstruction.disable();
         resetUI();
 
         // If practice & failed the instruction, show feedback
@@ -338,7 +339,7 @@ public class GameActivity extends AppCompatActivity {
 
     //Scale music playback speed based on how much time the player has to complete the instruction
     private void updateMusicSpeed(){
-        musicPlayer.setPlaybackSpeed(scaleSongSpeedFromTimer());
+        if (musicPlayer != null) musicPlayer.setPlaybackSpeed(scaleSongSpeedFromTimer());
     }
 
     // Scuffed function that will give a scaled timer based on score.
@@ -373,7 +374,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        resumeGame();
+        if (!isGamePaused) resumeGame();
     }
 
     @Override
@@ -385,17 +386,16 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        currentInstruction = null;
+        instructionTimerAnimation.cancel();
+        resetTimer.cancel();
+        feedbackTimer.cancel();
         stopMediaPlayers();
     }
 
     @Override
     public void onBackPressed(){
-        currentInstruction = null;
-        instructionTimerAnimation.cancel();
-        resetTimer.cancel();
-        feedbackTimer.cancel();
         stopLosePlayer();
-        stopMediaPlayers();
-        finish();
+        super.onBackPressed();
     }
 }
