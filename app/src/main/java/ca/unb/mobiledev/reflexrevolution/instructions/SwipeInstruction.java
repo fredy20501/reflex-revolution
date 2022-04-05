@@ -106,6 +106,11 @@ public class SwipeInstruction extends Instruction {
     }
 
     @Override
+    public int getMinDuration() {
+        return 750;
+    }
+
+    @Override
     public void enable() {}
 
     @Override

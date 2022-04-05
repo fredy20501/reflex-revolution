@@ -45,7 +45,7 @@ public class InstructionManager {
         switch(gameMode){
             case CLASSIC:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);
-                addEntry(new SwipeInstruction(layout, callback, touchDetector), 6);
+                addEntry(new SwipeInstruction(layout, callback, touchDetector), 5);
                 addEntry(new ShakeInstruction(layout, callback), 2);
                 break;
             case TACTILE:
@@ -72,9 +72,9 @@ public class InstructionManager {
                 addEntry(new ShakeInstruction(layout, callback), 2);
                 addEntry(new JumpInstruction(layout, callback), 2);
                 addEntry(new FreezeInstruction(layout, callback), 2);
-                addEntry(new RotationInstruction(layout, callback), 6);
-                addEntry(new TypeInstruction(layout, callback), 2);
-                addEntry(new DialInstruction(layout, callback), 2);
+                addEntry(new RotationInstruction(layout, callback), 7);
+                addEntry(new TypeInstruction(layout, callback), 1.5f);
+                addEntry(new DialInstruction(layout, callback), 1.5f);
                 break;
             case TAP_PRACTICE:
                 addEntry(new TapInstruction(layout, callback, touchDetector), 4);

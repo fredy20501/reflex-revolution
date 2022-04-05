@@ -30,6 +30,7 @@ public class DialInstruction extends Instruction{
         wrapContent = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
+    @SuppressWarnings("StringConcatenationInLoop")
     @Override
     public void init() {
         super.init();
@@ -75,6 +76,11 @@ public class DialInstruction extends Instruction{
             }
         });
         layout.addView(field);
+    }
+
+    @Override
+    public int getMinDuration() {
+        return 3500;
     }
 
     //Select field and force the keyboard to show

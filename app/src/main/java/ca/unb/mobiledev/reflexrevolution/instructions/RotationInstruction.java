@@ -121,6 +121,11 @@ public class RotationInstruction extends Instruction {
     }
 
     @Override
+    public int getMinDuration() {
+        return 750;
+    }
+
+    @Override
     public void enable() {
         setListeners();
     }
@@ -136,7 +141,7 @@ public class RotationInstruction extends Instruction {
     }
 
     private void setListeners() {
-        sensorManager.registerListener(rotationDetector, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(rotationDetector, gyroscope, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void unsetListeners() {

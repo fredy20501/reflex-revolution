@@ -44,7 +44,7 @@ public class RotateTestActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(rotationDetector, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(rotationDetector, gyroscope, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override

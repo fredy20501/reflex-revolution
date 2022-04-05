@@ -21,9 +21,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.res.ResourcesCompat;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.instructions.DialInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
-import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
@@ -32,9 +30,8 @@ import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class GameActivity extends AppCompatActivity {
     private final int TIME_BETWEEN_LOOPS = 1000;
-    private final int DISPLAY_SUCCESS_TIME = 1500;
-    private final double MIN_SONG_SPEED = 0.5;
-    private final double MAX_SONG_SPEED = 1.5;
+    private final int FEEDBACK_DURATION = 1500;
+    private final float MAX_SONG_SPEED = 1.75f;
 
     private ObjectAnimator instructionTimerAnimation;
     private ProgressBar timeProgressBar;
@@ -52,6 +49,8 @@ public class GameActivity extends AppCompatActivity {
     private InstructionManager instructionManager;
     private GameMode gameMode;
     private Difficulty difficulty;
+    private float maxScore;
+    private float extraDuration;
 
     private MediaPlayer scorePlayer;
     private MediaPlayer losePlayer;
@@ -61,6 +60,7 @@ public class GameActivity extends AppCompatActivity {
     private boolean success;
     private boolean isGamePaused = false;
     private boolean isTimerDelayed = false;
+    private boolean isDestroyed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +69,17 @@ public class GameActivity extends AppCompatActivity {
 
         // Retrieve game mode and difficulty
         Bundle extras = getIntent().getExtras();
-        if (extras != null){
+        if (extras != null) {
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }
+        else {
+            // Pick defaults if not given in extras
+            gameMode = GameMode.CLASSIC;
+            difficulty = Difficulty.INTERMEDIATE;
+        }
+        maxScore = difficulty.getMaxScore();
+        extraDuration = difficulty.getExtraDuration();
 
         // Force background music to stop
         BackgroundMusic.onStop();
@@ -145,10 +152,10 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onTick(long l) {}
             @Override
-            public void onFinish() { gameLoop(); }
+            public void onFinish() { if (!isDestroyed) gameLoop(); }
         };
         // Set up the feedback timer (used as delay for showing feedback)
-        feedbackTimer = new CountDownTimer(DISPLAY_SUCCESS_TIME, 500) {
+        feedbackTimer = new CountDownTimer(FEEDBACK_DURATION, 500) {
             @Override
             public void onTick(long l) {}
             @Override
@@ -238,15 +245,8 @@ public class GameActivity extends AppCompatActivity {
 
     // Get new timer count, then start it
     private void newTimer() {
-        int timerDuration = scaleTimerFromScore();
-
-        // If you need to type or dial, add extra time
-        // TODO: abstract this into the Instruction class, to be used by all instructions)
-        if(currentInstruction instanceof TypeInstruction) timerDuration += 1000;
-        else if(currentInstruction instanceof DialInstruction) timerDuration += 2000;
-
         // Start the timer animation
-        instructionTimerAnimation.setDuration(timerDuration);
+        instructionTimerAnimation.setDuration(getTimerDuration());
         if (!isGamePaused) instructionTimerAnimation.start();
         else isTimerDelayed = true;
     }
@@ -339,21 +339,21 @@ public class GameActivity extends AppCompatActivity {
 
     //Scale music playback speed based on how much time the player has to complete the instruction
     private void updateMusicSpeed(){
-        if (musicPlayer != null) musicPlayer.setPlaybackSpeed(scaleSongSpeedFromTimer());
+        if (musicPlayer != null) musicPlayer.setPlaybackSpeed(getMusicMultiplier());
     }
 
-    // Scuffed function that will give a scaled timer based on score.
-    // Starts at ~3000ms and min value is ~1000ms
-    private int scaleTimerFromScore() { return (int)Math.pow(2, -0.04*score + 11) + 1000; }
-
-    //Returns a value between 0.5 and 1.5 based on the time the user has to complete the instruction
-    //Scales linearly, with 0.5 as 5000ms, 1 as 3000ms, and 1.5 as 1000ms
-    private float scaleSongSpeedFromTimer() {
-        return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, MIN_SONG_SPEED, MAX_SONG_SPEED);
+    // Scale the duration linearly with the score
+    private int getTimerDuration() {
+        int minDuration = currentInstruction.getMinDuration();
+        return (int)((1 - score/maxScore) * extraDuration) + minDuration;
     }
 
-    //Clamp function using double for maximum compatibility
-    private double clamp(double val, double min, double max){
+    // Scale the music speed linearly with the score
+    private float getMusicMultiplier() {
+        return (score/maxScore) * (MAX_SONG_SPEED - 1) + 1;
+    }
+
+    private float clamp(float val, float min, float max){
         if(val > max) return max;
         else if (val < min) return min;
         return val;
@@ -366,6 +366,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void resumeGame() {
+        isDestroyed = false;
         if (musicPlayer != null) musicPlayer.restart();
         if (currentInstruction != null) currentInstruction.enable();
         if (!isGamePaused) instructionTimerAnimation.resume();
@@ -395,6 +396,7 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
+        isDestroyed = true;
         stopLosePlayer();
         super.onBackPressed();
     }

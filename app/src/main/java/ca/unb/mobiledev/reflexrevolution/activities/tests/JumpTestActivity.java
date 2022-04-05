@@ -44,8 +44,8 @@ public class JumpTestActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(jumpDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(jumpDetector, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(jumpDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(jumpDetector, gravitySensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     @Override

@@ -54,6 +54,11 @@ public class FreezeInstruction extends Instruction {
     }
 
     @Override
+    public int getMinDuration() {
+        return 750;
+    }
+
+    @Override
     public void enable() {
         setListeners();
     }
@@ -69,8 +74,8 @@ public class FreezeInstruction extends Instruction {
     }
 
     private void setListeners() {
-        sensorManager.registerListener(rotationDetector, gyroscope, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(rotationDetector, gyroscope, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void unsetListeners() {

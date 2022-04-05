@@ -26,9 +26,9 @@
     <string name="description_swipe">This mode will put your dexterity to the test. Swipe instructions only.\n\nHow fast can your fingers go?</string>
     <string name="description_keyboard">Use your keyboard to write words and dial phone numbers as quickly as possible. Type and dial instructions only.\n\nWatch out for typos!</string>
     <string name="description_revolution">Put your reflexes to the test in this ultimate game mode. All instructions are enabled.\n\nHow long can you last?</string>
-    <string name="description_novice">Prefer to take things slow? Start the game with extra time to complete each instruction.</string>
-    <string name="description_intermediate">A standard game of Reflex Revolution. Start the game with the regular amount of time to complete each instruction.</string>
-    <string name="description_master">Want to get straight into the action? Start the game with less time to complete each instruction.</string>
+    <string name="description_novice">Prefer to take things slow? The game ramps up slowly, giving you extra time to complete each instruction.</string>
+    <string name="description_intermediate">A standard game of Reflex Revolution. The game ramps up normally, giving enough time to complete each instruction.</string>
+    <string name="description_master">Want to get straight into the action? The game ramps up quickly, giving you less time to complete each instruction.</string>
 
 <!--    Game & Game Over-->
     <string name="_0">0</string>

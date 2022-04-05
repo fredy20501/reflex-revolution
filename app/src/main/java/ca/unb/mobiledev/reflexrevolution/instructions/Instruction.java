@@ -129,6 +129,9 @@ public abstract class Instruction {
     // Add the UI elements to the layout
     public abstract void display();
 
+    // Return the minimum duration for this instruction
+    public abstract int getMinDuration();
+
     // Activate the instruction listeners (if needed)
     public abstract void enable();
 
