@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 
 public class GameOverActivity extends AppCompatActivity {
-
     private int score = 0;
     private GameMode gameMode = GameMode.CLASSIC;
     private Difficulty difficulty = Difficulty.INTERMEDIATE;
@@ -22,6 +22,8 @@ public class GameOverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_over);
 
+        LocalData.initialize(GameOverActivity.this);
+
         //Retrieve information
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -29,8 +31,6 @@ public class GameOverActivity extends AppCompatActivity {
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }
-        // TODO: get high score from local storage
-        int highScore = 0;
 
         // Get UI elements
         TextView highScoreText = findViewById(R.id.highScore);
@@ -40,9 +40,17 @@ public class GameOverActivity extends AppCompatActivity {
         Button replayButton = findViewById(R.id.replayButton);
         Button menuButton = findViewById(R.id.menuButton);
 
+        // Get previous high score
+        int highScore = LocalData.getHighScore(gameMode, difficulty);
+        // Update high score if score is higher
+        if (score > highScore) {
+            LocalData.setHighScore(score, gameMode, difficulty);
+            highScore = score;
+        }
+
         // Set values
-        highScoreText.setText(String.valueOf(highScore));
         scoreText.setText(String.valueOf(score));
+        highScoreText.setText(String.valueOf(highScore));
         gameModeValue.setText(gameMode.getName());
         difficultyValue.setText(difficulty.getName());
 
@@ -58,4 +66,5 @@ public class GameOverActivity extends AppCompatActivity {
         // Menu button to close this activity, returning to game select screen
         menuButton.setOnClickListener(v -> finish());
     }
+
 }

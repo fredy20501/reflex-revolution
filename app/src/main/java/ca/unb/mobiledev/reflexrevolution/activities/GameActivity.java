@@ -28,6 +28,7 @@ import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.InstructionManager;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class GameActivity extends AppCompatActivity {
@@ -39,6 +40,7 @@ public class GameActivity extends AppCompatActivity {
     private ObjectAnimator instructionTimerAnimation;
     private ProgressBar timeProgressBar;
     private TextView scoreText;
+    private TextView highScoreText;
     private LinearLayout instructionSpace;
     private ImageButton pauseButton;
     private ViewGroup pauseOverlay;
@@ -67,6 +69,8 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
 
+        LocalData.initialize(GameActivity.this);
+
         // Retrieve game mode and difficulty
         Bundle extras = getIntent().getExtras();
         if (extras != null){
@@ -79,6 +83,7 @@ public class GameActivity extends AppCompatActivity {
 
         // Get UI elements
         scoreText = findViewById(R.id.score);
+        highScoreText = findViewById(R.id.highScore);
         instructionSpace = findViewById(R.id.instructionSpace);
         timeProgressBar = findViewById(R.id.progressBar);
         pauseButton = findViewById(R.id.pauseButton);
@@ -104,6 +109,7 @@ public class GameActivity extends AppCompatActivity {
         success = false;
         score = 0;
         updateScoreText();
+        updateHighScoreText();
 
         // Set up UI interactions
         pauseButton.setOnClickListener(v -> {
@@ -227,6 +233,10 @@ public class GameActivity extends AppCompatActivity {
 
     private void updateScoreText(){
         scoreText.setText(String.valueOf(score));
+    }
+
+    private void updateHighScoreText(){
+        highScoreText.setText(String.valueOf(LocalData.getHighScore(gameMode, difficulty)));
     }
 
     // Stop current timer then call game loop after one second
