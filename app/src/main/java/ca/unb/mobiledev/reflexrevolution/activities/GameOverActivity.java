@@ -1,9 +1,5 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.getHighScore;
-import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.initializeSP;
-import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.setHighScore;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -14,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 
 public class GameOverActivity extends AppCompatActivity {
     private int score = 0;
@@ -25,7 +22,7 @@ public class GameOverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_over);
 
-        initializeSP(GameOverActivity.this);
+        LocalData.initialize(GameOverActivity.this);
 
         //Retrieve information
         Bundle extras = getIntent().getExtras();
@@ -43,17 +40,19 @@ public class GameOverActivity extends AppCompatActivity {
         Button replayButton = findViewById(R.id.replayButton);
         Button menuButton = findViewById(R.id.menuButton);
 
+        // Get previous high score
+        int highScore = LocalData.getHighScore(gameMode, difficulty);
+        // Update high score if score is higher
+        if (score > highScore) {
+            LocalData.setHighScore(score, gameMode, difficulty);
+            highScore = score;
+        }
+
         // Set values
         scoreText.setText(String.valueOf(score));
-        highScoreText.setText(String.valueOf(getHighScore(gameMode, difficulty)));
+        highScoreText.setText(String.valueOf(highScore));
         gameModeValue.setText(gameMode.getName());
         difficultyValue.setText(difficulty.getName());
-
-        if (score > getHighScore(gameMode, difficulty)) {
-            // Get and edit high score
-            setHighScore(score, gameMode, difficulty);
-            highScoreText.setText(String.valueOf(getHighScore(gameMode, difficulty)));
-        }
 
         // Replay button to start new game
         replayButton.setOnClickListener(v -> {

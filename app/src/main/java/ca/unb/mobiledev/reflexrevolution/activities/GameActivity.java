@@ -1,8 +1,5 @@
 package ca.unb.mobiledev.reflexrevolution.activities;
 
-import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.getHighScore;
-import static ca.unb.mobiledev.reflexrevolution.utils.LocalData.initializeSP;
-
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -28,6 +25,7 @@ import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
 import ca.unb.mobiledev.reflexrevolution.utils.InstructionManager;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class GameActivity extends AppCompatActivity {
@@ -53,7 +51,6 @@ public class GameActivity extends AppCompatActivity {
     private LoopMediaPlayer musicPlayer;
     
     private int score;
-    private int highScore;
     private boolean isGamePaused = false;
     private boolean isTimerDelayed = false;
 
@@ -62,7 +59,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game);
 
-        initializeSP(GameActivity.this);
+        LocalData.initialize(GameActivity.this);
 
         // Retrieve game mode and difficulty
         Bundle extras = getIntent().getExtras();
@@ -88,7 +85,6 @@ public class GameActivity extends AppCompatActivity {
 
         // Start the game
         startResetTimer();
-
     }
 
     private void initialize() {
@@ -189,7 +185,9 @@ public class GameActivity extends AppCompatActivity {
         scoreText.setText(String.valueOf(score));
     }
 
-    private void updateHighScoreText(){ highScoreText.setText(String.valueOf(getHighScore(gameMode, difficulty))); }
+    private void updateHighScoreText(){
+        highScoreText.setText(String.valueOf(LocalData.getHighScore(gameMode, difficulty)));
+    }
 
     // Stop current timer then call game loop after one second
     private void startResetTimer() {
