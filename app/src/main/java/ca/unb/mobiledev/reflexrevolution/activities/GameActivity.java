@@ -3,7 +3,8 @@ package ca.unb.mobiledev.reflexrevolution.activities;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.media.MediaPlayer;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Gravity;
@@ -55,10 +56,12 @@ public class GameActivity extends AppCompatActivity {
     private float maxScore;
     private float extraDuration;
 
-    private MediaPlayer scorePlayer;
-    private MediaPlayer losePlayer;
     private LoopMediaPlayer musicPlayer;
-    
+    private SoundPool soundPool;
+    private int scoreSfx;
+    private int loseSfx;
+    private float sfxVolume;
+
     private int score;
     private boolean success;
     private boolean isGamePaused = false;
@@ -200,47 +203,35 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //Set up the media players
-    private void setMediaPlayers(){
-        //Create media players, set their sound files, and set their volume
-        scorePlayer = MediaPlayer.create(this, R.raw.score);
-        losePlayer = MediaPlayer.create(this, R.raw.lose);
-        musicPlayer = LoopMediaPlayer.create(this, R.raw.game_music);
-        float sfxVolume = LocalData.getValue(LocalData.Value.VOLUME_SFX)/100f;
+    private void setMediaPlayers() {
+        // Create sound pool for sound effects
+        AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool
+                .Builder()
+                .setMaxStreams(2)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        // Load sound effects
+        scoreSfx = soundPool.load(this, R.raw.score, 1);
+        loseSfx = soundPool.load(this, R.raw.lose, 1);
+        sfxVolume = LocalData.getValue(LocalData.Value.VOLUME_SFX)/100f;
+
+        // Create media player for background music
         float musicVolume = LocalData.getValue(LocalData.Value.VOLUME_MUSIC)/100f;
-        scorePlayer.setVolume(sfxVolume, sfxVolume);
-        losePlayer.setVolume(sfxVolume, sfxVolume);
+        musicPlayer = LoopMediaPlayer.create(this, R.raw.game_music);
         musicPlayer.setVolume(musicVolume);
         updateMusicSpeed();
-
-        //Rewind sound when it ends so that it can be played again later
-        scorePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
-
-        //If in the main game, allow losePlayer to continue playing when the activity is closed
-        //but stop it properly once it finishes playing
-        if(!gameMode.isPractice()) losePlayer.setOnCompletionListener(v -> stopLosePlayer());
-        //If we are in a practice, rewind it when it finishes
-        else losePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
     }
 
-    //Properly handle stopping all media players
-    //Lose player will be handled by its onCompletionListener
-    private void stopMediaPlayers(){
-        if (scorePlayer != null) {
-            scorePlayer.stop();
-            scorePlayer.release();
-            scorePlayer = null;
-        }
+    // Properly handle stopping all media players
+    private void stopMediaPlayers() {
         if (musicPlayer != null) {
             musicPlayer.release();
             musicPlayer = null;
-        }
-    }
-
-    private void stopLosePlayer(){
-        if (losePlayer != null) {
-            losePlayer.stop();
-            losePlayer.release();
-            losePlayer = null;
         }
     }
 
@@ -301,7 +292,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void instructionSuccess() {
         // Play success sound effect
-        if (scorePlayer != null) scorePlayer.start();
+        soundPool.play(scoreSfx, sfxVolume, sfxVolume, 0, 0, 1);
 
         // Update score if not in practice
         if(!gameMode.isPractice()) {
@@ -316,7 +307,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void instructionFailure(){
         // Play fail sound
-        losePlayer.start();
+        soundPool.play(loseSfx, sfxVolume, sfxVolume, 0, 0, 1);
 
         // Set success state before calling next instruction
         success = false;
@@ -341,7 +332,7 @@ public class GameActivity extends AppCompatActivity {
     // Ends the game, sending score and game options to the Game Over screen
     private void endGame(){
         // Stop music and play lose sound effect
-        losePlayer.start();
+        soundPool.play(loseSfx, sfxVolume, sfxVolume, 0, 0, 1);
         // Stop timer
         instructionTimerAnimation.cancel();
 
@@ -407,7 +398,6 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onBackPressed(){
         isDestroyed = true;
-        stopLosePlayer();
         super.onBackPressed();
     }
 }
