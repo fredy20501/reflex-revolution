@@ -12,6 +12,7 @@ import com.google.android.material.chip.ChipGroup;
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 
 public class GameSettingsActivity extends BackgroundMusicActivity {
 
@@ -23,6 +24,7 @@ public class GameSettingsActivity extends BackgroundMusicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_select);
+        LocalData.initialize(this);
 
         // Game mode selection
         TextView gameModeDescriptionHeader = findViewById(R.id.gameModeDescriptionHeader);
@@ -69,12 +71,21 @@ public class GameSettingsActivity extends BackgroundMusicActivity {
             }
         });
 
-        // Set the default choices
-        // TODO: store the choice in shared preferences
-        Chip classic = findViewById(R.id.classic);
-        classic.setChecked(true);
-        Chip intermediate = findViewById(R.id.intermediate);
-        intermediate.setChecked(true);
+        // Set the default choices from preferences
+        int gmId = LocalData.getValue(LocalData.Value.GAMEMODE);
+        for (GameMode gm : GameMode.values()) {
+            if (gm.getId() == gmId) {
+                Chip chip = findViewById(gm.getChipId());
+                chip.setChecked(true);
+            }
+        }
+        int difficultyId = LocalData.getValue(LocalData.Value.DIFFICULTY);
+        for (Difficulty diff : Difficulty.values()) {
+            if (diff.getId() == difficultyId) {
+                Chip chip = findViewById(diff.getChipId());
+                chip.setChecked(true);
+            }
+        }
 
         // Start button
         Button startButton = findViewById(R.id.startButton);
@@ -92,5 +103,13 @@ public class GameSettingsActivity extends BackgroundMusicActivity {
             intent.putExtra("Difficulty", difficulty);
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Save current selection when leaving this activity
+        LocalData.setValue(LocalData.Value.GAMEMODE, gameMode.getId());
+        LocalData.setValue(LocalData.Value.DIFFICULTY, difficulty.getId());
     }
 }

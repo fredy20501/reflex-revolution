@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.R;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 
 public abstract class Instruction {
 
@@ -46,6 +47,7 @@ public abstract class Instruction {
         this.rand = new Random();
         this.primaryContext = new ContextThemeWrapper(context, R.style.instructionPrimary);
         this.secondaryContext = new ContextThemeWrapper(context, R.style.instructionSecondary);
+        LocalData.initialize(context);
     }
 
     // Callback functions used to tell the game if success/fail
@@ -109,8 +111,10 @@ public abstract class Instruction {
 
         // Setup a random voice command
         int randomSoundFileID = voiceCommands[rand.nextInt(voiceCommands.length)];
+        float voiceVolume = LocalData.getValue(LocalData.Value.VOLUME_VOICE)/100f;
         player = MediaPlayer.create(context, randomSoundFileID);
-        //When sound is done, release media player properly
+        player.setVolume(voiceVolume, voiceVolume);
+        // When sound is done, release media player properly
         player.setOnCompletionListener(v -> {
             player.stop();
             player.release();

@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import ca.unb.mobiledev.reflexrevolution.R;
 import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 
 public class SettingsActivity extends BackgroundMusicActivity {
 
@@ -18,6 +19,7 @@ public class SettingsActivity extends BackgroundMusicActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+        LocalData.initialize(this);
 
         // Create media players
         sfxPlayer = MediaPlayer.create(this, R.raw.score);
@@ -30,19 +32,19 @@ public class SettingsActivity extends BackgroundMusicActivity {
         SeekBar sfxVolume = findViewById(R.id.sfxVolume);
         SeekBar voiceVolume = findViewById(R.id.voiceVolume);
 
-        // Set the default values
-        // TODO: store the choice in shared preferences
-        musicVolume.setProgress(100);
-        sfxVolume.setProgress(100);
-        voiceVolume.setProgress(100);
+        // Set the default values using local data
+        musicVolume.setProgress(LocalData.getValue(LocalData.Value.VOLUME_MUSIC));
+        sfxVolume.setProgress(LocalData.getValue(LocalData.Value.VOLUME_SFX));
+        voiceVolume.setProgress(LocalData.getValue(LocalData.Value.VOLUME_VOICE));
 
         // Set change listeners
         musicVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            public void onProgressChanged(SeekBar seekBar, int newValue, boolean b) {
                 // Update music volume
-                BackgroundMusic.setVolume(i/100f);
-                // TODO: update preferences & update game music with those preferences
+                BackgroundMusic.setVolume(newValue/100f);
+                // Update preferences
+                LocalData.setValue(LocalData.Value.VOLUME_MUSIC, newValue);
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
@@ -56,11 +58,13 @@ public class SettingsActivity extends BackgroundMusicActivity {
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                // Update SFX volume & play a short clip
                 float newVolume = seekBar.getProgress()/100f;
                 sfxPlayer.setVolume(newVolume, newVolume);
                 if (sfxPlayer.isPlaying()) sfxPlayer.seekTo(0);
                 else sfxPlayer.start();
-                // TODO: update sfx volume preferences & update game activity's media players to use sound preferences
+                // Update preferences
+                LocalData.setValue(LocalData.Value.VOLUME_SFX, seekBar.getProgress());
             }
         });
         voiceVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -70,18 +74,20 @@ public class SettingsActivity extends BackgroundMusicActivity {
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                // Update voice volume & play a short clip
                 float newVolume = seekBar.getProgress()/100f;
                 voicePlayer.setVolume(newVolume, newVolume);
                 if (voicePlayer.isPlaying()) voicePlayer.seekTo(0);
                 else voicePlayer.start();
-                // TODO: update voice volume preferences & update Instruction media player to use preferences
+                // Update preferences
+                LocalData.setValue(LocalData.Value.VOLUME_VOICE, seekBar.getProgress());
             }
         });
 
         // Clear data button
         Button clearDataButton = findViewById(R.id.clearDataButton);
         clearDataButton.setOnLongClickListener(v -> {
-            // TODO: clear data from preferences
+            LocalData.clearHighScores();
 
             // Show feedback
             Toast.makeText(this, "Data cleared!", Toast.LENGTH_SHORT).show();

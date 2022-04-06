@@ -32,6 +32,7 @@ import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 public class GameActivity extends AppCompatActivity {
     private final int TIME_BETWEEN_LOOPS = 1000;
     private final int FEEDBACK_DURATION = 1500;
+    @SuppressWarnings("FieldCanBeLocal")
     private final float MAX_SONG_SPEED = 1.75f;
 
     private ObjectAnimator instructionTimerAnimation;
@@ -200,10 +201,15 @@ public class GameActivity extends AppCompatActivity {
 
     //Set up the media players
     private void setMediaPlayers(){
-        //Create media players, and set their sound files
+        //Create media players, set their sound files, and set their volume
         scorePlayer = MediaPlayer.create(this, R.raw.score);
         losePlayer = MediaPlayer.create(this, R.raw.lose);
         musicPlayer = LoopMediaPlayer.create(this, R.raw.game_music);
+        float sfxVolume = LocalData.getValue(LocalData.Value.VOLUME_SFX)/100f;
+        float musicVolume = LocalData.getValue(LocalData.Value.VOLUME_MUSIC)/100f;
+        scorePlayer.setVolume(sfxVolume, sfxVolume);
+        losePlayer.setVolume(sfxVolume, sfxVolume);
+        musicPlayer.setVolume(musicVolume);
         updateMusicSpeed();
 
         //Rewind sound when it ends so that it can be played again later
@@ -361,12 +367,6 @@ public class GameActivity extends AppCompatActivity {
     // Scale the music speed linearly with the score
     private float getMusicMultiplier() {
         return (score/maxScore) * (MAX_SONG_SPEED - 1) + 1;
-    }
-
-    private float clamp(float val, float min, float max){
-        if(val > max) return max;
-        else if (val < min) return min;
-        return val;
     }
 
     private void pauseGame() {
