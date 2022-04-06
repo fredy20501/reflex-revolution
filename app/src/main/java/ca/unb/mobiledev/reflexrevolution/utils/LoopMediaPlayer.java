@@ -12,15 +12,18 @@ public class LoopMediaPlayer {
     private MediaPlayer mCurrentPlayer;
     private MediaPlayer mNextPlayer;
     private float lastSpeed = 1;
-    private float volume = 1.0f;
+    private float volume;
 
     public static LoopMediaPlayer create(Context context, int resId) {
         return new LoopMediaPlayer(context, resId);
     }
 
     private LoopMediaPlayer(Context context, int resId) {
-        mResId = resId;
+        // Set default volume
+        LocalData.initialize(context);
+        volume = LocalData.getValue(LocalData.Value.VOLUME_MUSIC)/100f;
 
+        mResId = resId;
         mCurrentPlayer = MediaPlayer.create(context, mResId);
         mCurrentPlayer.setOnPreparedListener(mediaPlayer -> mCurrentPlayer.start());
         createNextMediaPlayer(context);
