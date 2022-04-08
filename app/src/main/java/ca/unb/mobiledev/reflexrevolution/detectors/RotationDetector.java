@@ -6,8 +6,9 @@ import android.hardware.SensorEventListener;
 
 public class RotationDetector implements SensorEventListener {
 
-    private static final float ROTATION_THRESHOLD = 3.0f;
+    private static final float ROTATION_THRESHOLD = 3.5f;
     private OnRotateListener mListener;
+    private long lastEventTime = 0;
 
     public void setOnRotateListener(OnRotateListener listener) {
         this.mListener = listener;
@@ -30,6 +31,13 @@ public class RotationDetector implements SensorEventListener {
             float axisX = event.values[0];
             float axisY = event.values[1];
             float axisZ = event.values[2];
+
+            // Ignore events that are too far apart (prevent false positive)
+            if ((event.timestamp - lastEventTime)/1000000 > 500) {
+                lastEventTime = event.timestamp;
+                return;
+            }
+            lastEventTime = event.timestamp;
 
             // Any movement
             if (Math.abs(axisX) > ROTATION_THRESHOLD ||
@@ -56,10 +64,10 @@ public class RotationDetector implements SensorEventListener {
     public enum Action {
         TILT_FORWARD(Type.TILT),
         TILT_BACKWARD(Type.TILT),
-        TURN_RIGHT(Type.TURN),
         TURN_LEFT(Type.TURN),
-        TWIST_RIGHT(Type.TWIST),
-        TWIST_LEFT(Type.TWIST);
+        TURN_RIGHT(Type.TURN),
+        TWIST_LEFT(Type.TWIST),
+        TWIST_RIGHT(Type.TWIST);
 
         private final Type type;
         Action(Type type) {

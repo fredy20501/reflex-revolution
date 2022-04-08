@@ -35,6 +35,11 @@ public class JumpInstruction extends Instruction {
     }
 
     @Override
+    public int getMinDuration() {
+        return 750;
+    }
+
+    @Override
     public void enable() {
         setListeners();
     }
@@ -50,8 +55,8 @@ public class JumpInstruction extends Instruction {
     }
 
     private void setListeners() {
-        sensorManager.registerListener(jumpDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(jumpDetector, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(jumpDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        sensorManager.registerListener(jumpDetector, gravitySensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void unsetListeners() {

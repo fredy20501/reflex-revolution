@@ -3,7 +3,8 @@ package ca.unb.mobiledev.reflexrevolution.activities;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.media.MediaPlayer;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.Gravity;
@@ -21,9 +22,7 @@ import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.res.ResourcesCompat;
 
 import ca.unb.mobiledev.reflexrevolution.R;
-import ca.unb.mobiledev.reflexrevolution.instructions.DialInstruction;
 import ca.unb.mobiledev.reflexrevolution.instructions.Instruction;
-import ca.unb.mobiledev.reflexrevolution.instructions.TypeInstruction;
 import ca.unb.mobiledev.reflexrevolution.utils.BackgroundMusic;
 import ca.unb.mobiledev.reflexrevolution.utils.Difficulty;
 import ca.unb.mobiledev.reflexrevolution.utils.GameMode;
@@ -33,9 +32,9 @@ import ca.unb.mobiledev.reflexrevolution.utils.LoopMediaPlayer;
 
 public class GameActivity extends AppCompatActivity {
     private final int TIME_BETWEEN_LOOPS = 1000;
-    private final int DISPLAY_SUCCESS_TIME = 1500;
-    private final double MIN_SONG_SPEED = 0.5;
-    private final double MAX_SONG_SPEED = 1.5;
+    private final int FEEDBACK_DURATION = 1500;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float MAX_SONG_SPEED = 1.75f;
 
     private ObjectAnimator instructionTimerAnimation;
     private ProgressBar timeProgressBar;
@@ -54,15 +53,20 @@ public class GameActivity extends AppCompatActivity {
     private InstructionManager instructionManager;
     private GameMode gameMode;
     private Difficulty difficulty;
+    private float maxScore;
+    private float extraDuration;
 
-    private MediaPlayer scorePlayer;
-    private MediaPlayer losePlayer;
     private LoopMediaPlayer musicPlayer;
-    
+    private SoundPool soundPool;
+    private int scoreSfx;
+    private int loseSfx;
+    private float sfxVolume;
+
     private int score;
     private boolean success;
     private boolean isGamePaused = false;
     private boolean isTimerDelayed = false;
+    private boolean isDestroyed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,10 +77,17 @@ public class GameActivity extends AppCompatActivity {
 
         // Retrieve game mode and difficulty
         Bundle extras = getIntent().getExtras();
-        if (extras != null){
+        if (extras != null) {
             gameMode = (GameMode)extras.get("GameMode");
             difficulty = (Difficulty)extras.get("Difficulty");
         }
+        else {
+            // Pick defaults if not given in extras
+            gameMode = GameMode.CLASSIC;
+            difficulty = Difficulty.INTERMEDIATE;
+        }
+        maxScore = difficulty.getMaxScore();
+        extraDuration = difficulty.getExtraDuration();
 
         // Force background music to stop
         BackgroundMusic.onStop();
@@ -151,10 +162,10 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onTick(long l) {}
             @Override
-            public void onFinish() { gameLoop(); }
+            public void onFinish() { if (!isDestroyed) gameLoop(); }
         };
         // Set up the feedback timer (used as delay for showing feedback)
-        feedbackTimer = new CountDownTimer(DISPLAY_SUCCESS_TIME, 500) {
+        feedbackTimer = new CountDownTimer(FEEDBACK_DURATION, 500) {
             @Override
             public void onTick(long l) {}
             @Override
@@ -192,42 +203,35 @@ public class GameActivity extends AppCompatActivity {
     }
 
     //Set up the media players
-    private void setMediaPlayers(){
-        //Create media players, and set their sound files
-        scorePlayer = MediaPlayer.create(this, R.raw.score);
-        losePlayer = MediaPlayer.create(this, R.raw.lose);
+    private void setMediaPlayers() {
+        // Create sound pool for sound effects
+        AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool
+                .Builder()
+                .setMaxStreams(2)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        // Load sound effects
+        scoreSfx = soundPool.load(this, R.raw.score, 1);
+        loseSfx = soundPool.load(this, R.raw.lose, 1);
+        sfxVolume = LocalData.getValue(LocalData.Value.VOLUME_SFX)/100f;
+
+        // Create media player for background music
+        float musicVolume = LocalData.getValue(LocalData.Value.VOLUME_MUSIC)/100f;
         musicPlayer = LoopMediaPlayer.create(this, R.raw.game_music);
+        musicPlayer.setVolume(musicVolume);
         updateMusicSpeed();
-
-        //Rewind sound when it ends so that it can be played again later
-        scorePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
-
-        //If in the main game, allow losePlayer to continue playing when the activity is closed
-        //but stop it properly once it finishes playing
-        if(!gameMode.isPractice()) losePlayer.setOnCompletionListener(v -> stopLosePlayer());
-        //If we are in a practice, rewind it when it finishes
-        else losePlayer.setOnCompletionListener(v -> scorePlayer.seekTo(0));
     }
 
-    //Properly handle stopping all media players
-    //Lose player will be handled by its onCompletionListener
-    private void stopMediaPlayers(){
-        if (scorePlayer != null) {
-            scorePlayer.stop();
-            scorePlayer.release();
-            scorePlayer = null;
-        }
+    // Properly handle stopping all media players
+    private void stopMediaPlayers() {
         if (musicPlayer != null) {
             musicPlayer.release();
             musicPlayer = null;
-        }
-    }
-
-    private void stopLosePlayer(){
-        if (losePlayer != null) {
-            losePlayer.stop();
-            losePlayer.release();
-            losePlayer = null;
         }
     }
 
@@ -248,15 +252,8 @@ public class GameActivity extends AppCompatActivity {
 
     // Get new timer count, then start it
     private void newTimer() {
-        int timerDuration = scaleTimerFromScore();
-
-        // If you need to type or dial, add extra time
-        // TODO: abstract this into the Instruction class, to be used by all instructions)
-        if(currentInstruction instanceof TypeInstruction) timerDuration += 1000;
-        else if(currentInstruction instanceof DialInstruction) timerDuration += 2000;
-
         // Start the timer animation
-        instructionTimerAnimation.setDuration(timerDuration);
+        instructionTimerAnimation.setDuration(getTimerDuration());
         if (!isGamePaused) instructionTimerAnimation.start();
         else isTimerDelayed = true;
     }
@@ -272,13 +269,14 @@ public class GameActivity extends AppCompatActivity {
         // Display the instruction
         currentInstruction.display();
 
+        // Start instruction timer
+        newTimer();
+
         if (!isGamePaused) {
+            updateMusicSpeed();
             currentInstruction.playVoiceCommand();
             currentInstruction.enable();
-            updateMusicSpeed();
         }
-
-        newTimer();
     }
 
     // Clear all added UI elements & reset gravity
@@ -294,7 +292,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void instructionSuccess() {
         // Play success sound effect
-        scorePlayer.start();
+        soundPool.play(scoreSfx, sfxVolume, sfxVolume, 0, 0, 1);
 
         // Update score if not in practice
         if(!gameMode.isPractice()) {
@@ -309,7 +307,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void instructionFailure(){
         // Play fail sound
-        losePlayer.start();
+        soundPool.play(loseSfx, sfxVolume, sfxVolume, 0, 0, 1);
 
         // Set success state before calling next instruction
         success = false;
@@ -319,7 +317,7 @@ public class GameActivity extends AppCompatActivity {
     // Stop timer and clear UI, wait one second, then start the game loop (in resetTimer)
     private void nextInstruction(){
         instructionTimerAnimation.cancel();
-        currentInstruction.disable();
+        if (currentInstruction != null) currentInstruction.disable();
         resetUI();
 
         // If practice & failed the instruction, show feedback
@@ -334,7 +332,7 @@ public class GameActivity extends AppCompatActivity {
     // Ends the game, sending score and game options to the Game Over screen
     private void endGame(){
         // Stop music and play lose sound effect
-        losePlayer.start();
+        soundPool.play(loseSfx, sfxVolume, sfxVolume, 0, 0, 1);
         // Stop timer
         instructionTimerAnimation.cancel();
 
@@ -348,24 +346,18 @@ public class GameActivity extends AppCompatActivity {
 
     //Scale music playback speed based on how much time the player has to complete the instruction
     private void updateMusicSpeed(){
-        musicPlayer.setPlaybackSpeed(scaleSongSpeedFromTimer());
+        if (musicPlayer != null) musicPlayer.setPlaybackSpeed(getMusicMultiplier());
     }
 
-    // Scuffed function that will give a scaled timer based on score.
-    // Starts at ~3000ms and min value is ~1000ms
-    private int scaleTimerFromScore() { return (int)Math.pow(2, -0.04*score + 11) + 1000; }
-
-    //Returns a value between 0.5 and 1.5 based on the time the user has to complete the instruction
-    //Scales linearly, with 0.5 as 5000ms, 1 as 3000ms, and 1.5 as 1000ms
-    private float scaleSongSpeedFromTimer() {
-        return (float)clamp(-(scaleTimerFromScore() - 3000.0)/4000.0 + 1, MIN_SONG_SPEED, MAX_SONG_SPEED);
+    // Scale the duration linearly with the score
+    private int getTimerDuration() {
+        int minDuration = currentInstruction.getMinDuration();
+        return (int)((1 - score/maxScore) * extraDuration) + minDuration;
     }
 
-    //Clamp function using double for maximum compatibility
-    private double clamp(double val, double min, double max){
-        if(val > max) return max;
-        else if (val < min) return min;
-        return val;
+    // Scale the music speed linearly with the score
+    private float getMusicMultiplier() {
+        return (score/maxScore) * (MAX_SONG_SPEED - 1) + 1;
     }
 
     private void pauseGame() {
@@ -375,6 +367,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void resumeGame() {
+        isDestroyed = false;
         if (musicPlayer != null) musicPlayer.restart();
         if (currentInstruction != null) currentInstruction.enable();
         if (!isGamePaused) instructionTimerAnimation.resume();
@@ -383,7 +376,7 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        resumeGame();
+        if (!isGamePaused) resumeGame();
     }
 
     @Override
@@ -395,17 +388,16 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        currentInstruction = null;
+        instructionTimerAnimation.cancel();
+        resetTimer.cancel();
+        feedbackTimer.cancel();
         stopMediaPlayers();
     }
 
     @Override
     public void onBackPressed(){
-        currentInstruction = null;
-        instructionTimerAnimation.cancel();
-        resetTimer.cancel();
-        feedbackTimer.cancel();
-        stopLosePlayer();
-        stopMediaPlayers();
-        finish();
+        isDestroyed = true;
+        super.onBackPressed();
     }
 }

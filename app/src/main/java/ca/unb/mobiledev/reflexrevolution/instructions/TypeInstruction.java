@@ -46,6 +46,7 @@ public class TypeInstruction extends Instruction{
 
     //Transfer the text file containing all the words to a RandomAccessFile
     //Adapted from https://stackoverflow.com/a/48865091
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void setUpRandomWordList(){
         try {
             File outputDir = context.getCacheDir();
@@ -121,6 +122,11 @@ public class TypeInstruction extends Instruction{
             }
         });
         layout.addView(field);
+    }
+
+    @Override
+    public int getMinDuration() {
+        return 2000;
     }
 
     //Select field and force the keyboard to show

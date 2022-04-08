@@ -2,7 +2,8 @@ package ca.unb.mobiledev.reflexrevolution.instructions;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
 import android.view.Gravity;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 import ca.unb.mobiledev.reflexrevolution.R;
+import ca.unb.mobiledev.reflexrevolution.utils.LocalData;
 
 public abstract class Instruction {
 
@@ -35,7 +37,7 @@ public abstract class Instruction {
     //Voice command variables
     protected final Random rand;
     protected Integer[] voiceCommands;
-    private MediaPlayer player;
+    private final SoundPool soundPool;
 
     // Default constructor
     public Instruction(LinearLayout layout, Callback callback) {
@@ -46,6 +48,19 @@ public abstract class Instruction {
         this.rand = new Random();
         this.primaryContext = new ContextThemeWrapper(context, R.style.instructionPrimary);
         this.secondaryContext = new ContextThemeWrapper(context, R.style.instructionSecondary);
+        LocalData.initialize(context);
+
+        // Create sound pool
+        AudioAttributes audioAttributes = new AudioAttributes
+                .Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool
+                .Builder()
+                .setMaxStreams(1)
+                .setAudioAttributes(audioAttributes)
+                .build();
     }
 
     // Callback functions used to tell the game if success/fail
@@ -109,14 +124,11 @@ public abstract class Instruction {
 
         // Setup a random voice command
         int randomSoundFileID = voiceCommands[rand.nextInt(voiceCommands.length)];
-        player = MediaPlayer.create(context, randomSoundFileID);
-        //When sound is done, release media player properly
-        player.setOnCompletionListener(v -> {
-            player.stop();
-            player.release();
-            player = null;
-        });
-        player.start();
+        float voiceVolume = LocalData.getValue(LocalData.Value.VOLUME_VOICE)/100f;
+        int sound = soundPool.load(context, randomSoundFileID, 1);
+        soundPool.setOnLoadCompleteListener((soundPool, i, i1) ->
+                soundPool.play(sound, voiceVolume, voiceVolume, 0, 0, 1)
+        );
     }
 
     // Initialize the state of the instruction
@@ -128,6 +140,9 @@ public abstract class Instruction {
 
     // Add the UI elements to the layout
     public abstract void display();
+
+    // Return the minimum duration for this instruction
+    public abstract int getMinDuration();
 
     // Activate the instruction listeners (if needed)
     public abstract void enable();

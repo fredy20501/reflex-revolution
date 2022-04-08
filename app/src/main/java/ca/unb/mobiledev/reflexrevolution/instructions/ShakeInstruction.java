@@ -40,6 +40,11 @@ public class ShakeInstruction extends Instruction {
     }
 
     @Override
+    public int getMinDuration() {
+        return 750;
+    }
+
+    @Override
     public void enable() {
         setListeners();
     }
@@ -55,7 +60,7 @@ public class ShakeInstruction extends Instruction {
     }
 
     private void setListeners() {
-        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(shakeDetector, accelerometer, SensorManager.SENSOR_DELAY_UI);
     }
 
     private void unsetListeners() {

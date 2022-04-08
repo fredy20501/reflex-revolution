@@ -62,6 +62,20 @@ public class TapInstruction extends Instruction {
     }
 
     @Override
+    public int getMinDuration() {
+        int duration = 1000;
+        switch (currentAction) {
+            case TAP:
+            case DONT_TAP:
+            case DOUBLE_TAP:
+                duration = 750; break;
+            case HOLD_TAP:
+                duration = 1250; break;
+        }
+        return duration;
+    }
+
+    @Override
     public void enable() {}
 
     @Override

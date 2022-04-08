@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ReflexRevolution">
         <activity
-            android:name=".activities.GameSettingsActivity"
+            android:name=".activities.HowToPlayActivity"
             android:exported="false" />
         <activity
             android:name=".activities.MainActivity"
@@ -34,6 +34,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.GameSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.GameActivity"
             android:screenOrientation="behind" />

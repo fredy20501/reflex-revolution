@@ -1,4 +1,5 @@
 <resources>
+<!--    Main Menu & Game Select-->
     <string name="app_name">Reflex Revolution</string>
     <string name="title">REFLEX</string>
     <string name="subtitle">REVOLUTION</string>
@@ -25,9 +26,11 @@
     <string name="description_swipe">This mode will put your dexterity to the test. Swipe instructions only.\n\nHow fast can your fingers go?</string>
     <string name="description_keyboard">Use your keyboard to write words and dial phone numbers as quickly as possible. Type and dial instructions only.\n\nWatch out for typos!</string>
     <string name="description_revolution">Put your reflexes to the test in this ultimate game mode. All instructions are enabled.\n\nHow long can you last?</string>
-    <string name="description_novice">Prefer to take things slow? Start the game with extra time to complete each instruction.</string>
-    <string name="description_intermediate">A standard game of Reflex Revolution. Start the game with the regular amount of time to complete each instruction.</string>
-    <string name="description_master">Want to get straight into the action? Start the game with less time to complete each instruction.</string>
+    <string name="description_novice">Prefer to take things slow? The game ramps up slowly, giving you extra time to complete each instruction.</string>
+    <string name="description_intermediate">A standard game of Reflex Revolution. The game ramps up normally, giving enough time to complete each instruction.</string>
+    <string name="description_master">Want to get straight into the action? The game ramps up quickly, giving you less time to complete each instruction.</string>
+
+<!--    Game & Game Over-->
     <string name="_0">0</string>
     <string name="trophy_icon">Trophy icon</string>
     <string name="pause_the_game">Pause the game</string>
@@ -38,7 +41,69 @@
     <string name="game_mode_colon">Game Mode:</string>
     <string name="paused">PAUSED</string>
     <string name="tap_to_resume">TAP TO RESUME</string>
-    <string name="custom">Custom</string>
     <string name="fail">FAIL</string>
     <string name="exit">Exit</string>
+
+<!--    Settings-->
+    <string name="description_data_clear">Your high scores are saved automatically for each game mode and difficulty.\n\nPress and hold the button below to reset all of your high scores.</string>
+    <string name="sound_volume">Sound Volume</string>
+    <string name="data">Data</string>
+    <string name="music">Music</string>
+    <string name="voice_commands">Voice Commands</string>
+    <string name="sound_effects">Sound Effects</string>
+    <string name="clear_data">Clear Data</string>
+
+<!--    How To Play-->
+    <string name="game_description">During each game, random actions will appear in the middle of the screen. You must complete each action within a limited amount of time. You will keep receiving new actions until you fail by either not completing the action in time or making an incorrect action. The amount of time you have to complete each action goes down as the game progresses. \n\nHow to complete each instruction is described in the following sections.</string>
+    <string name="variations">Variations:</string>
+    <string name="practice">Practice</string>
+
+    <string name="explain_tap">The simplest instruction: tap the screen!</string>
+    <string name="explain_double_tap"><font color="#FFD6BC38"><b>> Double Tap: </b></font>Tap the screen twice in quick succession.</string>
+    <string name="explain_hold_tap"><font color="#FFD6BC38"><b>> Hold Tap: </b></font>Tap the screen and hold your finger on it for a short period.</string>
+    <string name="explain_dont_tap"><font color="#FFD6BC38"><b>> Don\'t Tap: </b></font>Wait for the timer to run out without taping the screen. You lose the game if you tap.</string>
+    <string name="explain_swipe">Swipe the screen in the given direction. You lose the game if you swipe in the wrong direction.</string>
+    <string name="explain_swipe_directions"><font color="#FFD200E4"><b>Possible Directions: </b></font>Left, Right, Up, Down.</string>
+    <string name="explain_swipe_flick"><font color="#FFD6BC38"><b>> Flick: </b></font>Swipe in any direction.</string>
+    <string name="explain_swipe_opposite"><font color="#FFD6BC38"><b>> Opposite Swipe: </b></font>Swipe in the opposite direction of the given direction.</string>
+    <string name="explain_shake">Shake it up! Shake your device in any direction.</string>
+    <string name="explain_jump">Jump in the air! Move the device up, regardless of the device\'s orientation.</string>
+    <string name="explain_freeze">Don\'t move! Keep the device as still as possible until the timer runs out. You lose the game if the device moves/rotates too much.</string>
+    <string name="explain_turn">Turn the device in the given direction (left or right).</string>
+    <string name="explain_tilt">Tilt the device in the given direction (forward or backward).</string>
+    <string name="explain_twist">Twist the device in the given direction (left or right).</string>
+    <string name="explain_type">Type the given 5-letter word. Your device\'s keyboard will pop-up automatically. Capitalization is ignored.</string>
+    <string name="explain_dial">Dial the given 7-digit phone number. Your device\'s keypad will pop-up automatically. You don\'t need to enter the dash \'-\' symbol in the middle.</string>
+
+    <string name="practice_tap">Practice Tap</string>
+    <string name="practice_swipe">Practice Swipe</string>
+    <string name="practice_shake">Practice Shake</string>
+    <string name="practice_jump">Practice Jump</string>
+    <string name="practice_freeze">Practice Freeze</string>
+    <string name="practice_turn">Practice Turn</string>
+    <string name="practice_tilt">Practice Tilt</string>
+    <string name="practice_twist">Practice Twist</string>
+    <string name="practice_type">Practice Type</string>
+    <string name="practice_dial">Practice Dial</string>
+
+    <string name="tap">Tap</string>
+    <string name="shake">Shake</string>
+    <string name="jump">Jump</string>
+    <string name="freeze">Freeze</string>
+    <string name="turn">Turn</string>
+    <string name="tilt">Tilt</string>
+    <string name="twist">Twist</string>
+    <string name="type">Type</string>
+    <string name="dial">Dial</string>
+
+    <string name="tilt_forward">Forward</string>
+    <string name="tilt_backward">Backward</string>
+    <string name="twist_left">Left</string>
+    <string name="twist_right">Right</string>
+
+    <string name="tilt_phone_forward">Tilt Phone Forward</string>
+    <string name="turn_phone_left_right">Turn Phone Left/Right</string>
+    <string name="tilt_phone_backward">Tilt Phone Backward</string>
+    <string name="twist_phone_left">Twist Phone Left</string>
+    <string name="twist_phone_right">Twist Phone Right</string>
 </resources>
