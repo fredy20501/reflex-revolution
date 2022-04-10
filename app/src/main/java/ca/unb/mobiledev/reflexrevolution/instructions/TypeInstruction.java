@@ -1,5 +1,6 @@
 package ca.unb.mobiledev.reflexrevolution.instructions;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.Editable;
@@ -7,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -42,6 +44,7 @@ public class TypeInstruction extends Instruction{
         keyboardInputContext = new ContextThemeWrapper(context, R.style.keyboardInput);
         wrapContent = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setUpRandomWordList();
+        ((Activity) context).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
     //Transfer the text file containing all the words to a RandomAccessFile
