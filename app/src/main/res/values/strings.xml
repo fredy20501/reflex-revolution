@@ -20,7 +20,7 @@
     <string name="intermediate">Intermediate</string>
     <string name="header_placeholder">Header</string>
     <string name="description_placeholder">Description</string>
-    <string name="description_classic">The classic set of instructions.Tap, swipe, and shake your way to the top!</string>
+    <string name="description_classic">The classic set of instructions. Tap, swipe, and shake your way to the top!</string>
     <string name="description_tactile">Make full use of your touch screen using this game mode. Tap and swipe instructions only.</string>
     <string name="description_kinetic">Move, turn, tilt, and twist your device in all directions. All movement-based instructions are enabled.\n\nBe careful not to drop your device!</string>
     <string name="description_swipe">This mode will put your dexterity to the test. Swipe instructions only.\n\nHow fast can your fingers go?</string>
